@@ -1,0 +1,5 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:VisualElement name="NarratorWindow" style="flex-grow: 1; width: 100%; max-width: 100%; min-width: 0; max-height: 50%; min-height: 50%; height: 50%; flex-wrap: wrap; text-overflow: ellipsis; white-space: pre-wrap; align-self: flex-start;">
+        <engine:Label text="Label" name="NarratorText" />
+    </engine:VisualElement>
+</engine:UXML>
