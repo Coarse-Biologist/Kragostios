@@ -20,24 +20,49 @@ public class NarrationScript : MonoBehaviour
     private Dictionary<string, string> responseDictionary;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    //private void Awake()
+    //{
+    //    root = UIDocument.rootVisualElement;
+    //    narratorWindow = root.Q<VisualElement>("NarratorWindow"); 
+    //    Debug.Log($"{narratorWindow} = narration window");
+    //    narratorText = narratorWindow.Q<Label>("NarratorText");
+    //}
     private void Awake()
-    {
-        //travel = GetComponent<TravelScript>();
-        root = UIDocument.rootVisualElement;
-        narratorWindow = root.Q<VisualElement>("NarratorWindow"); 
+{
+    root = UIDocument.rootVisualElement;
 
-        Debug.Log($"{narratorWindow} = narration window");
-        narratorText = narratorWindow.Q<Label>("NarratorText");
+    if (root == null)
+    {
+        Debug.LogError("Root VisualElement is null. Ensure UIDocument is assigned and loaded properly.");
+        return;
     }
+
+    narratorWindow = root.Q<VisualElement>("NarratorWindow");
+    if (narratorWindow == null)
+    {
+        Debug.LogError("NarratorWindow not found. Check your UXML for a VisualElement with the name 'NarratorWindow'.");
+        return;
+    }
+    Debug.Log($"{narratorWindow} = narration window");
+
+    narratorText = narratorWindow.Q<Label>("NarratorText");
+    if (narratorText == null)
+    {
+        Debug.LogError("NarratorText not found. Check your UXML for a Label with the name 'NarratorText' inside NarratorWindow.");
+    }
+    narratorText.style.whiteSpace = WhiteSpace.Normal;
+    narratorText.text = "";
+}
+
 
     public void PlayerTraveled(Directions direction, UnityEngine.Vector2 playerLocation, LocationType locationType)
     {
-        narratorText.text = $"You journey {direction.ToString()}. You are at the coordinates {playerLocation.ToString()}. The area is {locationType.ToString()}";
+        narratorText.text = $"You journey {direction}. You are at the coordinates {playerLocation.ToString()}. The area is {locationType.ToString()}";
     }
 
     public void DisplayNarrationText(string message)
     {
-        narratorText.text += narratorText.text; // + message;
+        narratorText.text += narratorText.text + "\n" + message; // + message;
         Debug.Log($"{message}");
     }
 

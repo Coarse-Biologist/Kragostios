@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 using KragostiosAllEnums;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 public class PlayerOptions : MonoBehaviour
 {
@@ -45,8 +46,8 @@ public class PlayerOptions : MonoBehaviour
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
             //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
-
-            newButton.text = combatant.name;
+            StatsHandler stats = combatant.GetComponent<StatsHandler>();
+            newButton.text = stats.characterName + stats.charType;
             buttonContainer.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnTargetSelected(combatant));
@@ -72,7 +73,7 @@ public class PlayerOptions : MonoBehaviour
     private void OnJourneyDirectionSelected(Directions direction)
     {
         JourneyDirectionSelected?.Invoke(direction);
-        buttonContainer.Clear();
+        ClearButtonContainer();
     }
 
 
@@ -88,6 +89,11 @@ public class PlayerOptions : MonoBehaviour
     public void OnTargetSelected(GameObject target)
     {
         TargetSelected?.Invoke(target);
+    }
+
+    public void ClearButtonContainer()
+    {
+        buttonContainer.Clear();
     }
     
     

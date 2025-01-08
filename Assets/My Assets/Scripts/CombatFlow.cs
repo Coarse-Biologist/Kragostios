@@ -8,7 +8,7 @@ using System.Net.NetworkInformation;
 public class CombatFlow : MonoBehaviour
 {
     private int turnNumber;
-    public List<GameObject> combatants;
+    public List<GameObject> combatants {private set; get;}
     private Dictionary<GameObject, int> uncookedList = new Dictionary<GameObject, int>();
     private IEnumerable<KeyValuePair<GameObject,int>> sortedturnOrder;
 
@@ -20,18 +20,23 @@ public class CombatFlow : MonoBehaviour
     private bool awaitingTargetSelection;
     private bool awaitingAbilitySelection;
     private int targetsExpected;
-
+    private List<GameObject> selectedTargets = new List<GameObject>();
+    private AbilityScrollStorage.Abilities selectedAbility;
+    private int currentTurnIndex = 0;
     
+    
+   //private void Awake()
+   //{
+   // RequestNarration("Squeal");
+   //}
 
-   
-
-    private IEnumerable<KeyValuePair<GameObject,int>> DecideTurnOrder()
+    public IEnumerable<KeyValuePair<GameObject,int>> DecideTurnOrder()
     {
         foreach (GameObject combatant in combatants)
         {
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
             int initiativeRoll = Random.Range(0, 20) + stats.initiative;
-            Debug.Log($"{uncookedList} = uncooked list");
+            //Debug.Log($"{uncookedList} = uncooked list");
             uncookedList.Add(combatant, initiativeRoll);
         }
         
@@ -39,16 +44,23 @@ public class CombatFlow : MonoBehaviour
         return sortedturnOrder;
     }
 
-    public void CombatCycle(List<GameObject> combatants)
+    public void CombatCycle()
     {
-        sortedturnOrder = DecideTurnOrder();
-        foreach (var kvp in sortedturnOrder)
-        {
-            GameObject combatant = kvp.Key;
+            //sortedturnOrder = DecideTurnOrder();
+
+            var list = sortedturnOrder.ToList();
+
+            if (currentTurnIndex > list.Count - 1) currentTurnIndex = 0;
+
+            GameObject combatant = list[currentTurnIndex].Key;
+
+            Debug.Log($"{list} = list of caombatants");
+
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
+
             if (stats.currentHealth > 0)
             {
-                Debug.Log($"{combatant} completed his turn");
+                Debug.Log($"{stats.characterName}, {stats.charType} started his turn");
                 switch (stats.charType)
                 {
                     case(Combatants.Player):
@@ -70,48 +82,53 @@ public class CombatFlow : MonoBehaviour
 
                     default:
                     {
+                    Debug.Log($"{combatant} was none of the above character types");
                     break;
                     }
                     
-
                 }
             }
-        }
+            else HandleDeath(combatant);
+            currentTurnIndex ++;
     }
 
     private void ExecutePlayerTurn (GameObject combatant)
     {
+        Debug.Log("Player turn executing method called");
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
         string playerTurnIntro = $"{stats.characterName} Has big plans!... What are they?...";
         RequestNarration(playerTurnIntro);
         RequestAbilityButtons(stats.knownAbilities);
-
     }
     private void ExecuteEnemyTurn (GameObject combatant)
     {
-
+        Debug.Log("Enemy turn executed");
+        string EnemyTurnNarration = $"{combatant.name} is finished with their pointless turn.";
+        RequestNarration(EnemyTurnNarration);
+        Invoke("NextTurn", 1f);
     }
     private void ExecuteSummonTurn (GameObject combatant)
     {
-
+        Debug.Log("Summon turn executing method called");
     }
     private void ExecuteCompanionTurn (GameObject combatant)
     {
+        Debug.Log("Companion turn executing method called");
 
     }
 
-    private void HandleDeath(GameObject combatant)
+    private void HandleDeath(GameObject deadCombatant)
     {
-        StatsHandler stats = combatant.GetComponent<StatsHandler>();
+        StatsHandler stats = deadCombatant.GetComponent<StatsHandler>();
         if (stats.charType == Combatants.Enemy)
         {
-            CalculateXpandGold(combatant);
+            CalculateXpandGold(deadCombatant);
         }
         if (stats.charType == Combatants.Companion)
         {
-            GivePlayerCompanionsInventory(combatant);
+            GivePlayerCompanionsInventory(deadCombatant);
         }
-        RemoveFromCombat(combatant);
+        RemoveFromCombat(deadCombatant);
     }
 
     private void CalculateXpandGold(GameObject deadCombatant)
@@ -157,6 +174,11 @@ public class CombatFlow : MonoBehaviour
         sortedturnOrder = list;                             // sets the list to be the new value of the sortedTurnOrder ienumerator
     }
 
+    public void NextTurn()
+    {
+        turnNumber ++;
+        Invoke("CombatCycle", 5f);
+    }
     private void GivePlayerCompanionsInventory(GameObject companion)
     {
 
@@ -164,10 +186,43 @@ public class CombatFlow : MonoBehaviour
 
     private void RequestNarration(string message)
     {
+        Debug.Log("Narration request sent?");
         NarrationRequest?.Invoke(message);
     }
     private void RequestAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
     {
+        Debug.Log("Ability Button request sent?");
+
         AbilityButtonRequest?.Invoke(abilities);
+    }
+
+    public void SetExpectedTargets(int targetNum)
+    {
+        targetsExpected = targetNum;
+    }
+
+    public void SetCombatants(List<GameObject> assignedCombatants)
+    {
+        combatants = assignedCombatants;
+    }
+    public void SetSelectedAbility(AbilityScrollStorage.Abilities ability)
+    {
+        selectedAbility = ability;
+    }
+
+    public void AddSelectedTarget(GameObject target)
+    {
+        selectedTargets.Add(target);
+        if (selectedTargets.Count == targetsExpected)
+        {
+           HandleAbilityEffect(selectedTargets, selectedAbility); 
+        }
+    }
+
+    private void HandleAbilityEffect(List<GameObject> targets, AbilityScrollStorage.Abilities selectedAbility)
+    {
+        RequestNarration($"{selectedAbility} ability effects have been handled");
+        turnNumber ++;
+        Invoke("CombatCycle", 5f);
     }
 }

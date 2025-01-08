@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using KragostiosAllEnums;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 
 public class DungeonMaster : MonoBehaviour
@@ -13,8 +14,6 @@ public class DungeonMaster : MonoBehaviour
 private VisualElement root;
 private VisualElement narratorWindow;
 private Label narratorText;
-
-
 
 [Header("scripts")]
 private PlayerOptions playerOptions;
@@ -28,21 +27,53 @@ private CombatFlow combat;
 [SerializeField] GameObject creaturePrefab;
 private GameObject Player;
 
+
+//private void Awake()
+//{
+//    
+//    //OnEnable();
+//    Player = MakePlayer();
+//    StatsHandler stats = Player.GetComponent<StatsHandler>();
+//    List<AbilityScrollStorage.Abilities> knownAbilities = stats.knownAbilities;
+//    
+//}
+//private void Start()
+//{
+//    playerOptions = GetComponent<PlayerOptions>();
+//    map = GetComponent<Map>();
+//    narrator = GetComponent<NarrationScript>();
+//    travel = GetComponent<TravelScript>();
+//    combat = GetComponent<CombatFlow>();
+//    List<Directions> directions = map.directions;
+//    //playerOptions.SpawnAbilityButtons(knownAbilities);
+//    //playerOptions.SpawnDirectionOptions(directions);
+//    InitiateCombat();
+//}
 private void Awake()
 {
+    Player = MakePlayer();
+    StatsHandler stats = Player.GetComponent<StatsHandler>();
+    List<AbilityScrollStorage.Abilities> knownAbilities = stats.knownAbilities;
+
+    // Initialize component references
     playerOptions = GetComponent<PlayerOptions>();
     map = GetComponent<Map>();
     narrator = GetComponent<NarrationScript>();
     travel = GetComponent<TravelScript>();
     combat = GetComponent<CombatFlow>();
-    Player = MakePlayer();
-    List<Directions> directions = map.directions;
-    //InitiateCombat();
-    StatsHandler stats = Player.GetComponent<StatsHandler>();
-    List<AbilityScrollStorage.Abilities> knownAbilities = stats.knownAbilities;
-    playerOptions.SpawnAbilityButtons(knownAbilities);
-    //playerOptions.SpawnDirectionOptions(directions);
 }
+
+private void Start()
+{
+    List<Directions> directions = map.directions;
+
+    // Uncomment and use when needed
+    // playerOptions.SpawnAbilityButtons(knownAbilities);
+    // playerOptions.SpawnDirectionOptions(directions);
+
+    InitiateCombat();
+}
+
 
 private void OnEnable()
     {
@@ -50,6 +81,7 @@ private void OnEnable()
         combat.AbilityButtonRequest.AddListener(SpawnAbilityButtons);
         playerOptions.AbilitySelected.AddListener(HandleAbilitySelected);
         playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
+        playerOptions.TargetSelected.AddListener(HandleTargetSelected);
 
     }
 
@@ -59,15 +91,19 @@ private void OnEnable()
         combat.AbilityButtonRequest.RemoveListener(SpawnAbilityButtons);
         playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
         playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
+        playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
+
     }
 
 private void DisplayNarration(string message)
 {
+    Debug.Log("Display Narration request recieved?");
     narrator.DisplayNarrationText(message);
 }
 
 private void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
 {
+    Debug.Log("Spawn ability request recieved?");
     playerOptions.SpawnAbilityButtons(abilities);
 }
 /// Handle Player input
@@ -91,11 +127,19 @@ public void HandlePlayerTraveled(Directions direction)
         
 public void HandleTargetSelected(GameObject target) // needs a lot of work
 {
+    Debug.Log("Handle target Selected request recieved?");
 
+    combat.AddSelectedTarget(target);
 }
 public void HandleAbilitySelected(AbilityScrollStorage.Abilities ability) // needs a lot of work
 {
+    Debug.Log("Handle ability Selected request recieved?");
+
+    combat.SetSelectedAbility(ability);
     int targetNum = ability.Targets;
+    combat.SetExpectedTargets(targetNum);
+    List<GameObject> combatants = combat.combatants;
+    playerOptions.SpawnTargetButtons(combatants);
 }
 /// Command UI 
 private GameObject MakePlayer()
@@ -128,12 +172,6 @@ private GameObject MakeCompanion(Difficulty difficulty)
 }
 
 
-private List<GameObject> CombatantList()
-{
-    List<GameObject> combatants = new List<GameObject>();
-    GameObject summon = MakeSummon(Difficulty.Easy);
-    return combatants;
-}
 
 private void InitiateCombat()
 {
@@ -146,8 +184,9 @@ private void InitiateCombat()
         combatants.Add(enemy);
     }
     combatants.Add(Player);
-    combat.combatants = combatants;
-    combat.CombatCycle(combatants);
+    combat.SetCombatants(combatants);
+    combat.DecideTurnOrder();
+    combat.CombatCycle();//combatants);
 }
 
 
