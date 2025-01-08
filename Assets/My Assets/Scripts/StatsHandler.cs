@@ -45,7 +45,7 @@ public class StatsHandler : MonoBehaviour
 
 
     [Header("Rewards")]
-    [SerializeField] public List<Rewards> rewards{private set; get;}
+    [SerializeField] public List<Rewards> rewards{private set; get;} = new List<Rewards>{ Rewards.Gold, Rewards.Xp};
 
     [Header("Inventory")]
     [SerializeField] public int characterGold {private set; get;} = 0;
@@ -55,11 +55,21 @@ public class StatsHandler : MonoBehaviour
     }
 
     
-    private void UpdateHealth(int healthChange)
+    public void TakeDamage(int damageValue)
     {
-        
-        currentHealth = currentHealth + healthChange;
+        currentHealth = currentHealth - damageValue;
+
+    }
+    public void Heal(int healAmount)
+    {
+        currentHealth = currentHealth - healAmount;
         if (currentHealth > maxHealth) currentHealth = maxHealth;
+    }
+    public void UpdateMana(int manaChange)
+    {
+        currentHealth = currentHealth + manaChange;
+        if (currentMana > maxMana) currentMana = maxMana;
+        else if (currentMana < 0 ) currentMana = 0;
     }
     
     private void GiveOverHealth(int overhealthAmount)

@@ -10,7 +10,7 @@ public class CombatFlow : MonoBehaviour
     private int turnNumber;
     public List<GameObject> combatants {private set; get;}
     private Dictionary<GameObject, int> uncookedList = new Dictionary<GameObject, int>();
-    private IEnumerable<KeyValuePair<GameObject,int>> sortedturnOrder;
+    private List<KeyValuePair<GameObject,int>> sortedturnOrder;
 
     public UnityEvent<string> NarrationRequest;
 
@@ -24,24 +24,21 @@ public class CombatFlow : MonoBehaviour
     private List<GameObject> selectedTargets = new List<GameObject>();
     private AbilityScrollStorage.Abilities selectedAbility;
     private int currentTurnIndex = 0;
-    private bool narratingTurn;
+    public GameObject caster {private set; get;}
     
-   //private void Awake()
-   //{
-   // RequestNarration("Squeal");
-   //}
+  
 
     public void CombatCycle()
     {
             //sortedturnOrder = DecideTurnOrder();
 
-            var list = sortedturnOrder.ToList();
+            //var list = sortedturnOrder.ToList();
 
-            if (currentTurnIndex > list.Count - 1) currentTurnIndex = 0;
+            if (currentTurnIndex > sortedturnOrder.Count - 1) currentTurnIndex = 0;
 
-            GameObject combatant = list[currentTurnIndex].Key;
-
-            Debug.Log($"{list} = list of caombatants");
+            GameObject combatant = sortedturnOrder[currentTurnIndex].Key;
+            caster = combatant;
+            Debug.Log($"{sortedturnOrder} = list of caombatants");
 
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
 
@@ -75,8 +72,9 @@ public class CombatFlow : MonoBehaviour
                     
                 }
             }
-            else HandleDeath(combatant);
-            currentTurnIndex ++;
+            else 
+            Debug.Log($"{combatant} has less than or 0 health");
+           
     }
 
     private void ExecutePlayerTurn (GameObject combatant)
@@ -106,13 +104,32 @@ public class CombatFlow : MonoBehaviour
 
 
     private void HandleAbilityEffect(List<GameObject> targets, AbilityScrollStorage.Abilities selectedAbility)
-    {
+    {   
+        foreach(GameObject target in targets)
+        {
+            
+            StatsHandler stats = target.GetComponent<StatsHandler>();
+            stats.TakeDamage(selectedAbility.DamageValue);
+            StatsHandler casterStats = caster.GetComponent<StatsHandler>();
+            casterStats.UpdateMana(selectedAbility.AbilityCost);
+
+            string narrationText = $"{stats.characterName} recieved {selectedAbility.DamageValue} damage from {selectedAbility.AbilityName}"; 
+            RequestNarration(narrationText);
+            if (stats.currentHealth <= 0)
+            {
+                Debug.Log($"{target} died");
+                HandleDeath(target);
+            }
+            else Debug.Log($"{stats.currentHealth} = targets current health");
+        }
+
         RequestNarration($"{selectedAbility.AbilityName} ability effects have been handled");
         RequestContinueButton();
     }
     public void NextTurn()
     {
-        turnNumber ++;
+        selectedTargets = new List<GameObject>();
+        currentTurnIndex ++;
         Invoke("CombatCycle", 5f);
     }
 
@@ -168,7 +185,7 @@ public class CombatFlow : MonoBehaviour
             uncookedList.Add(combatant, initiativeRoll);
         }
         
-        sortedturnOrder = uncookedList.OrderByDescending(kvp => kvp.Value);
+        sortedturnOrder = uncookedList.OrderByDescending(kvp => kvp.Value).ToList();
         return sortedturnOrder;
     }
 
@@ -227,11 +244,14 @@ public class CombatFlow : MonoBehaviour
 
     private void RemoveFromCombat(GameObject deadCombatant)
     {
-        Debug.Log($"{deadCombatant} will be removed from combat list");
-        combatants.Remove(deadCombatant);   
-        var list = sortedturnOrder.ToList();                // converts IEnumerator to list
-        list.RemoveAll(kvp => kvp.Key == deadCombatant);    // removes combatant from list
-        sortedturnOrder = list;                             // sets the list to be the new value of the sortedTurnOrder ienumerator
+        Debug.Log($"{deadCombatant.GetComponent<StatsHandler>().characterName} will be removed from combat list. HP: {deadCombatant.GetComponent<StatsHandler>().currentHealth}");
+        combatants.Remove(deadCombatant);
+        Debug.Log($"{combatants} = combatants list");
+        //var list = sortedturnOrder.ToList();                // converts IEnumerator to list
+        sortedturnOrder.RemoveAll(kvp => kvp.Key == deadCombatant);    // removes combatant from list  
+        //sortedturnOrder = list.AsEnumerable();     
+        Debug.Log($"{sortedturnOrder} = sorted turnOrder.");
+        // sets the list to be the new value of the sortedTurnOrder ienumerator
     }
 
     private void GivePlayerCompanionsInventory(GameObject companion)
@@ -239,7 +259,22 @@ public class CombatFlow : MonoBehaviour
 
     }
 
+    public bool CheckEnemiesRemaining() // true if any enemy remains 
+    {
+        bool enemiesRemaining = false;
+        foreach(GameObject combatant in combatants)
+        {
+            StatsHandler stats = combatant.GetComponent<StatsHandler>();
+            if (stats.charType == Combatants.Enemy)
+            {
+                enemiesRemaining = true;
+                return enemiesRemaining;
+            }
+            else enemiesRemaining = false;
 
+        }
+        return enemiesRemaining;
+    }
 
 
 }

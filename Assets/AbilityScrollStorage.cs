@@ -12,7 +12,7 @@ public class AbilityScrollStorage : MonoBehaviour
 
     private void Awake()
     {
-        Fireball = new Abilities("Fireball", AbilityCategories.Attack, damageValue: 5, resource: ResourceTypes.Mana, abilityCost: 1);
+        Fireball = new Abilities("Fireball", AbilityCategories.Attack, damageValue: 5, resource: ResourceTypes.Mana, abilityCost: 1, targets: 2);
         Melee = new Abilities("Melee", AbilityCategories.Attack, damageValue: 1, resource: ResourceTypes.Stamina, abilityCost: 0);
         HealingTouch = new Abilities("Healing Touch", AbilityCategories.Heal, healValue: 5, resource: ResourceTypes.Mana, abilityCost: 1);
         DivineFire = new Abilities("Divine Fire", AbilityCategories.Attack, damageValue: 500, resource: ResourceTypes.Mana, abilityCost: 1);

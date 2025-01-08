@@ -27,28 +27,7 @@ private CombatFlow combat;
 [SerializeField] GameObject creaturePrefab;
 private GameObject Player;
 
-
-//private void Awake()
-//{
-//    
-//    //OnEnable();
-//    Player = MakePlayer();
-//    StatsHandler stats = Player.GetComponent<StatsHandler>();
-//    List<AbilityScrollStorage.Abilities> knownAbilities = stats.knownAbilities;
-//    
-//}
-//private void Start()
-//{
-//    playerOptions = GetComponent<PlayerOptions>();
-//    map = GetComponent<Map>();
-//    narrator = GetComponent<NarrationScript>();
-//    travel = GetComponent<TravelScript>();
-//    combat = GetComponent<CombatFlow>();
-//    List<Directions> directions = map.directions;
-//    //playerOptions.SpawnAbilityButtons(knownAbilities);
-//    //playerOptions.SpawnDirectionOptions(directions);
-//    InitiateCombat();
-//}
+// SetUp
 private void Awake()
 {
     Player = MakePlayer();
@@ -61,43 +40,35 @@ private void Awake()
     travel = GetComponent<TravelScript>();
     combat = GetComponent<CombatFlow>();
 }
-
 private void Start()
 {
     List<Directions> directions = map.directions;
-
-    // Uncomment and use when needed
-    // playerOptions.SpawnAbilityButtons(knownAbilities);
-    // playerOptions.SpawnDirectionOptions(directions);
-
     InitiateCombat();
 }
 
-
 private void OnEnable()
-    {
-        combat.NarrationRequest.AddListener(DisplayNarration);
-        combat.AbilityButtonRequest.AddListener(SpawnAbilityButtons);
-        combat.ContinueButtonRequest.AddListener(SpawnContinueButton);
-        playerOptions.AbilitySelected.AddListener(HandleAbilitySelected);
-        playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
-        playerOptions.TargetSelected.AddListener(HandleTargetSelected);
-        playerOptions.ContinueSelected.AddListener(HandleContinuePressed);
-        
+{
+    combat.NarrationRequest.AddListener(DisplayNarration);
+    combat.AbilityButtonRequest.AddListener(SpawnAbilityButtons);
+    combat.ContinueButtonRequest.AddListener(SpawnContinueButton);
+    playerOptions.AbilitySelected.AddListener(HandleAbilitySelected);
+    playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
+    playerOptions.TargetSelected.AddListener(HandleTargetSelected);
+    playerOptions.ContinueSelected.AddListener(HandleContinuePressed);
+    
+}
 
-    }
+private void OnDisable()
+{
+    combat.NarrationRequest.RemoveListener(DisplayNarration);
+    combat.AbilityButtonRequest.RemoveListener(SpawnAbilityButtons);
+    combat.ContinueButtonRequest.RemoveListener(SpawnContinueButton);
+    playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
+    playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
+    playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
+}
 
-    private void OnDisable()
-    {
-        combat.NarrationRequest.RemoveListener(DisplayNarration);
-        combat.AbilityButtonRequest.RemoveListener(SpawnAbilityButtons);
-        combat.ContinueButtonRequest.RemoveListener(SpawnContinueButton);
-        playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
-        playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
-        playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
-
-    }
-
+// Comand UI
 private void DisplayNarration(string message)
 {
     Debug.Log("Display Narration request recieved?");
@@ -109,10 +80,12 @@ private void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
     Debug.Log("Spawn ability request recieved?");
     playerOptions.SpawnAbilityButtons(abilities);
 }
+
 private void SpawnContinueButton()
 {
     playerOptions.SpawnContinueButton();
 }
+
 /// Handle Player input
 public void HandlePlayerTraveled(Directions direction)
 {
@@ -138,21 +111,40 @@ public void HandleTargetSelected(GameObject target) // needs a lot of work
 
     combat.AddSelectedTarget(target);
 }
+
 public void HandleAbilitySelected(AbilityScrollStorage.Abilities ability) // needs a lot of work
 {
-    Debug.Log("Handle ability Selected request recieved?");
+    StatsHandler casterStats = combat.caster.GetComponent<StatsHandler>();
+    
+    if (casterStats.currentMana >= ability.AbilityCost) 
+    {
+        string resourceCostNarration = $"{casterStats.characterName} used {ability.AbilityCost} {ability.Resource} to cast {ability.AbilityName}";
+        narrator.DisplayNarrationText(resourceCostNarration);
 
-    combat.SetSelectedAbility(ability);
-    int targetNum = ability.Targets;
-    combat.SetExpectedTargets(targetNum);
-    List<GameObject> combatants = combat.combatants;
-    playerOptions.SpawnTargetButtons(combatants);
+        combat.SetSelectedAbility(ability);
+        int targetNum = ability.Targets;
+        combat.SetExpectedTargets(targetNum);
+        List<GameObject> combatants = combat.combatants;
+        
+        playerOptions.SpawnTargetButtons(combatants);
+    }
+    else 
+    {
+        string insufficientResource = $"{casterStats.characterName} has insuffienct {ability.Resource} to use {ability.AbilityName}";
+        narrator.DisplayNarrationText(insufficientResource);
+        playerOptions.SetAwaitingAbilitySelection(true);
+    }
+    
 }
+
 private void HandleContinuePressed()
 {
-    combat.NextTurn();
+    bool enemiesRemaining = combat.CheckEnemiesRemaining();
+    if (enemiesRemaining) combat.NextTurn();
+    else narrator.DisplayNarrationText("YOU WON");
 }
-/// Command UI 
+
+/// Combat Setup
 private GameObject MakePlayer()
 {
     GameObject creature = Instantiate(creaturePrefab);
@@ -162,6 +154,7 @@ private GameObject MakePlayer()
     stats.LearnAbility(abilities.DivineFire);
     return Player;  
 }
+
 private GameObject MakeEnemy(Difficulty difficulty)
 {
     GameObject creature = Instantiate(creaturePrefab);
@@ -169,6 +162,7 @@ private GameObject MakeEnemy(Difficulty difficulty)
     GameObject enemy = stats.MakeCreature(difficulty, Combatants.Enemy); 
     return enemy;   
 }
+
 private GameObject MakeSummon(Difficulty difficulty)
 {
     GameObject creature = Instantiate(creaturePrefab);
@@ -176,6 +170,7 @@ private GameObject MakeSummon(Difficulty difficulty)
     GameObject summon = stats.MakeCreature(difficulty, Combatants.Summon);    
     return summon;
 }
+
 private GameObject MakeCompanion(Difficulty difficulty)
 {
     GameObject creature = Instantiate(creaturePrefab);
@@ -183,8 +178,6 @@ private GameObject MakeCompanion(Difficulty difficulty)
     GameObject companion = stats.MakeCreature(difficulty, Combatants.Companion);  
     return companion;  
 }
-
-
 
 private void InitiateCombat()
 {

@@ -18,7 +18,7 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent<GameObject> TargetSelected;
     public UnityEvent<Directions> JourneyDirectionSelected;
     public UnityEvent ContinueSelected;
-    private bool awaitingAbilitySelection;
+    public bool awaitingAbilitySelection {private set; get;}
 
 
     
@@ -132,6 +132,10 @@ public class PlayerOptions : MonoBehaviour
         root = uiDocument.rootVisualElement;
         buttonContainer = root.Q<VisualElement>("CombatantButtons");
         buttonContainer.Clear();
+    }
+    public void SetAwaitingAbilitySelection(bool awaiting)
+    {
+        awaitingAbilitySelection = awaiting;
     }
     
 }
