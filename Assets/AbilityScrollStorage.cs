@@ -5,6 +5,8 @@ using UnityEngine;
 public class AbilityScrollStorage : MonoBehaviour
 {
     public Abilities Fireball { get; private set; }
+    public Abilities DivineFire { get; private set; }
+
     public Abilities Melee { get; private set; }
     public Abilities HealingTouch { get; private set; }
 
@@ -13,11 +15,17 @@ public class AbilityScrollStorage : MonoBehaviour
         Fireball = new Abilities("Fireball", AbilityCategories.Attack, damageValue: 5, resource: ResourceTypes.Mana, abilityCost: 1);
         Melee = new Abilities("Melee", AbilityCategories.Attack, damageValue: 1, resource: ResourceTypes.Stamina, abilityCost: 0);
         HealingTouch = new Abilities("Healing Touch", AbilityCategories.Heal, healValue: 5, resource: ResourceTypes.Mana, abilityCost: 1);
+        DivineFire = new Abilities("Divine Fire", AbilityCategories.Attack, damageValue: 500, resource: ResourceTypes.Mana, abilityCost: 1);
+    
     }
-
     public List<Abilities> GetWeakAbilities()
     {
         return new List<Abilities> { Fireball, Melee, HealingTouch };
+    }
+
+    public Abilities GetObliterator()
+    {
+        return DivineFire;
     }
 
 /// <summary>

@@ -16,6 +16,7 @@ public class CombatFlow : MonoBehaviour
 
     public UnityEvent<List<AbilityScrollStorage.Abilities>> AbilityButtonRequest;
     public UnityEvent<List<GameObject>> TargetButtonRequest;
+    public UnityEvent ContinueButtonRequest; 
 
     private bool awaitingTargetSelection;
     private bool awaitingAbilitySelection;
@@ -23,26 +24,12 @@ public class CombatFlow : MonoBehaviour
     private List<GameObject> selectedTargets = new List<GameObject>();
     private AbilityScrollStorage.Abilities selectedAbility;
     private int currentTurnIndex = 0;
-    
+    private bool narratingTurn;
     
    //private void Awake()
    //{
    // RequestNarration("Squeal");
    //}
-
-    public IEnumerable<KeyValuePair<GameObject,int>> DecideTurnOrder()
-    {
-        foreach (GameObject combatant in combatants)
-        {
-            StatsHandler stats = combatant.GetComponent<StatsHandler>();
-            int initiativeRoll = Random.Range(0, 20) + stats.initiative;
-            //Debug.Log($"{uncookedList} = uncooked list");
-            uncookedList.Add(combatant, initiativeRoll);
-        }
-        
-        sortedturnOrder = uncookedList.OrderByDescending(kvp => kvp.Value);
-        return sortedturnOrder;
-    }
 
     public void CombatCycle()
     {
@@ -105,7 +92,7 @@ public class CombatFlow : MonoBehaviour
         Debug.Log("Enemy turn executed");
         string EnemyTurnNarration = $"{combatant.name} is finished with their pointless turn.";
         RequestNarration(EnemyTurnNarration);
-        Invoke("NextTurn", 1f);
+        RequestContinueButton();
     }
     private void ExecuteSummonTurn (GameObject combatant)
     {
@@ -117,8 +104,80 @@ public class CombatFlow : MonoBehaviour
 
     }
 
+
+    private void HandleAbilityEffect(List<GameObject> targets, AbilityScrollStorage.Abilities selectedAbility)
+    {
+        RequestNarration($"{selectedAbility.AbilityName} ability effects have been handled");
+        RequestContinueButton();
+    }
+    public void NextTurn()
+    {
+        turnNumber ++;
+        Invoke("CombatCycle", 5f);
+    }
+
+// Event functions
+    private void RequestNarration(string message)
+    {
+        Debug.Log("Narration request sent?");
+        NarrationRequest?.Invoke(message);
+    }
+
+    private void RequestContinueButton()
+    {
+        ContinueButtonRequest?.Invoke();
+    }
+    private void RequestAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
+    {
+        Debug.Log("Ability Button request sent?");
+
+        AbilityButtonRequest?.Invoke(abilities);
+    }
+
+// Setup functions
+    public void SetExpectedTargets(int targetNum)
+    {
+        targetsExpected = targetNum;
+    }
+
+    public void SetCombatants(List<GameObject> assignedCombatants)
+    {
+        combatants = assignedCombatants;
+    }
+    public void SetSelectedAbility(AbilityScrollStorage.Abilities ability)
+    {
+        selectedAbility = ability;
+    }
+
+    public void AddSelectedTarget(GameObject target)
+    {
+        selectedTargets.Add(target);
+        if (selectedTargets.Count == targetsExpected)
+        {
+           HandleAbilityEffect(selectedTargets, selectedAbility); 
+        }
+    }
+
+    public IEnumerable<KeyValuePair<GameObject,int>> DecideTurnOrder()
+    {
+        foreach (GameObject combatant in combatants)
+        {
+            StatsHandler stats = combatant.GetComponent<StatsHandler>();
+            int initiativeRoll = Random.Range(0, 20) + stats.initiative;
+            //Debug.Log($"{uncookedList} = uncooked list");
+            uncookedList.Add(combatant, initiativeRoll);
+        }
+        
+        sortedturnOrder = uncookedList.OrderByDescending(kvp => kvp.Value);
+        return sortedturnOrder;
+    }
+
+// Death functions
+
     private void HandleDeath(GameObject deadCombatant)
     {
+        Debug.Log($"{deadCombatant} will be removed from combat list, glaub");
+
         StatsHandler stats = deadCombatant.GetComponent<StatsHandler>();
         if (stats.charType == Combatants.Enemy)
         {
@@ -168,61 +227,19 @@ public class CombatFlow : MonoBehaviour
 
     private void RemoveFromCombat(GameObject deadCombatant)
     {
+        Debug.Log($"{deadCombatant} will be removed from combat list");
         combatants.Remove(deadCombatant);   
         var list = sortedturnOrder.ToList();                // converts IEnumerator to list
         list.RemoveAll(kvp => kvp.Key == deadCombatant);    // removes combatant from list
         sortedturnOrder = list;                             // sets the list to be the new value of the sortedTurnOrder ienumerator
     }
 
-    public void NextTurn()
-    {
-        turnNumber ++;
-        Invoke("CombatCycle", 5f);
-    }
     private void GivePlayerCompanionsInventory(GameObject companion)
     {
 
     }
 
-    private void RequestNarration(string message)
-    {
-        Debug.Log("Narration request sent?");
-        NarrationRequest?.Invoke(message);
-    }
-    private void RequestAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
-    {
-        Debug.Log("Ability Button request sent?");
 
-        AbilityButtonRequest?.Invoke(abilities);
-    }
 
-    public void SetExpectedTargets(int targetNum)
-    {
-        targetsExpected = targetNum;
-    }
 
-    public void SetCombatants(List<GameObject> assignedCombatants)
-    {
-        combatants = assignedCombatants;
-    }
-    public void SetSelectedAbility(AbilityScrollStorage.Abilities ability)
-    {
-        selectedAbility = ability;
-    }
-
-    public void AddSelectedTarget(GameObject target)
-    {
-        selectedTargets.Add(target);
-        if (selectedTargets.Count == targetsExpected)
-        {
-           HandleAbilityEffect(selectedTargets, selectedAbility); 
-        }
-    }
-
-    private void HandleAbilityEffect(List<GameObject> targets, AbilityScrollStorage.Abilities selectedAbility)
-    {
-        RequestNarration($"{selectedAbility} ability effects have been handled");
-        turnNumber ++;
-        Invoke("CombatCycle", 5f);
-    }
 }

@@ -54,7 +54,6 @@ private void Awake()
     Player = MakePlayer();
     StatsHandler stats = Player.GetComponent<StatsHandler>();
     List<AbilityScrollStorage.Abilities> knownAbilities = stats.knownAbilities;
-
     // Initialize component references
     playerOptions = GetComponent<PlayerOptions>();
     map = GetComponent<Map>();
@@ -79,9 +78,12 @@ private void OnEnable()
     {
         combat.NarrationRequest.AddListener(DisplayNarration);
         combat.AbilityButtonRequest.AddListener(SpawnAbilityButtons);
+        combat.ContinueButtonRequest.AddListener(SpawnContinueButton);
         playerOptions.AbilitySelected.AddListener(HandleAbilitySelected);
         playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
         playerOptions.TargetSelected.AddListener(HandleTargetSelected);
+        playerOptions.ContinueSelected.AddListener(HandleContinuePressed);
+        
 
     }
 
@@ -89,6 +91,7 @@ private void OnEnable()
     {
         combat.NarrationRequest.RemoveListener(DisplayNarration);
         combat.AbilityButtonRequest.RemoveListener(SpawnAbilityButtons);
+        combat.ContinueButtonRequest.RemoveListener(SpawnContinueButton);
         playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
         playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
         playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
@@ -105,6 +108,10 @@ private void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
 {
     Debug.Log("Spawn ability request recieved?");
     playerOptions.SpawnAbilityButtons(abilities);
+}
+private void SpawnContinueButton()
+{
+    playerOptions.SpawnContinueButton();
 }
 /// Handle Player input
 public void HandlePlayerTraveled(Directions direction)
@@ -141,12 +148,18 @@ public void HandleAbilitySelected(AbilityScrollStorage.Abilities ability) // nee
     List<GameObject> combatants = combat.combatants;
     playerOptions.SpawnTargetButtons(combatants);
 }
+private void HandleContinuePressed()
+{
+    combat.NextTurn();
+}
 /// Command UI 
 private GameObject MakePlayer()
 {
     GameObject creature = Instantiate(creaturePrefab);
     StatsHandler stats = creature.GetComponent<StatsHandler>();
+    AbilityScrollStorage abilities = creature.GetComponent<AbilityScrollStorage>();
     Player = stats.MakeCreature(Difficulty.Nightmare, Combatants.Player);  
+    stats.LearnAbility(abilities.DivineFire);
     return Player;  
 }
 private GameObject MakeEnemy(Difficulty difficulty)

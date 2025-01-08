@@ -204,6 +204,11 @@ public class StatsHandler : MonoBehaviour
         }
         return gameObject;
         }
+
+        public void LearnAbility(AbilityScrollStorage.Abilities newAbility)
+        {
+            knownAbilities.Add(newAbility);
+        }
     }
 
 

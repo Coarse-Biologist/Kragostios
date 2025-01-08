@@ -17,12 +17,15 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent<AbilityScrollStorage.Abilities> AbilitySelected;
     public UnityEvent<GameObject> TargetSelected;
     public UnityEvent<Directions> JourneyDirectionSelected;
-    
+    public UnityEvent ContinueSelected;
+    private bool awaitingAbilitySelection;
 
 
     
     public void SpawnDirectionOptions(List<Directions> directions)
     {
+        ClearAbilityContainer();
+        ClearTargetContainer();
         root = uiDocument.rootVisualElement;
         buttonContainer = root.Q<VisualElement>("PlayerOptions");
         foreach (Directions direction in directions)
@@ -39,8 +42,10 @@ public class PlayerOptions : MonoBehaviour
     }
     public void SpawnTargetButtons(List<GameObject> combatants) // make this list start with friendly options
     {
+        ClearAbilityContainer();
+        ClearTargetContainer();
         root = uiDocument.rootVisualElement;
-        buttonContainer = root.Q<VisualElement>("PlayerOptions");
+        buttonContainer = root.Q<VisualElement>("CombatantButtons");
         foreach (GameObject combatant in combatants)
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
@@ -54,7 +59,10 @@ public class PlayerOptions : MonoBehaviour
         }
     }
     public void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
-    {
+    {   
+        ClearAbilityContainer();
+        ClearTargetContainer();
+        awaitingAbilitySelection = true;
         root = uiDocument.rootVisualElement;
         buttonContainer = root.Q<VisualElement>("PlayerOptions");
         foreach (AbilityScrollStorage.Abilities ability in abilities)
@@ -69,36 +77,61 @@ public class PlayerOptions : MonoBehaviour
             newButton.RegisterCallback<ClickEvent>(e => OnAbilitySelected(ability));
         }
     }
+    public void SpawnContinueButton()
+    {   
+        ClearAbilityContainer();
+        ClearTargetContainer();
+        awaitingAbilitySelection = true;
+        root = uiDocument.rootVisualElement;
+        buttonContainer = root.Q<VisualElement>("PlayerOptions");
+        
+            TemplateContainer newButtonContainer = templateButton.Instantiate();
+            Button newButton = newButtonContainer.Q<Button>();
+
+            newButton.text = "Continue";
+            buttonContainer.Add(newButtonContainer);
+            newButtonContainer.Add(newButton);
+            newButton.RegisterCallback<ClickEvent>(e => OnContinueSelected());
+        
+    }
 
     private void OnJourneyDirectionSelected(Directions direction)
     {
         JourneyDirectionSelected?.Invoke(direction);
-        ClearButtonContainer();
+        ClearAbilityContainer();
     }
 
-
-    //private void OnAbilitySelected(ClickEvent clickEvent, Abilities ability)
-    //{
-    //    DM.HandleAbilitySelected(ability);
-    //    buttonContainer.Clear();
-    //}
     public void OnAbilitySelected(AbilityScrollStorage.Abilities ability)
+    {   if (awaitingAbilitySelection)
+        {
+            awaitingAbilitySelection = false;
+            AbilitySelected?.Invoke(ability);
+        }
+        
+    }
+    private void OnContinueSelected()
     {
-        AbilitySelected?.Invoke(ability);
+        ContinueSelected?.Invoke();
+        ClearTargetContainer();
+        ClearAbilityContainer();
     }
     public void OnTargetSelected(GameObject target)
     {
         TargetSelected?.Invoke(target);
     }
 
-    public void ClearButtonContainer()
+    public void ClearAbilityContainer()
     {
+        root = uiDocument.rootVisualElement;
+        buttonContainer = root.Q<VisualElement>("PlayerOptions");
         buttonContainer.Clear();
     }
     
+    public void ClearTargetContainer()
+    {
+        root = uiDocument.rootVisualElement;
+        buttonContainer = root.Q<VisualElement>("CombatantButtons");
+        buttonContainer.Clear();
+    }
     
 }
-    //directions = map.directions;
-        //uiDocument = GetComponent<UIDocument>();
-        //travel = GetComponent<TravelScript>();
-        //narrator = GetComponent<NarrationScript>();

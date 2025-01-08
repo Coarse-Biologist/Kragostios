@@ -52,7 +52,10 @@ public class NarrationScript : MonoBehaviour
     }
     narratorText.style.whiteSpace = WhiteSpace.Normal;
     narratorText.text = "";
-}
+    root.style.backgroundColor = Color.black;
+    narratorText.style.color = Color.white;
+    root.MarkDirtyRepaint();
+    }
 
 
     public void PlayerTraveled(Directions direction, UnityEngine.Vector2 playerLocation, LocationType locationType)
@@ -60,12 +63,11 @@ public class NarrationScript : MonoBehaviour
         narratorText.text = $"You journey {direction}. You are at the coordinates {playerLocation.ToString()}. The area is {locationType.ToString()}";
     }
 
+    
     public void DisplayNarrationText(string message)
-    {
-        narratorText.text += narratorText.text + "\n" + message; // + message;
-        Debug.Log($"{message}");
+    {   
+        narratorText.text += "\n" + message; // + message;
     }
-
 
 
 
