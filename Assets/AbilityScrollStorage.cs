@@ -28,6 +28,8 @@ public class AbilityScrollStorage : MonoBehaviour
         return DivineFire;
     }
 
+    
+
 /// <summary>
 /// ////
 /// </summary>
@@ -58,6 +60,16 @@ public class AbilityScrollStorage : MonoBehaviour
         AbilityCost = abilityCost;
     }
 
+
+public string GetAbilityInfo(Abilities ability)
+    {
+        string abilityInfo = $"Ability Name: {AbilityName}, Type: {Type}, Heal Value: {HealValue}, Damage Value: {DamageValue}, " +
+        $"Turn Duration: {TurnDuration}, Targets: {Targets}, Summons: {Summons}, Syphon Percentage: {SyphonPercentage}, " +
+        $"Ability Level: {AbilityLevel}, Resource: {Resource}, Ability Cost: {AbilityCost}";
+        
+        return abilityInfo;
     }
+    }
+
 
 }

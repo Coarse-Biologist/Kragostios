@@ -87,8 +87,49 @@ public class CombatFlow : MonoBehaviour
     }
     private void ExecuteEnemyTurn (GameObject combatant)
     {
-        Debug.Log("Enemy turn executed");
-        string EnemyTurnNarration = $"{combatant.name} is finished with their pointless turn.";
+        StatsHandler stats = combatant.GetComponent<StatsHandler>();
+        int numberKnownAbilities = stats.knownAbilities.Count();
+        Debug.Log($"{numberKnownAbilities} = number of known abilities");
+        int randomSkillIndex = Random.Range(0, numberKnownAbilities - 1);
+        Debug.Log($"{randomSkillIndex} = number of known abilities");
+
+        AbilityScrollStorage.Abilities selectedAbility = stats.knownAbilities[randomSkillIndex];
+        
+        List<GameObject> targets = new List<GameObject>();
+
+        switch (selectedAbility.Type)
+        {
+            
+            case AbilityCategories.Heal:
+            targets = SelectRandomCharofType(Combatants.Enemy);
+            break;
+
+            case AbilityCategories.Buff:
+            targets = SelectRandomCharofType(Combatants.Enemy);
+            break;
+
+            case AbilityCategories.BuffHeal:
+            targets = SelectRandomCharofType(Combatants.Enemy);
+            break;
+
+            case AbilityCategories.Debuff:
+            targets = SelectRandomCharofType(Combatants.Enemy);
+            break;
+
+            case AbilityCategories.Attack:
+            targets = SelectRandomCharofType(Combatants.Enemy, true);
+            break;
+
+            case AbilityCategories.DebuffAttack:
+            targets = SelectRandomCharofType(Combatants.Enemy, true);
+            break;
+
+            default:
+            break;
+        }
+            
+        HandleAbilityEffect(targets, selectedAbility);
+        string EnemyTurnNarration = $"{combatant.name} used {selectedAbility.AbilityName} on {targets}for their turn.";
         RequestNarration(EnemyTurnNarration);
         RequestContinueButton();
     }
@@ -102,7 +143,42 @@ public class CombatFlow : MonoBehaviour
 
     }
 
+    private List<GameObject> SelectRandomCharofType(Combatants charType, bool allAllies = false) //if true, will make a list of all combatants that are not of type chartype
+    {
+    List<GameObject> possibleTargets = new List<GameObject>();
+    foreach (GameObject combatant in combatants) 
+    {
+        StatsHandler stats = combatant.GetComponent<StatsHandler>();
+        if (allAllies) 
+        {
+            if (stats.charType == Combatants.Player || 
+                stats.charType == Combatants.Companion || 
+                stats.charType == Combatants.Summon)
+                {
+                    possibleTargets.Add(combatant);
+                }
+        }
+        else if (stats.charType == charType)
+        {
+            possibleTargets.Add(combatant);
+        }
+    }
+        List<GameObject> selectedTargets = new List<GameObject>();
+        int targets = selectedAbility.Targets;
+        int numberOfEnemies = possibleTargets.Count();
+        int targetsSelected = 0;
 
+        while (targetsSelected < targets)
+        {
+            int randomTargetIndex = Random.Range(0, numberOfEnemies - 1);
+            GameObject randomTarget = possibleTargets[randomTargetIndex];
+            selectedTargets.Add(randomTarget);
+            targetsSelected ++;
+        }
+       
+        return selectedTargets;
+
+    }
     private void HandleAbilityEffect(List<GameObject> targets, AbilityScrollStorage.Abilities selectedAbility)
     {   
         foreach(GameObject target in targets)
