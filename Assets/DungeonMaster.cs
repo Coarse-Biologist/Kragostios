@@ -68,6 +68,8 @@ private void OnDisable()
     playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
     playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
     playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
+    playerOptions.ContinueSelected.RemoveListener(HandleContinuePressed);
+
 }
 
 // Comand UI
@@ -81,8 +83,14 @@ private void SpawnOptionButtons(List<AbilityScrollStorage.Abilities> abilities)
 {
     Debug.Log("Spawn ability request recieved?");
     playerOptions.SpawnAbilityButtons(abilities);
+<<<<<<< Updated upstream
     List<GameObject> combatants = combat.combatants;
     playerOptions.SpawnTargetButtons(combatants);
+=======
+    //playerOptions.SetAwaitingAbilitySelection(true);
+    List<GameObject> combatants = combat.combatants;
+    //playerOptions.SpawnTargetButtons(combatants);
+>>>>>>> Stashed changes
 }
 
 private void SpawnContinueButton()
@@ -128,9 +136,10 @@ public void HandleAbilitySelected(AbilityScrollStorage.Abilities ability) // nee
         combat.SetSelectedAbility(ability);
         int targetNum = ability.Targets;
         combat.SetExpectedTargets(targetNum);
-        List<GameObject> combatants = combat.combatants;
-        
-        playerOptions.SpawnTargetButtons(combatants);
+        //List<GameObject> combatants = combat.combatants;
+        playerOptions.SetAwaitingAbilitySelection(true);
+
+        //playerOptions.SpawnTargetButtons(combatants);
     }
     else 
     {
@@ -197,6 +206,7 @@ private void InitiateCombat()
     combat.SetCombatants(combatants);
     combat.DecideTurnOrder();
     combat.CombatCycle();//combatants);
+    playerOptions.SpawnPlayerInfoButton(Player);
 }
 
 

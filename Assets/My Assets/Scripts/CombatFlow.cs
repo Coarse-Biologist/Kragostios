@@ -247,7 +247,7 @@ public class CombatFlow : MonoBehaviour
         selectedTargets.Add(target);
         if (selectedTargets.Count == targetsExpected)
         {
-           HandleAbilityEffect(selectedTargets, selectedAbility); 
+           HandleAbilityEffect(selectedTargets, selectedAbility);
         }
     }
 

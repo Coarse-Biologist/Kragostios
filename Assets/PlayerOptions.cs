@@ -24,6 +24,7 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent<Directions> JourneyDirectionSelected;
     public UnityEvent ContinueSelected;
     public bool awaitingAbilitySelection {private set; get;}
+    
 
     [SerializeField] public AbilityScrollStorage abilityScript;
 
@@ -37,6 +38,7 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_PO = root.Q<VisualElement>("PlayerOptions");
         abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
         abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
+        
     }
     
     public void SpawnDirectionOptions(List<Directions> directions)
@@ -59,7 +61,6 @@ public class PlayerOptions : MonoBehaviour
     public void SpawnTargetButtons(List<GameObject> combatants) // make this list start with friendly options
     {   
         ClearTargetContainer();
-        
         foreach (GameObject combatant in combatants)
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
@@ -76,6 +77,12 @@ public class PlayerOptions : MonoBehaviour
     }
     public void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
     {   
+<<<<<<< Updated upstream
+=======
+        Debug.Log($"new ability Button requested and being processed");
+
+        ClearAbilityContainer();
+>>>>>>> Stashed changes
         ClearTargetContainer();
         awaitingAbilitySelection = true;
         
@@ -83,7 +90,7 @@ public class PlayerOptions : MonoBehaviour
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
-            //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
+            Debug.Log($"new ability Button requested and being processed");
 
             newButton.text = ability.AbilityName;
             buttonContainer_PO.Add(newButtonContainer);
@@ -92,6 +99,20 @@ public class PlayerOptions : MonoBehaviour
             newButton.RegisterCallback<PointerEnterEvent>(evt => ShowAbilityInfo(ability));
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideAbilityInfo());
         }
+    }
+
+    public void SpawnPlayerInfoButton(GameObject player)
+    {
+        TemplateContainer newButtonContainer = templateButton.Instantiate();
+        Button newButton = newButtonContainer.Q<Button>();
+        StatsHandler stats = player.GetComponent<StatsHandler>();
+        newButton.text = $"Show {stats.characterName}'s Info";
+        buttonContainer_PO.Add(newButtonContainer);
+        newButtonContainer.Add(newButton);
+        //newButton.style.position = Position.Absolute;
+        //newButton.style.bottom = 0; // Set to 0 to anchor to the bottom
+        //newButton.style.left = 0;
+        //newButton.RegisterCallback<ClickEvent>(e => ShowPlayerInfo(player));
     }
     public void SpawnContinueButton()
     {   
@@ -107,6 +128,19 @@ public class PlayerOptions : MonoBehaviour
         
     }
 
+    public void SpawnPlayerInfoButton(GameObject player)
+    {
+        TemplateContainer newButtonContainer = templateButton.Instantiate();
+        Button newButton = newButtonContainer.Q<Button>();
+        StatsHandler stats = player.GetComponent<StatsHandler>();
+        newButton.text = $"Show {stats.characterName}'s Info";
+        buttonContainer_PO.Add(newButtonContainer);
+        newButtonContainer.Add(newButton);
+        //newButton.style.position = Position.Absolute;
+        //newButton.style.bottom = 0; // Set to 0 to anchor to the bottom
+        //newButton.style.left = 0;
+        newButton.RegisterCallback<ClickEvent>(e => ShowPlayerInfo(player));
+    }
     private void OnJourneyDirectionSelected(Directions direction)
     {
         JourneyDirectionSelected?.Invoke(direction);
@@ -124,24 +158,36 @@ public class PlayerOptions : MonoBehaviour
         }
         
     }
+    public void ShowPlayerInfo(GameObject player)
+    {
+        StatsHandler stats = player.GetComponent<StatsHandler>();
+        string charInfo = stats.GetCharInfo();
+        charInfoPanel.style.display = DisplayStyle.Flex;
+        charInfoText.style.whiteSpace = WhiteSpace.Normal;
+        charInfoText.style.color = Color.white;
+        charInfoText.text = charInfo;
+    }
     private void ShowCharInfo(GameObject combatant)
     {
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
         string charInfo = stats.GetCharInfo();
         charInfoPanel.style.display = DisplayStyle.Flex;
-        charInfoText.text = charInfo;
+        charInfoText.style.whiteSpace = WhiteSpace.Normal;
         charInfoText.style.color = Color.white;
-        Debug.Log("Hovering over button!");
+        charInfoText.text = charInfo;
+        //Debug.Log("Hovering over button!");
     }
 
     private void ShowAbilityInfo(AbilityScrollStorage.Abilities ability)
     {
         string abilityInfo = ability.GetAbilityInfo(ability);
         abilityInfoPanel.style.display = DisplayStyle.Flex;
-        Debug.Log("Hovering over button!");
+        abilityInfoText.style.whiteSpace = WhiteSpace.Normal;
         abilityInfoText.style.color = Color.white;
         abilityInfoText.text = abilityInfo;
         //newButton.style.backgroundColor = new StyleColor(Color.red); 
+        Debug.Log("Hovering over button!");
+
     }
     private void HideAbilityInfo()
     {
@@ -163,9 +209,13 @@ public class PlayerOptions : MonoBehaviour
     }
     public void OnTargetSelected(GameObject target)
     {
-        HideAbilityInfo();
-        HideCharInfo();
-        TargetSelected?.Invoke(target);
+        if (!awaitingAbilitySelection)
+        {
+            HideAbilityInfo();
+            HideCharInfo();
+            TargetSelected?.Invoke(target);
+        }
+        
     }
 
     public void ClearAbilityContainer()

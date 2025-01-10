@@ -4,10 +4,10 @@
         <engine:Label text="Narration Text" name="NarratorText" style="height: 50%; max-height: 50%; min-height: 50%; flex-wrap: wrap;" />
     </engine:VisualElement>
     <engine:VisualElement name="CombatantButtons" style="flex-grow: 1; right: 0; flex-direction: row-reverse; height: 50%; max-height: 50%; min-height: 50%; max-width: 50%; min-width: 50%; width: 50%; bottom: 0; position: absolute;" />
-    <engine:VisualElement name="CharInfoPanel" style="flex-grow: 1; position: absolute; top: 0; right: 0; height: 50%; width: 50%; max-height: 50%; max-width: 50%; min-height: 50%; min-width: 50%;">
+    <engine:VisualElement name="CharInfoPanel" style="flex-grow: 1; position: absolute; top: 0; right: 0; height: 50%; width: 50%; max-height: 50%; max-width: 50%; min-height: 50%; min-width: 50%; text-overflow: ellipsis; white-space: pre-wrap;">
         <engine:Label text="Label" name="CharInfo" style="flex-wrap: wrap;" />
     </engine:VisualElement>
-    <engine:VisualElement name="AbilityInfoPanel" style="flex-grow: 1; top: 3px; position: absolute; right: 0; flex-wrap: wrap; height: 50%; max-height: 50%; min-height: 50%; width: 50%; max-width: 50%; min-width: 50%; flex-basis: auto; white-space: pre-wrap;">
+    <engine:VisualElement name="AbilityInfoPanel" style="flex-grow: 1; top: 3px; position: absolute; right: 0; flex-wrap: wrap; height: 50%; max-height: 50%; min-height: 50%; width: 50%; max-width: 50%; min-width: 50%; flex-basis: auto; white-space: pre-wrap; text-overflow: ellipsis;">
         <engine:Label name="AbilityInfo" style="top: 0; flex-wrap: wrap;" />
     </engine:VisualElement>
 </engine:UXML>

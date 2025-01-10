@@ -86,4 +86,26 @@ public enum Directions
     West
 }
 
+public enum Kingdoms
+{
+    Celestia, //  Heavenly people
+    Grovchii, // Orc savage people
+    Oshiania, // Water people
+    Bioleb, // Jungle  people 
+    SessPool, // Nasty swamp rat people
+}
+
+public enum Biomes
+{
+    Jungle,
+    Swamp,
+    RollingHills,
+    GrassyFields,
+    Mountains,
+    Tundra,
+    Glaciers,
+    EverGreenForest,
+    PerenialForest,
+    Desert
+}
 }
