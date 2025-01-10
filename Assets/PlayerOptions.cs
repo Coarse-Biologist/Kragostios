@@ -57,8 +57,7 @@ public class PlayerOptions : MonoBehaviour
         }
     }
     public void SpawnTargetButtons(List<GameObject> combatants) // make this list start with friendly options
-    {
-        ClearAbilityContainer();
+    {   
         ClearTargetContainer();
         
         foreach (GameObject combatant in combatants)
@@ -77,7 +76,6 @@ public class PlayerOptions : MonoBehaviour
     }
     public void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
     {   
-        ClearAbilityContainer();
         ClearTargetContainer();
         awaitingAbilitySelection = true;
         

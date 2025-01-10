@@ -14,7 +14,7 @@ public class CombatFlow : MonoBehaviour
 
     public UnityEvent<string> NarrationRequest;
 
-    public UnityEvent<List<AbilityScrollStorage.Abilities>> AbilityButtonRequest;
+    public UnityEvent<List<AbilityScrollStorage.Abilities>> OptionButtonRequest;
     public UnityEvent<List<GameObject>> TargetButtonRequest;
     public UnityEvent ContinueButtonRequest; 
 
@@ -83,7 +83,7 @@ public class CombatFlow : MonoBehaviour
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
         string playerTurnIntro = $"{stats.characterName} Has big plans!... What are they?...";
         RequestNarration(playerTurnIntro);
-        RequestAbilityButtons(stats.knownAbilities);
+        RequestOptionButtons(stats.knownAbilities);
     }
     private void ExecuteEnemyTurn (GameObject combatant)
     {
@@ -220,11 +220,11 @@ public class CombatFlow : MonoBehaviour
     {
         ContinueButtonRequest?.Invoke();
     }
-    private void RequestAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
+    private void RequestOptionButtons(List<AbilityScrollStorage.Abilities> abilities)
     {
         Debug.Log("Ability Button request sent?");
 
-        AbilityButtonRequest?.Invoke(abilities);
+        OptionButtonRequest?.Invoke(abilities);
     }
 
 // Setup functions

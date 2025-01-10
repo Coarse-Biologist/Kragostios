@@ -51,7 +51,7 @@ private void Start()
 private void OnEnable()
 {
     combat.NarrationRequest.AddListener(DisplayNarration);
-    combat.AbilityButtonRequest.AddListener(SpawnAbilityButtons);
+    combat.OptionButtonRequest.AddListener(SpawnOptionButtons);
     combat.ContinueButtonRequest.AddListener(SpawnContinueButton);
     playerOptions.AbilitySelected.AddListener(HandleAbilitySelected);
     playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
@@ -63,7 +63,7 @@ private void OnEnable()
 private void OnDisable()
 {
     combat.NarrationRequest.RemoveListener(DisplayNarration);
-    combat.AbilityButtonRequest.RemoveListener(SpawnAbilityButtons);
+    combat.OptionButtonRequest.RemoveListener(SpawnOptionButtons);
     combat.ContinueButtonRequest.RemoveListener(SpawnContinueButton);
     playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
     playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
@@ -77,10 +77,12 @@ private void DisplayNarration(string message)
     narrator.DisplayNarrationText(message);
 }
 
-private void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
+private void SpawnOptionButtons(List<AbilityScrollStorage.Abilities> abilities)
 {
     Debug.Log("Spawn ability request recieved?");
     playerOptions.SpawnAbilityButtons(abilities);
+    List<GameObject> combatants = combat.combatants;
+    playerOptions.SpawnTargetButtons(combatants);
 }
 
 private void SpawnContinueButton()
