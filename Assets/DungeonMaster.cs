@@ -32,9 +32,11 @@ private void Awake()
 {
     Player = MakePlayer();
     StatsHandler stats = Player.GetComponent<StatsHandler>();
+    AbilityScrollStorage abilities = Player.GetComponent<AbilityScrollStorage>();
     List<AbilityScrollStorage.Abilities> knownAbilities = stats.knownAbilities;
     // Initialize component references
     playerOptions = GetComponent<PlayerOptions>();
+    playerOptions.SetAbilitiesScript(abilities);
     map = GetComponent<Map>();
     narrator = GetComponent<NarrationScript>();
     travel = GetComponent<TravelScript>();

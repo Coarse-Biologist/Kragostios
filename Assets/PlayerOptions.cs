@@ -13,7 +13,8 @@ public class PlayerOptions : MonoBehaviour
     [SerializeField] UIDocument uiDocument;
     private VisualElement root;
     public VisualTreeAsset templateButton;
-    private VisualElement buttonContainer;
+    private VisualElement buttonContainer_CO;
+    private VisualElement buttonContainer_PO;
     private VisualElement charInfoPanel;
     private VisualElement abilityInfoPanel;
     private Label abilityInfoText;
@@ -24,16 +25,25 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent ContinueSelected;
     public bool awaitingAbilitySelection {private set; get;}
 
-    [SerializeField] public AbilityScrollStorage.Abilities abilities;
+    [SerializeField] public AbilityScrollStorage abilityScript;
 
-
+    private void Awake()
+    {
+        root = uiDocument.rootVisualElement;
+        buttonContainer_CO = root.Q<VisualElement>("CombatantButtons");
+        charInfoPanel = root.Q<VisualElement>("CharInfoPanel");
+        charInfoText = charInfoPanel.Q<Label>("CharInfo");
+        root = uiDocument.rootVisualElement;
+        buttonContainer_PO = root.Q<VisualElement>("PlayerOptions");
+        abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
+        abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
+    }
     
     public void SpawnDirectionOptions(List<Directions> directions)
     {
         ClearAbilityContainer();
         ClearTargetContainer();
-        root = uiDocument.rootVisualElement;
-        buttonContainer = root.Q<VisualElement>("PlayerOptions");
+        
         foreach (Directions direction in directions)
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
@@ -41,7 +51,7 @@ public class PlayerOptions : MonoBehaviour
             //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
 
             newButton.text = direction.ToString();
-            buttonContainer.Add(newButtonContainer);
+            buttonContainer_PO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnJourneyDirectionSelected(direction));
         }
@@ -50,10 +60,7 @@ public class PlayerOptions : MonoBehaviour
     {
         ClearAbilityContainer();
         ClearTargetContainer();
-        root = uiDocument.rootVisualElement;
-        buttonContainer = root.Q<VisualElement>("CombatantButtons");
-        charInfoPanel = root.Q<VisualElement>("CharInfoPanel");
-        charInfoText = charInfoPanel.Q<Label>("CharInfo");
+        
         foreach (GameObject combatant in combatants)
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
@@ -61,17 +68,11 @@ public class PlayerOptions : MonoBehaviour
             //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
             newButton.text = stats.characterName + stats.charType;
-            buttonContainer.Add(newButtonContainer);
+            buttonContainer_CO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnTargetSelected(combatant));
             newButton.RegisterCallback<PointerEnterEvent>(evt =>ShowCharInfo(combatant));
-        newButton.RegisterCallback<PointerLeaveEvent>(evt =>
-        {
-            charInfoPanel.style.display = DisplayStyle.None;
-            charInfoText.text = " ";
-            Debug.Log("Not hovering over button!");
-            newButton.style.backgroundColor = new StyleColor(Color.white);
-        });
+            newButton.RegisterCallback<PointerLeaveEvent>(evt => HideCharInfo());
         }
     }
     public void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
@@ -79,10 +80,7 @@ public class PlayerOptions : MonoBehaviour
         ClearAbilityContainer();
         ClearTargetContainer();
         awaitingAbilitySelection = true;
-        root = uiDocument.rootVisualElement;
-        buttonContainer = root.Q<VisualElement>("PlayerOptions");
-        abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
-        abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
+        
         foreach (AbilityScrollStorage.Abilities ability in abilities)
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
@@ -90,17 +88,11 @@ public class PlayerOptions : MonoBehaviour
             //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
 
             newButton.text = ability.AbilityName;
-            buttonContainer.Add(newButtonContainer);
+            buttonContainer_PO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnAbilitySelected(ability));
             newButton.RegisterCallback<PointerEnterEvent>(evt => ShowAbilityInfo(ability));
-            newButton.RegisterCallback<PointerLeaveEvent>(evt =>
-        {
-            abilityInfoText.text = " ";
-            abilityInfoPanel.style.display = DisplayStyle.None;
-            Debug.Log("Not hovering over button!");
-            newButton.style.backgroundColor = new StyleColor(Color.white);
-        });
+            newButton.RegisterCallback<PointerLeaveEvent>(evt => HideAbilityInfo());
         }
     }
     public void SpawnContinueButton()
@@ -108,13 +100,10 @@ public class PlayerOptions : MonoBehaviour
         ClearAbilityContainer();
         ClearTargetContainer();
         awaitingAbilitySelection = true;
-        root = uiDocument.rootVisualElement;
-        buttonContainer = root.Q<VisualElement>("PlayerOptions");
-        
         TemplateContainer newButtonContainer = templateButton.Instantiate();
         Button newButton = newButtonContainer.Q<Button>();
         newButton.text = "Continue";
-        buttonContainer.Add(newButtonContainer);
+        buttonContainer_PO.Add(newButtonContainer);
         newButtonContainer.Add(newButton);
         newButton.RegisterCallback<ClickEvent>(e => OnContinueSelected());
         
@@ -127,7 +116,10 @@ public class PlayerOptions : MonoBehaviour
     }
 
     public void OnAbilitySelected(AbilityScrollStorage.Abilities ability)
-    {   if (awaitingAbilitySelection)
+    {   
+        HideAbilityInfo();
+        HideCharInfo();
+        if (awaitingAbilitySelection)
         {
             awaitingAbilitySelection = false;
             AbilitySelected?.Invoke(ability);
@@ -146,13 +138,24 @@ public class PlayerOptions : MonoBehaviour
 
     private void ShowAbilityInfo(AbilityScrollStorage.Abilities ability)
     {
-        string abilityInfo = abilities.GetAbilityInfo(ability);
+        string abilityInfo = ability.GetAbilityInfo(ability);
         abilityInfoPanel.style.display = DisplayStyle.Flex;
         Debug.Log("Hovering over button!");
         abilityInfoText.style.color = Color.white;
         abilityInfoText.text = abilityInfo;
-        //newButton.style.backgroundColor = new StyleColor(Color.red);
-        
+        //newButton.style.backgroundColor = new StyleColor(Color.red); 
+    }
+    private void HideAbilityInfo()
+    {
+        abilityInfoText.text = " ";
+        abilityInfoPanel.style.display = DisplayStyle.None;
+        Debug.Log("Not hovering over button!");
+    }
+    private void HideCharInfo()
+    {
+        charInfoPanel.style.display = DisplayStyle.None;
+        charInfoText.text = " ";
+        Debug.Log("Not hovering over button!");    
     }
     private void OnContinueSelected()
     {
@@ -162,30 +165,30 @@ public class PlayerOptions : MonoBehaviour
     }
     public void OnTargetSelected(GameObject target)
     {
+        HideAbilityInfo();
+        HideCharInfo();
         TargetSelected?.Invoke(target);
     }
 
     public void ClearAbilityContainer()
     {
-        root = uiDocument.rootVisualElement;
-        buttonContainer = root.Q<VisualElement>("PlayerOptions");
-        buttonContainer.Clear();
+
+        buttonContainer_PO.Clear();
     }
     
     public void ClearTargetContainer()
     {
-        root = uiDocument.rootVisualElement;
-        buttonContainer = root.Q<VisualElement>("CombatantButtons");
-        buttonContainer.Clear();
+  
+        buttonContainer_CO.Clear();
     }
     public void SetAwaitingAbilitySelection(bool awaiting)
     {
         awaitingAbilitySelection = awaiting;
     }
 
-    public void SetAbilitiesScript(AbilityScrollStorage.Abilities script)
+    public void SetAbilitiesScript(AbilityScrollStorage script)
     {
-        abilities = script;
+        abilityScript = script;
     }
     
 }
