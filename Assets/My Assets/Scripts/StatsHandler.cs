@@ -116,9 +116,9 @@ public class StatsHandler : MonoBehaviour
         private int nightmareScaleFactor = 6;
 
 
-    public GameObject MakeCreature(Difficulty difficulty, Combatants combatantType)
+    public GameObject MakeCreature(Difficulty difficultyLevel, Combatants combatantType)
     {
-        
+        Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel}");
         //StatsHandler stats = GetComponent<StatsHandler>();
         //Abilities abilities = GetComponent<Abilities>();
         //Abilities.AbilityScrollStorage scrolls = GetComponent<Abilities.AbilityScrollStorage>(); 
@@ -130,8 +130,8 @@ public class StatsHandler : MonoBehaviour
             charType = Combatants.Player;
             creatureAbilities = scrollStorage.GetWeakAbilities();
             knownAbilities = creatureAbilities;
-            return gameObject;
-
+            //return gameObject;
+            break;
             case(Combatants.Enemy):
             charType = Combatants.Enemy;
             break;
@@ -144,10 +144,13 @@ public class StatsHandler : MonoBehaviour
         }
         
 
-        switch(difficulty)
+        switch(difficultyLevel)
         {
             case Difficulty.Easy:
+
             difficulty = Difficulty.Easy;
+            Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficult {difficulty}");
+
             maxHealth = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
             maxMana = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
             maxStamina = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
@@ -184,6 +187,7 @@ public class StatsHandler : MonoBehaviour
             characterLevel = hardScaleFactor;
             knownAbilities = creatureAbilities;
             break;
+
             case Difficulty.Brutal:
             difficulty = Difficulty.Brutal;
             maxHealth = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
@@ -197,8 +201,11 @@ public class StatsHandler : MonoBehaviour
             //creatureAbilities = abilities.GetWeakAbilities();
             knownAbilities = creatureAbilities;
             break;
+
             case Difficulty.Nightmare:
             difficulty = Difficulty.Nightmare;
+            Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficulty {difficulty}");
+
             maxHealth = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
             maxMana = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
             maxStamina = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
