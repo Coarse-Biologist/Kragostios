@@ -63,7 +63,7 @@ public class StatsHandler : MonoBehaviour
     }
     public void Heal(int healAmount)
     {
-        currentHealth = currentHealth - healAmount;
+        currentHealth = currentHealth + healAmount;
         if (currentHealth > maxHealth) currentHealth = maxHealth;
     }
     public void UpdateMana(int manaChange)
@@ -128,18 +128,22 @@ public class StatsHandler : MonoBehaviour
         {
             case (Combatants.Player):
             charType = Combatants.Player;
+            characterName = "Player";
             creatureAbilities = scrollStorage.GetWeakAbilities();
             knownAbilities = creatureAbilities;
             //return gameObject;
             break;
             case(Combatants.Enemy):
             charType = Combatants.Enemy;
+            characterName = "Enemy";
             break;
             case(Combatants.Companion):
             charType = Combatants.Companion;
+            characterName = "Companion";
             break;
             case(Combatants.Summon):
             charType = Combatants.Summon;
+            characterName = "Summon";
             break;
         }
         
@@ -160,6 +164,7 @@ public class StatsHandler : MonoBehaviour
             staminaRegen = easyScaleFactor;
             characterLevel = easyScaleFactor;
             knownAbilities = creatureAbilities;
+            
             break;
 
             case Difficulty.Medium:
@@ -219,6 +224,10 @@ public class StatsHandler : MonoBehaviour
             break;
             
         }
+            currentHealth = maxHealth;
+            currentStamina = maxStamina;
+            currentMana = maxMana;
+        Debug.Log($"Current health at time of creation = {currentHealth}");
         return gameObject;
         }
 
@@ -227,17 +236,33 @@ public class StatsHandler : MonoBehaviour
             knownAbilities.Add(newAbility);
         }
 
-
+        private string GetKnownAbilitiesString()
+        {
+            string knownAbilitiesString = "";
+            foreach( AbilityScrollStorage.Abilities ability in knownAbilities)
+            {
+                knownAbilitiesString += ability.AbilityName + ", ";
+            }
+            return knownAbilitiesString;
+        }
     public string GetCharInfo()
     {
+        string knownAbilitiesString = GetKnownAbilitiesString();
         string charInfo = $"Character Name: {characterName}, Description: {description}, Char Type: {charType}, Difficulty: {difficulty}, " +
         $"Max Health: {maxHealth}, Max Mana: {maxMana}, Max Stamina: {maxStamina}, Initiative: {initiative}, " +
         $"Current Health: {currentHealth}, Current Mana: {currentMana}, Current Stamina: {currentStamina}, " +
         $"Health Regen: {healthRegen}, Mana Regen: {manaRegen}, Stamina Regen: {staminaRegen}, " +
         $"Character Level: {characterLevel}, Available Stat Points: {availableStatPoints}, Current XP: {currentXp}, Max XP: {maxXp}, " +
-        $"Known Abilities: {string.Join(", ", knownAbilities)}";
+        $"Known Abilities: {string.Join(", ", knownAbilitiesString)}";
         return charInfo;
 
+    }
+
+    // Setters
+
+    public void SetName(string name)
+    {
+        characterName = name;
     }
     }
 

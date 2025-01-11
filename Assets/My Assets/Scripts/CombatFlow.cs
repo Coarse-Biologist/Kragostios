@@ -42,7 +42,7 @@ public class CombatFlow : MonoBehaviour
 
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
 
-            if (stats.currentHealth > 0)
+            if (stats.currentHealth > 0) // hydn did this
             {
                 Debug.Log($"{stats.characterName}, {stats.charType} started his turn");
                 switch (stats.charType)
@@ -72,8 +72,10 @@ public class CombatFlow : MonoBehaviour
                     
                 }
             }
-            else 
+            else{
             Debug.Log($"{combatant} has less than or 0 health");
+            HandleDeath(combatant);
+            }
            
     }
 
@@ -91,7 +93,7 @@ public class CombatFlow : MonoBehaviour
         int numberKnownAbilities = stats.knownAbilities.Count();
         Debug.Log($"{numberKnownAbilities} = number of known abilities");
         int randomSkillIndex = Random.Range(0, numberKnownAbilities - 1);
-        Debug.Log($"{randomSkillIndex} = number of known abilities");
+        Debug.Log($"{randomSkillIndex} = ability selected");
 
         AbilityScrollStorage.Abilities selectedAbility = stats.knownAbilities[randomSkillIndex];
         
@@ -164,6 +166,8 @@ public class CombatFlow : MonoBehaviour
         }
     }
         List<GameObject> selectedTargets = new List<GameObject>();
+
+        Debug.Log($"targets = {selectedAbility.Targets}");
         int targets = selectedAbility.Targets;
         int numberOfEnemies = possibleTargets.Count();
         int targetsSelected = 0;
@@ -191,7 +195,7 @@ public class CombatFlow : MonoBehaviour
 
             string narrationText = $"{stats.characterName} recieved {selectedAbility.DamageValue} damage from {selectedAbility.AbilityName}"; 
             RequestNarration(narrationText);
-            if (stats.currentHealth <= 0)
+            if (stats.currentHealth <= 0) // From Hydn!!!
             {
                 Debug.Log($"{target} died");
                 HandleDeath(target);

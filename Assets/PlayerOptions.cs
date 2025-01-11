@@ -19,11 +19,16 @@ public class PlayerOptions : MonoBehaviour
     private VisualElement abilityInfoPanel;
     private Label abilityInfoText;
     private Label charInfoText;
+    private TextField myTextField;
     public UnityEvent<AbilityScrollStorage.Abilities> AbilitySelected;
     public UnityEvent<GameObject> TargetSelected;
     public UnityEvent<Directions> JourneyDirectionSelected;
     public UnityEvent ContinueSelected;
+    public UnityEvent<string> IntroOptionSelected;
+    public UnityEvent<string> PlayertextInput;
     public bool awaitingAbilitySelection {private set; get;}
+
+    public Dictionary<string, List<string>> IntroOptionDict {private set; get;}
     
 
     [SerializeField] public AbilityScrollStorage abilityScript;
@@ -34,13 +39,14 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_CO = root.Q<VisualElement>("CombatantButtons");
         charInfoPanel = root.Q<VisualElement>("CharInfoPanel");
         charInfoText = charInfoPanel.Q<Label>("CharInfo");
-        root = uiDocument.rootVisualElement;
         buttonContainer_PO = root.Q<VisualElement>("PlayerOptions");
         abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
         abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
+        myTextField = root.Q<TextField>("TextField");
+        myTextField.style.display = DisplayStyle.None;
         
     }
-    
+    // Combat functions
     public void SpawnDirectionOptions(List<Directions> directions)
     {
         ClearAbilityContainer();
@@ -74,6 +80,7 @@ public class PlayerOptions : MonoBehaviour
             newButton.RegisterCallback<PointerEnterEvent>(evt =>ShowCharInfo(combatant));
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideCharInfo());
         }
+        
     }
     public void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
     {   
@@ -93,6 +100,7 @@ public class PlayerOptions : MonoBehaviour
             newButton.RegisterCallback<PointerEnterEvent>(evt => ShowAbilityInfo(ability));
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideAbilityInfo());
         }
+        
     }
 
     public void SpawnPlayerInfoButton(GameObject player)
@@ -127,7 +135,6 @@ public class PlayerOptions : MonoBehaviour
         JourneyDirectionSelected?.Invoke(direction);
         ClearAbilityContainer();
     }
-
     public void OnAbilitySelected(AbilityScrollStorage.Abilities ability)
     {   
         HideAbilityInfo();
@@ -218,6 +225,47 @@ public class PlayerOptions : MonoBehaviour
     public void SetAbilitiesScript(AbilityScrollStorage script)
     {
         abilityScript = script;
+    }
+
+    // Intro functions
+    public void SetIntroDict(Dictionary<string, List<string>> introDict)
+    {
+        IntroOptionDict = introDict;
+    }  
+
+    public void DisplayTextField(string message)
+    {
+        myTextField.style.display = DisplayStyle.Flex;
+        myTextField.value = "Ecri ta appellation";
+        myTextField.RegisterCallback<KeyDownEvent>(evt =>
+        {
+        if (evt.keyCode == KeyCode.Return) // Check for Enter key
+        {
+            Debug.Log("Sqreeeeeech");
+            string playerMessage = myTextField.value;
+            PlayertextInput?.Invoke(playerMessage);
+            myTextField.style.display = DisplayStyle.None;
+        }
+        });
+    }
+    public void SpawnOptionButtons(List<string> playerOptions)
+    {
+        TemplateContainer newButtonContainer = templateButton.Instantiate();
+        foreach (string option in playerOptions)
+        {        
+            Button newButton = newButtonContainer.Q<Button>();
+            newButton.text = option;
+            buttonContainer_PO.Add(newButtonContainer);
+            newButtonContainer.Add(newButton);
+            newButton.RegisterCallback<ClickEvent>(e => OptionSelected(option));
+            //newButton.RegisterCallback<PointerEnterEvent>(evt => ());
+            
+        }
+    }
+
+    private void OptionSelected(string playerChoice)
+    {
+        IntroOptionSelected?.Invoke(playerChoice);
     }
     
 }

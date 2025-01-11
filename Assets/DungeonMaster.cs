@@ -3,6 +3,7 @@ using UnityEngine.UIElements;
 using KragostiosAllEnums;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.VersionControl;
 
 
 public class DungeonMaster : MonoBehaviour
@@ -26,14 +27,22 @@ private CombatFlow combat;
 
 [SerializeField] GameObject creaturePrefab;
 private GameObject Player;
+private StatsHandler playerStats;
+
+[Header("Player Intro")]
+
+Dictionary<string, List<string>> narratorToPlayerDict;
+Dictionary<string, string> playerToNarratorDict;
+
+private bool awaitingPlayerName;
 
 // SetUp
 private void Awake()
 {
     Player = MakePlayer();
-    StatsHandler stats = Player.GetComponent<StatsHandler>();
+    playerStats = Player.GetComponent<StatsHandler>();
     AbilityScrollStorage abilities = Player.GetComponent<AbilityScrollStorage>();
-    List<AbilityScrollStorage.Abilities> knownAbilities = stats.knownAbilities;
+    List<AbilityScrollStorage.Abilities> knownAbilities = playerStats.knownAbilities;
     // Initialize component references
     playerOptions = GetComponent<PlayerOptions>();
     playerOptions.SetAbilitiesScript(abilities);
@@ -45,6 +54,7 @@ private void Awake()
 private void Start()
 {
     List<Directions> directions = map.directions;
+    //RequestPlayerName();
     InitiateCombat();
 }
 
@@ -53,10 +63,14 @@ private void OnEnable()
     combat.NarrationRequest.AddListener(DisplayNarration);
     combat.OptionButtonRequest.AddListener(SpawnOptionButtons);
     combat.ContinueButtonRequest.AddListener(SpawnContinueButton);
+
     playerOptions.AbilitySelected.AddListener(HandleAbilitySelected);
     playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
     playerOptions.TargetSelected.AddListener(HandleTargetSelected);
-    playerOptions.ContinueSelected.AddListener(HandleContinuePressed);
+    playerOptions.ContinueSelected.AddListener(HandleCombatContinuePressed);
+    playerOptions.IntroOptionSelected.AddListener(NarratorResponseToPlayer);
+    playerOptions.PlayertextInput.AddListener(HandlePlayerTextInput);
+
     
 }
 
@@ -65,9 +79,15 @@ private void OnDisable()
     combat.NarrationRequest.RemoveListener(DisplayNarration);
     combat.OptionButtonRequest.RemoveListener(SpawnOptionButtons);
     combat.ContinueButtonRequest.RemoveListener(SpawnContinueButton);
+
     playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
     playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
     playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
+    playerOptions.ContinueSelected.RemoveListener(HandleCombatContinuePressed);
+    playerOptions.PlayertextInput.RemoveListener(HandlePlayerTextInput);
+    playerOptions.IntroOptionSelected.RemoveListener(NarratorResponseToPlayer);
+
+
 }
 
 // Comand UI
@@ -91,23 +111,6 @@ private void SpawnContinueButton()
 }
 
 /// Handle Player input
-public void HandlePlayerTraveled(Directions direction)
-{
-    travel.TravelInDirection(direction);
-    Vector2 playerLocation = travel.playerLocation;
-    LocationType locationType = map.GetLocationType(playerLocation);
-    narrator.PlayerTraveled(direction, playerLocation, locationType);
-    //locationType = LocationType.Hostile;
-    switch(locationType)
-    {
-        case LocationType.Hostile:
-        InitiateCombat();
-        break;
-
-        default:
-        break;
-    }
-}
         
 public void HandleTargetSelected(GameObject target) // needs a lot of work
 {
@@ -141,7 +144,7 @@ public void HandleAbilitySelected(AbilityScrollStorage.Abilities ability) // nee
     
 }
 
-private void HandleContinuePressed()
+private void HandleCombatContinuePressed()
 {
     bool enemiesRemaining = combat.CheckEnemiesRemaining();
     if (enemiesRemaining) combat.NextTurn();
@@ -198,6 +201,69 @@ private void InitiateCombat()
     combat.DecideTurnOrder();
     combat.CombatCycle();//combatants);
     playerOptions.SpawnPlayerInfoButton(Player);
+}
+
+// Map and main menu
+public void HandlePlayerTraveled(Directions direction)
+{
+    travel.TravelInDirection(direction);
+    Vector2 playerLocation = travel.playerLocation;
+    LocationType locationType = map.GetLocationType(playerLocation);
+    narrator.PlayerTraveled(direction, playerLocation, locationType);
+    //locationType = LocationType.Hostile;
+    switch(locationType)
+    {
+        case LocationType.Hostile:
+        InitiateCombat();
+        break;
+
+        default:
+        break;
+    }
+}
+
+private void NarratorResponseToPlayer(string playerChoice)
+{
+    string narratorResponse = playerToNarratorDict[playerChoice];
+    narrator.DisplayNarrationText(narratorResponse); 
+}
+
+private void PresentPlayerOptions (string narratorPromt)
+{
+    List<string> playerAnswerOptions = narratorToPlayerDict[narratorPromt];
+    playerOptions.SpawnOptionButtons(playerAnswerOptions);
+}
+
+private void RequestPlayerName()
+{
+    string message = "What are you called?";
+    string message1 = "what does this even do???"; // from hydn
+    narrator.DisplayNarrationText(message1 + message );
+    playerOptions.DisplayTextField(message);
+    awaitingPlayerName = true;
+}
+
+private void SetnarratorToPlayerDict()
+{
+    narratorToPlayerDict = new Dictionary<string, List<string>>
+{
+    { "Are you mighty?", new List<string> { "no", "no" } } // from Hydn
+};
+    
+}
+
+private Dictionary<string, List<string>> GetnarratorToPlayerDict()
+{
+    return narratorToPlayerDict;
+}
+private void HandlePlayerTextInput(string playerInput)
+{
+    if (awaitingPlayerName)
+    {
+        playerStats.SetName(playerInput);
+        narrator.DisplayNarrationText($"Greetings, most exaulted {playerStats.characterName}!");
+        awaitingPlayerName = false;
+    }
 }
 
 
