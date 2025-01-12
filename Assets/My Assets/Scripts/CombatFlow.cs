@@ -17,6 +17,7 @@ public class CombatFlow : MonoBehaviour
     public UnityEvent<List<AbilityScrollStorage.Abilities>> OptionButtonRequest;
     public UnityEvent<List<GameObject>> TargetButtonRequest;
     public UnityEvent ContinueButtonRequest; 
+    public UnityEvent<List<GameObject>> CombatEnded;
 
     private bool awaitingTargetSelection;
     private bool awaitingAbilitySelection;
@@ -103,36 +104,45 @@ public class CombatFlow : MonoBehaviour
         {
             
             case AbilityCategories.Heal:
-            targets = SelectRandomCharofType(Combatants.Enemy);
+            targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
             break;
 
             case AbilityCategories.Buff:
-            targets = SelectRandomCharofType(Combatants.Enemy);
+            targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
             break;
 
             case AbilityCategories.BuffHeal:
-            targets = SelectRandomCharofType(Combatants.Enemy);
+            targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
             break;
 
             case AbilityCategories.Debuff:
-            targets = SelectRandomCharofType(Combatants.Enemy);
+            targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
             break;
 
             case AbilityCategories.Attack:
-            targets = SelectRandomCharofType(Combatants.Enemy, true);
+            targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets, true);
             break;
 
             case AbilityCategories.DebuffAttack:
-            targets = SelectRandomCharofType(Combatants.Enemy, true);
+            targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets, true);
             break;
 
             default:
             break;
         }
-            
-        HandleAbilityEffect(targets, selectedAbility);
-        string EnemyTurnNarration = $"{combatant.name} used {selectedAbility.AbilityName} on {targets}for their turn.";
-        RequestNarration(EnemyTurnNarration);
+        if (targets.Count == 0)
+        {
+            Debug.Log($"No targets possible fopr {combatant} turn");
+            RequestNarration($"No targets possible for {combatant} turn");
+            CombatEnded?.Invoke(combatants);
+        }
+        else 
+        {
+            HandleAbilityEffect(targets, selectedAbility);
+            string EnemyTurnNarration = $"{combatant.name} used {selectedAbility.AbilityName} on {targets}for their turn.";
+            RequestNarration(EnemyTurnNarration);
+        }
+        
         RequestContinueButton();
     }
     private void ExecuteSummonTurn (GameObject combatant)
@@ -145,7 +155,7 @@ public class CombatFlow : MonoBehaviour
 
     }
 
-    private List<GameObject> SelectRandomCharofType(Combatants charType, bool allAllies = false) //if true, will make a list of all combatants that are not of type chartype
+    private List<GameObject> SelectRandomCharofType(Combatants charType, int targetNum, bool allAllies = false) //if true, will make a list of all combatants that are not of type chartype
     {
     List<GameObject> possibleTargets = new List<GameObject>();
     foreach (GameObject combatant in combatants) 
@@ -168,19 +178,27 @@ public class CombatFlow : MonoBehaviour
         List<GameObject> selectedTargets = new List<GameObject>();
 
         Debug.Log($"targets = {selectedAbility.Targets}");
-        int targets = selectedAbility.Targets;
+        int targets = targetNum;
         int numberOfEnemies = possibleTargets.Count();
         int targetsSelected = 0;
-
-        while (targetsSelected < targets)
+        if (possibleTargets.Count == 0)
+        {
+            return possibleTargets;
+        }
+        else 
+        {
+            while (targetsSelected < targets)
         {
             int randomTargetIndex = Random.Range(0, numberOfEnemies - 1);
             GameObject randomTarget = possibleTargets[randomTargetIndex];
             selectedTargets.Add(randomTarget);
             targetsSelected ++;
         }
+
        
-        return selectedTargets;
+            return selectedTargets;
+        }
+        
 
     }
     private void HandleAbilityEffect(List<GameObject> targets, AbilityScrollStorage.Abilities selectedAbility)
@@ -210,7 +228,7 @@ public class CombatFlow : MonoBehaviour
     {
         selectedTargets = new List<GameObject>();
         currentTurnIndex ++;
-        Invoke("CombatCycle", 5f);
+        Invoke("CombatCycle", 1f);
     }
 
 // Event functions
@@ -354,6 +372,36 @@ public class CombatFlow : MonoBehaviour
 
         }
         return enemiesRemaining;
+    }
+    public bool CheckAlliesRemaining() // true if any enemy remains 
+    {
+        bool alliesRemaining = false;
+        foreach(GameObject combatant in combatants)
+        {
+            StatsHandler stats = combatant.GetComponent<StatsHandler>();
+            switch (stats.charType)
+            {
+
+                case Combatants.Player:
+                alliesRemaining = true;
+                return alliesRemaining;
+
+                case Combatants.Summon:
+                alliesRemaining = true;
+                return alliesRemaining;
+
+                case Combatants.Companion:
+                alliesRemaining = true;
+                return alliesRemaining;
+
+                default:
+                break;
+                
+            }
+
+
+        }
+        return alliesRemaining;
     }
 
 

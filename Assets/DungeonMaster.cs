@@ -63,6 +63,7 @@ private void OnEnable()
     combat.NarrationRequest.AddListener(DisplayNarration);
     combat.OptionButtonRequest.AddListener(SpawnOptionButtons);
     combat.ContinueButtonRequest.AddListener(SpawnContinueButton);
+    combat.CombatEnded.AddListener(HandleCombatEnd);
 
     playerOptions.AbilitySelected.AddListener(HandleAbilitySelected);
     playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
@@ -79,6 +80,8 @@ private void OnDisable()
     combat.NarrationRequest.RemoveListener(DisplayNarration);
     combat.OptionButtonRequest.RemoveListener(SpawnOptionButtons);
     combat.ContinueButtonRequest.RemoveListener(SpawnContinueButton);
+    combat.CombatEnded.RemoveListener(HandleCombatEnd);
+
 
     playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
     playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
@@ -147,8 +150,26 @@ public void HandleAbilitySelected(AbilityScrollStorage.Abilities ability) // nee
 private void HandleCombatContinuePressed()
 {
     bool enemiesRemaining = combat.CheckEnemiesRemaining();
-    if (enemiesRemaining) combat.NextTurn();
-    else narrator.DisplayNarrationText("YOU WON");
+    bool alliesRemaining = combat.CheckAlliesRemaining();
+    if (enemiesRemaining && alliesRemaining)
+    {
+        Debug.Log("Show goes on");
+    //combat.NextTurn();
+    playerOptions.SpawnPlayerInfoButton(Player);
+    } 
+    else if (enemiesRemaining && !alliesRemaining) 
+    {
+        narrator.DisplayNarrationText("YOur party has been defeated");
+        HandleCombatEnd(combat.combatants);   
+    }
+    else if (!enemiesRemaining && alliesRemaining)
+    {
+        narrator.DisplayNarrationText("YOU WON");
+        HandleCombatEnd(combat.combatants);
+    }
+
+    
+
 }
 
 /// Combat Setup
@@ -185,7 +206,10 @@ private GameObject MakeCompanion(Difficulty difficulty)
     GameObject companion = stats.MakeCreature(difficulty, Combatants.Companion);  
     return companion;  
 }
-
+private void HandleCombatEnd(List<GameObject> survivingCombatants)
+{
+    // do stuff
+}
 private void InitiateCombat()
 {
     List<GameObject> combatants = new List<GameObject>();

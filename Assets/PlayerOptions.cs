@@ -98,6 +98,7 @@ public class PlayerOptions : MonoBehaviour
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnAbilitySelected(ability));
             newButton.RegisterCallback<PointerEnterEvent>(evt => ShowAbilityInfo(ability));
+            newButton.RegisterCallback<PointerEnterEvent>(evt => HideCharInfo());
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideAbilityInfo());
         }
         
