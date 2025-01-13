@@ -51,10 +51,18 @@ public enum Elements
     Poison,
     Acid,
     Bacteria,
+    Fungi,
     Virus,
     Radiation,
     Light,
     Psychic
+}
+
+public enum PhysicalDamage
+{
+    Bludgeoning,
+    Slashing,
+    Piercing
 }
 
 public enum Combatants 

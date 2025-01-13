@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 using KragostiosAllEnums;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine.Rendering;
+using NUnit.Framework.Constraints;
 
 public class PlayerOptions : MonoBehaviour
 {
@@ -315,7 +316,8 @@ public class PlayerOptions : MonoBehaviour
             Button actionRegenButton = LeftPanelButtonContainer.Q<Button>();
             #endregion
 
-            #region // resistence buttons
+            #region // elemental resistence buttons
+            Button iceResistenceButton = LeftPanelButtonContainer.Q<Button>();
             Button coldResistenceButton = LeftPanelButtonContainer.Q<Button>();
             Button waterResistenceButton = LeftPanelButtonContainer.Q<Button>();
             Button earthResistenceButton = LeftPanelButtonContainer.Q<Button>();
@@ -331,7 +333,16 @@ public class PlayerOptions : MonoBehaviour
             Button acidResistenceButton = LeftPanelButtonContainer.Q<Button>();
             Button bacteriaResistenceButton = LeftPanelButtonContainer.Q<Button>();
             Button virusResistenceButton = LeftPanelButtonContainer.Q<Button>();
+            Button fungiResistenceButton = LeftPanelButtonContainer.Q<Button>();
+
+
             Button radiationResistenceButton = LeftPanelButtonContainer.Q<Button>();
+            #endregion
+
+            #region //physical resistence buttons
+            Button bludgeoningResistenceButton = LeftPanelButtonContainer.Q<Button>();
+            Button slashingResistenceButton = LeftPanelButtonContainer.Q<Button>();
+            Button piercingResistenceButton = LeftPanelButtonContainer.Q<Button>();
             #endregion
 
             #region // add buttons to left panel 
@@ -360,14 +371,18 @@ public class PlayerOptions : MonoBehaviour
             LeftPanelButtonContainer.Add(radiationResistenceButton);
             #endregion
             
+            #region // name all buttons
             manaButton.text = "Max Mana";
             healthButton.text = "Max Health";
             staminaButton.text = "Max Stamina";
             healthRegenButton.text = "Health Regeneration";
             manaRegenButton.text = "Mana Regeneration";
             staminaRegenButton.text = "Stamina Regeneration";
-            actionButton.text = "Max Action";
-            actionRegenButton.text = "Action Regeneration";
+
+            actionButton.text = "Max Action Points";
+            actionRegenButton.text = "Action Point Regeneration";
+
+            iceResistenceButton.text = "Ice Resistance";
             coldResistenceButton.text = "Cold Resistance";
             waterResistenceButton.text = "Water Resistance";
             earthResistenceButton.text = "Earth Resistance";
@@ -381,10 +396,21 @@ public class PlayerOptions : MonoBehaviour
             acidResistenceButton.text = "Acid Resistance";
             bacteriaResistenceButton.text = "Bacteria Resistance";
             virusResistenceButton.text = "Virus Resistance";
+            fungiResistenceButton.text = "Fungi Resistance";
             radiationResistenceButton.text = "Radiation Resistance";
 
+            bludgeoningResistenceButton.text = "Bludgeoning Resistence";
+            slashingResistenceButton.text = "Slashing Resistence";
+            piercingResistenceButton.text = "Piercing Resistence";
+            #endregion
+
+            List<Button> buttons = new List<Button>{ healthButton, staminaButton, manaButton, healthRegenButton, staminaRegenButton, manaRegenButton, actionButton, actionRegenButton, iceResistenceButton, waterResistenceButton, earthResistenceButton, fireResistenceButton, lavaResistenceButton, airResistenceButton, electrictyResistenceButton, lightResistenceButton, poisonResistenceButton, acidResistenceButton, bacteriaResistenceButton, virusResistenceButton, radiationResistenceButton};
+
         // add functionality to left panel buttons
-            healthButton.RegisterCallback<ClickEvent>(e => StatIncrement("Health"));
+        foreach (Button button in buttons)
+            {
+                button.RegisterCallback<ClickEvent>(e => StatIncrement(button.text));
+            }
             //newButton.RegisterCallback<PointerEnterEvent>(evt =>ShowCharInfo(combatant));
             //newButton.RegisterCallback<PointerLeaveEvent>(evt => HideCharInfo());
     }

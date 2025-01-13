@@ -4,6 +4,7 @@ using KragostiosAllEnums;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.VersionControl;
+using UnityEngine.UI;
 
 
 public class DungeonMaster : MonoBehaviour
@@ -317,8 +318,68 @@ private void HandlePlayerTextInput(string playerInput)
 private void HandleStatIncremented(string stat)
 {
     
+    switch(stat)
+    {
+        
+    case "Max Mana":
+        playerStats.SetMaxMana(5);
+        break;
+    case "max Health":
+        break;
+    case "Max Stamina":
+        break;
+    case "Health Regeneration":
+        break;
+    case "Mana Regeneration":
+        break;
+    case "Stamina Regeneration":
+        break;
+    case "Max Action Points":
+        break;
+    case "Action Point Regeneration":
+        break;
+    case "Ice Resistence":
+        break;
+    case "Cold Resistence":
+        break;
+    case "Water Resistence":
+        break;
+    case "Earth Resistence":
+        break;
+    case "Fire Resistence":
+        break;
+    case "Lava Resistence":
+        break;
+    case "Heat Resistence":
+        break;
+    case "Air Resistence":
+        break;
+    case "Electricty Resistence":
+        break;
+    case "Light Resistence":
+        break;
+    case "Poison Resistence":
+        break;
+    case "Acid Resistence":
+        break;
+    case "Bacteria Resistence":
+        break;
+    case "Virus Resistence":
+        break;
+    case "Fungi Resistence":
+        break;
+    case "Radiation Resistence":
+        break;
+    case "Bludgeoning Resistence":
+        break;
+    case "SlashingResistence":
+        break;
+    case "Piercing Resistence":
+        break;
+    default:
+        break;
+    }
+}
 }
 
-
-}
 
