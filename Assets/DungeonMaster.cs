@@ -74,6 +74,9 @@ private void OnEnable()
     playerOptions.IntroOptionSelected.AddListener(NarratorResponseToPlayer);
     playerOptions.PlayertextInput.AddListener(HandlePlayerTextInput);
 
+    playerOptions.StatIncrented.AddListener(HandleStatIncremented);
+
+
     
 }
 
@@ -91,6 +94,8 @@ private void OnDisable()
     playerOptions.ContinueSelected.RemoveListener(HandleCombatContinuePressed);
     playerOptions.PlayertextInput.RemoveListener(HandlePlayerTextInput);
     playerOptions.IntroOptionSelected.RemoveListener(NarratorResponseToPlayer);
+
+    playerOptions.StatIncrented.RemoveListener(HandleStatIncremented);
 
 
 }
@@ -307,6 +312,11 @@ private void HandlePlayerTextInput(string playerInput)
         narrator.DisplayNarrationText($"Your character description will be changed to {playerStats.description}!");
         awaitingPlayerDescription = false;
     }
+}
+
+private void HandleStatIncremented(string stat)
+{
+    
 }
 
 

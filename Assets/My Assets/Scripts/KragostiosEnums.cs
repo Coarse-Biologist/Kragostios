@@ -39,11 +39,13 @@ public enum LocationType
 
 public enum Elements
 {
+    Cold,
     Ice,
     Water,
     Earth,
     Fire,
     Lava,
+    Heat,
     Air,
     Electricty,
     Poison,
@@ -51,7 +53,8 @@ public enum Elements
     Bacteria,
     Virus,
     Radiation,
-    Light
+    Light,
+    Psychic
 }
 
 public enum Combatants 
