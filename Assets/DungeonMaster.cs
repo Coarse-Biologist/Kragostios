@@ -34,7 +34,8 @@ private StatsHandler playerStats;
 Dictionary<string, List<string>> narratorToPlayerDict;
 Dictionary<string, string> playerToNarratorDict;
 
-private bool awaitingPlayerName;
+private bool awaitingPlayerName = false;
+private bool awaitingPlayerDescription = false;
 
 // SetUp
 private void Awake()
@@ -54,8 +55,9 @@ private void Awake()
 private void Start()
 {
     List<Directions> directions = map.directions;
-    //RequestPlayerName();
-    InitiateCombat();
+    //playerOptions.SpawnDirectionOptions(directions);
+    RequestPlayerName();
+    //InitiateCombat();
 }
 
 private void OnEnable()
@@ -242,6 +244,8 @@ public void HandlePlayerTraveled(Directions direction)
         break;
 
         default:
+        List<Directions> directions = map.directions;
+        playerOptions.SpawnDirectionOptions(directions);
         break;
     }
 }
@@ -267,6 +271,14 @@ private void RequestPlayerName()
     awaitingPlayerName = true;
 }
 
+private void RequestPlayerDescription()
+{
+    string message = "How can one describe you? In what do you consist? Where are you from and of what are you made?";
+    narrator.DisplayNarrationText(message);
+    playerOptions.DisplayTextField(message);
+    awaitingPlayerDescription = true;
+}
+
 private void SetnarratorToPlayerDict()
 {
     narratorToPlayerDict = new Dictionary<string, List<string>>
@@ -287,6 +299,13 @@ private void HandlePlayerTextInput(string playerInput)
         playerStats.SetName(playerInput);
         narrator.DisplayNarrationText($"Greetings, most exaulted {playerStats.characterName}!");
         awaitingPlayerName = false;
+        Invoke("RequestPlayerDescription", 1f);
+    }
+    if (awaitingPlayerDescription)
+    {
+        playerStats.SetDescription(playerInput);
+        narrator.DisplayNarrationText($"Your character description will be changed to {playerStats.description}!");
+        awaitingPlayerDescription = false;
     }
 }
 

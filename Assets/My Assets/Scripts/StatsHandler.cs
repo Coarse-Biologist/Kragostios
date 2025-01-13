@@ -264,6 +264,10 @@ public class StatsHandler : MonoBehaviour
     {
         characterName = name;
     }
+    public void SetDescription(string newDesciption)
+    {
+        description = newDesciption;
+    }
     }
 
 

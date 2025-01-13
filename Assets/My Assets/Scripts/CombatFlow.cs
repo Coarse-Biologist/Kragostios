@@ -212,7 +212,7 @@ public class CombatFlow : MonoBehaviour
     }
         List<GameObject> selectedTargets = new List<GameObject>();
 
-        Debug.Log($"targets = {selectedAbility.Targets}");
+        //Debug.Log($"targets = {selectedAbility.Targets}");
         int targets = targetNum;
         int numberOfEnemies = possibleTargets.Count();
         int targetsSelected = 0;

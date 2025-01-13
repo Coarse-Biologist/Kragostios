@@ -237,7 +237,7 @@ public class PlayerOptions : MonoBehaviour
     public void DisplayTextField(string message)
     {
         myTextField.style.display = DisplayStyle.Flex;
-        myTextField.value = "Ecri ta appellation";
+        myTextField.value = "Ecris";
         myTextField.RegisterCallback<KeyDownEvent>(evt =>
         {
         if (evt.keyCode == KeyCode.Return) // Check for Enter key
