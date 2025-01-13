@@ -19,6 +19,8 @@ public class NarrationScript : MonoBehaviour
     [SerializeField] 
     private Dictionary<string, string> responseDictionary;
 
+    private int linesOfNarration = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //private void Awake()
     //{
@@ -66,7 +68,18 @@ public class NarrationScript : MonoBehaviour
     
     public void DisplayNarrationText(string message)
     {   
-        narratorText.text += "\n" + message; // + message;
+        linesOfNarration ++; 
+
+        if (linesOfNarration >= 6)
+        {
+            narratorText.text = message;
+        }
+        else 
+        {
+            narratorText.text += "\n" + message; // + message;
+        }
+        
+
     }
 
 

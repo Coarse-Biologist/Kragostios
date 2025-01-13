@@ -90,13 +90,42 @@ public class CombatFlow : MonoBehaviour
     }
     private void ExecuteEnemyTurn (GameObject combatant)
     {
+        //Debug.Log($"{randomSkillIndex} = ability selected");
+        //Debug.Log($"{numberKnownAbilities} = number of known abilities");
+        bool enemiesRemaining = CheckEnemiesRemaining();
+        bool alliesRemaining = CheckAlliesRemaining();
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
-        int numberKnownAbilities = stats.knownAbilities.Count();
-        Debug.Log($"{numberKnownAbilities} = number of known abilities");
-        int randomSkillIndex = Random.Range(0, numberKnownAbilities - 1);
-        Debug.Log($"{randomSkillIndex} = ability selected");
+        List<AbilityScrollStorage.Abilities> usableAbilities = new List<AbilityScrollStorage.Abilities>();
+        foreach (AbilityScrollStorage.Abilities ability in stats.knownAbilities)
+        {
+            if (enemiesRemaining)
+            {
+                if (ability.Type == AbilityCategories.Buff
+                || ability.Type == AbilityCategories.Heal
+                || ability.Type == AbilityCategories.BuffHeal)
+                {
 
-        AbilityScrollStorage.Abilities selectedAbility = stats.knownAbilities[randomSkillIndex];
+                    {
+                        usableAbilities.Add(ability);
+                    }
+                }
+            }
+            if (alliesRemaining)
+            {
+                if (ability.Type == AbilityCategories.Attack
+                || ability.Type == AbilityCategories.Debuff
+                || ability.Type == AbilityCategories.DebuffAttack)
+                {
+                    usableAbilities.Add(ability);
+                }
+            }
+            
+        }
+        int numberKnownAbilities = usableAbilities.Count();
+        int randomSkillIndex = Random.Range(0, numberKnownAbilities - 1);
+        
+
+        AbilityScrollStorage.Abilities selectedAbility = usableAbilities[randomSkillIndex];
         
         List<GameObject> targets = new List<GameObject>();
 
@@ -116,7 +145,7 @@ public class CombatFlow : MonoBehaviour
             break;
 
             case AbilityCategories.Debuff:
-            targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
+            targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets, true);
             break;
 
             case AbilityCategories.Attack:
@@ -139,7 +168,13 @@ public class CombatFlow : MonoBehaviour
         else 
         {
             HandleAbilityEffect(targets, selectedAbility);
-            string EnemyTurnNarration = $"{combatant.name} used {selectedAbility.AbilityName} on {targets}for their turn.";
+            string targetNames = "";
+            foreach(GameObject target in targets)
+            {
+                StatsHandler targetStats = target.GetComponent<StatsHandler>();
+                targetNames += $"{targetStats.characterName}, ";
+            }
+            string EnemyTurnNarration = $"{combatant.name} used {selectedAbility.AbilityName} on {targetNames} for their turn.";
             RequestNarration(EnemyTurnNarration);
         }
         
@@ -210,8 +245,19 @@ public class CombatFlow : MonoBehaviour
             stats.TakeDamage(selectedAbility.DamageValue);
             StatsHandler casterStats = caster.GetComponent<StatsHandler>();
             casterStats.UpdateMana(selectedAbility.AbilityCost);
+            string narrationText = "";
+            switch(selectedAbility.Type)
+            {
+                case(AbilityCategories.Heal):
+                narrationText = $"{stats.characterName} recieved {selectedAbility.HealValue} hitpoints from {selectedAbility.AbilityName}"; 
+                break;
 
-            string narrationText = $"{stats.characterName} recieved {selectedAbility.DamageValue} damage from {selectedAbility.AbilityName}"; 
+                case (AbilityCategories.Attack):
+                narrationText = $"{stats.characterName} recieved {selectedAbility.DamageValue} damage from {selectedAbility.AbilityName}"; 
+                break;
+            }
+
+            //string narrationText = $"{stats.characterName} recieved {selectedAbility.DamageValue} damage from {selectedAbility.AbilityName}"; 
             RequestNarration(narrationText);
             if (stats.currentHealth <= 0) // From Hydn!!!
             {

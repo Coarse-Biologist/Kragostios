@@ -154,7 +154,7 @@ private void HandleCombatContinuePressed()
     if (enemiesRemaining && alliesRemaining)
     {
         Debug.Log("Show goes on");
-    //combat.NextTurn();
+    combat.NextTurn();
     playerOptions.SpawnPlayerInfoButton(Player);
     } 
     else if (enemiesRemaining && !alliesRemaining) 
