@@ -322,7 +322,7 @@ private void HandleStatIncremented(string stat)
     {
         
     case "Max Mana":
-        playerStats.SetMaxMana(5);
+        playerStats.AddMaxMana(5);
         break;
     case "max Health":
         break;

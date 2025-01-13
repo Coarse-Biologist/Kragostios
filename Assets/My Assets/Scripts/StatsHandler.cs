@@ -25,9 +25,9 @@ public class StatsHandler : MonoBehaviour
 
     #region //  resources
 
-    [SerializeField] public int maxHealth {private set; get;} = 100;
-    [SerializeField] public int maxMana {private set; get;} = 100;
-    [SerializeField] public int maxStamina {private set; get;} = 100;
+    [SerializeField] public int MaxHealth {private set; get;} = 100;
+    [SerializeField] public int MaxMana {private set; get;} = 100;
+    [SerializeField] public int MaxStamina {private set; get;} = 100;
     [SerializeField] public int initiative {private set; get;} = 100;
 
     [Header("Current Stats")]
@@ -114,7 +114,7 @@ public class StatsHandler : MonoBehaviour
     {
         string knownAbilitiesString = GetKnownAbilitiesString();
         string charInfo = $"Character Name: {characterName}, Description: {description}, Char Type: {charType}, Difficulty: {difficulty}, " +
-        $"Max Health: {maxHealth}, Max Mana: {maxMana}, Max Stamina: {maxStamina}, Initiative: {initiative}, " +
+        $"Max Health: {MaxHealth}, Max Mana: {maxMana}, Max Stamina: {maxStamina}, Initiative: {initiative}, " +
         $"Current Health: {currentHealth}, Current Mana: {currentMana}, Current Stamina: {currentStamina}, " +
         $"Health Regen: {healthRegen}, Mana Regen: {manaRegen}, Stamina Regen: {staminaRegen}, " +
         $"Character Level: {characterLevel}, Available Stat Points: {availableStatPoints}, Current XP: {currentXp}, Max XP: {maxXp}, " +
@@ -135,33 +135,30 @@ public class StatsHandler : MonoBehaviour
 
     #region // Setters
 
-    public void AddMaxHealth(int incrementValue) => maxHealth += incrementValue;
-    public void AddMaxMana(int incrementValue) => maxMana += incrementValue;
-    public void AddMaxStamina(int incrementValue) => maxStamina += incrementValue;
-    public void AddCurrentHealth(int incrementValue) => currentHealth += incrementValue;
-    public void AddCurrentMana(int incrementValue) => currentMana += incrementValue;
-    public void AddCurrentStamina(int incrementValue) => currentStamina += incrementValue;
+    public void AddMaxHealth(int incrementValue) => MaxHealth += incrementValue;
+    public void AddMaxMana(int incrementValue) => MaxMana += incrementValue;
+    public void AddMaxStamina(int incrementValue) => MaxStamina += incrementValue;
 
-    public void AddHealthRegen(int incrementValue) => healthRegen += incrementValue;
-    public void AddManaRegen(int incrementValue) => manaRegen += incrementValue;
-    public void AddStaminaRegen(int incrementValue) => staminaRegen += incrementValue;
-    public void AddColdResist(int incrementValue) => coldResist += incrementValue;
-    public void AddIceResist(int incrementValue) => iceResist += incrementValue;
-    public void AddWaterResist(int incrementValue) => waterResist += incrementValue;
-    public void AddEarthResist(int incrementValue) => earthResist += incrementValue;
-    public void AddHeatResist(int incrementValue) => heatResist += incrementValue;
-    public void AddAirResist(int incrementValue) => airResist += incrementValue;
-    public void AddElectricityResist(int incrementValue) => electricityResist += incrementValue;
-    public void AddLightResist(int incrementValue) => lightResist += incrementValue;
-    public void AddPsychicResist(int incrementValue) => psychicResist += incrementValue;
-    public void AddFungiResist(int incrementValue) => fungiResist += incrementValue;
-    public void AddPoisonResist(int incrementValue) => poisonResist += incrementValue;
-    public void AddAcidResist(int incrementValue) => acidResist += incrementValue;
-    public void AddRadiationResist(int incrementValue) => radiationResist += incrementValue;
-    public void AddBacteriaResist(int incrementValue) => bacteriaResist += incrementValue;
-    public void AddBludgeoningResist(int incrementValue) => bludgeoningResist += incrementValue;
-    public void AddSlashingResist(int incrementValue) => slashingResist += incrementValue;
-    public void AddPiercingResist(int incrementValue) => piercingResist += incrementValue;
+    public void AddHealthRegen(int incrementValue) => HealthRegen += incrementValue;
+    public void AddManaRegen(int incrementValue) => ManaRegen += incrementValue;
+    public void AddStaminaRegen(int incrementValue) => StaminaRegen += incrementValue;
+    public void AddColdResist(int incrementValue) => ColdResist += incrementValue;
+    public void AddIceResist(int incrementValue) => IceResist += incrementValue;
+    public void AddWaterResist(int incrementValue) => WaterResist += incrementValue;
+    public void AddEarthResist(int incrementValue) => EarthResist += incrementValue;
+    public void AddHeatResist(int incrementValue) => HeatResist += incrementValue;
+    public void AddAirResist(int incrementValue) => AirResist += incrementValue;
+    public void AddElectricityResist(int incrementValue) => ElectricityResist += incrementValue;
+    public void AddLightResist(int incrementValue) => LightResist += incrementValue;
+    public void AddPsychicResist(int incrementValue) => PsychicResist += incrementValue;
+    public void AddFungiResist(int incrementValue) => FungiResist += incrementValue;
+    public void AddPoisonResist(int incrementValue) => PoisonResist += incrementValue;
+    public void AddAcidResist(int incrementValue) => AcidResist += incrementValue;
+    public void AddRadiationResist(int incrementValue) => RadiationResist += incrementValue;
+    public void AddBacteriaResist(int incrementValue) => BacteriaResist += incrementValue;
+    public void AddBludgeoningResist(int incrementValue) => BludgeoningResist += incrementValue;
+    public void AddSlashingResist(int incrementValue) => SlashingResist += incrementValue;
+    public void AddPiercingResist(int incrementValue) => PiercingResist += incrementValue;
 
     public void SetName(string name)
     {
@@ -206,7 +203,7 @@ public class StatsHandler : MonoBehaviour
     public void Heal(int healAmount)
     {
         currentHealth = currentHealth + healAmount;
-        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        if (currentHealth > MaxHealth) currentHealth = MaxHealth;
     }
     public void UpdateMana(int manaChange)
     {
@@ -217,7 +214,7 @@ public class StatsHandler : MonoBehaviour
     
     private void GiveOverHealth(int overhealthAmount)
     {
-        maxHealth += overhealthAmount;
+        MaxHealth += overhealthAmount;
         currentHealth += overhealthAmount;
     }
     #endregion
@@ -261,7 +258,7 @@ public class StatsHandler : MonoBehaviour
             difficulty = Difficulty.Easy;
             Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficult {difficulty}");
 
-            maxHealth = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
+            MaxHealth = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
             maxMana = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
             maxStamina = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
             initiative = easyScaleFactor;
@@ -275,7 +272,7 @@ public class StatsHandler : MonoBehaviour
 
             case Difficulty.Medium:
             difficulty = Difficulty.Medium;
-            maxHealth = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
+            MaxHealth = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
             maxMana = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
             maxStamina = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
             initiative = mediumScaleFactor;
@@ -288,7 +285,7 @@ public class StatsHandler : MonoBehaviour
             break;
             case Difficulty.Hard:
             difficulty = Difficulty.Hard;
-            maxHealth = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
+            MaxHealth = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
             maxMana = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
             maxStamina = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
             initiative = hardScaleFactor;
@@ -301,7 +298,7 @@ public class StatsHandler : MonoBehaviour
 
             case Difficulty.Brutal:
             difficulty = Difficulty.Brutal;
-            maxHealth = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
+            MaxHealth = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
             maxMana = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
             maxStamina = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
             initiative = brutalScaleFactor;
@@ -317,7 +314,7 @@ public class StatsHandler : MonoBehaviour
             difficulty = Difficulty.Nightmare;
             Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficulty {difficulty}");
 
-            maxHealth = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
+            MaxHealth = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
             maxMana = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
             maxStamina = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
             initiative = nightmareScaleFactor;
@@ -330,7 +327,7 @@ public class StatsHandler : MonoBehaviour
             break;
             
         }
-            currentHealth = maxHealth;
+            currentHealth = MaxHealth;
             currentStamina = maxStamina;
             currentMana = maxMana;
         Debug.Log($"Current health at time of creation = {currentHealth}");
