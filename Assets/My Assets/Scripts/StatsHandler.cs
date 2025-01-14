@@ -63,16 +63,11 @@ public class StatsHandler : MonoBehaviour
     #endregion
 
     #region // resourcen regen
-    [SerializeField] public int healthRegen {private set; get;}= 1;
-    [SerializeField] public int manaRegen {private set; get;}= 1;
-    [SerializeField] public int staminaRegen  {private set; get;}= 1;
+    [SerializeField] public int HealthRegen {private set; get;}= 1;
+    [SerializeField] public int ManaRegen {private set; get;}= 1;
+    [SerializeField] public int StaminaRegen  {private set; get;}= 1;
 
     #endregion
-
-    #region // Elemental resistences
-
-    #endregion
-
 
 
     #region // "Level Stats"
@@ -80,7 +75,7 @@ public class StatsHandler : MonoBehaviour
     [SerializeField] public int characterLevel  {private set; get;}= 1;
     [SerializeField] public int availableStatPoints {private set; get;}= 0;
     [SerializeField] public int currentXp  {private set; get;}= 0;
-    [SerializeField] public int maxXp {private set; get;} = 100;
+    [SerializeField] public int MaxXp {private set; get;} = 100;
 
 
     #endregion
@@ -114,10 +109,10 @@ public class StatsHandler : MonoBehaviour
     {
         string knownAbilitiesString = GetKnownAbilitiesString();
         string charInfo = $"Character Name: {characterName}, Description: {description}, Char Type: {charType}, Difficulty: {difficulty}, " +
-        $"Max Health: {MaxHealth}, Max Mana: {maxMana}, Max Stamina: {maxStamina}, Initiative: {initiative}, " +
+        $"Max Health: {MaxHealth}, Max Mana: {MaxMana}, Max Stamina: {MaxStamina}, Initiative: {initiative}, " +
         $"Current Health: {currentHealth}, Current Mana: {currentMana}, Current Stamina: {currentStamina}, " +
-        $"Health Regen: {healthRegen}, Mana Regen: {manaRegen}, Stamina Regen: {staminaRegen}, " +
-        $"Character Level: {characterLevel}, Available Stat Points: {availableStatPoints}, Current XP: {currentXp}, Max XP: {maxXp}, " +
+        $"Health Regen: {HealthRegen}, Mana Regen: {ManaRegen}, Stamina Regen: {StaminaRegen}, " +
+        $"Character Level: {characterLevel}, Available Stat Points: {availableStatPoints}, Current XP: {currentXp}, Max XP: {MaxXp}, " +
         $"Known Abilities: {string.Join(", ", knownAbilitiesString)}";
         return charInfo;
 
@@ -148,7 +143,7 @@ public class StatsHandler : MonoBehaviour
     public void AddEarthResist(int incrementValue) => EarthResist += incrementValue;
     public void AddHeatResist(int incrementValue) => HeatResist += incrementValue;
     public void AddAirResist(int incrementValue) => AirResist += incrementValue;
-    public void AddElectricityResist(int incrementValue) => ElectricityResist += incrementValue;
+    public void AddElectricityResist(int incrementValue) => ElectrictyResist += incrementValue;
     public void AddLightResist(int incrementValue) => LightResist += incrementValue;
     public void AddPsychicResist(int incrementValue) => PsychicResist += incrementValue;
     public void AddFungiResist(int incrementValue) => FungiResist += incrementValue;
@@ -173,9 +168,9 @@ public class StatsHandler : MonoBehaviour
     public void GainXp(int XpGain)
     {
         currentXp = currentXp + XpGain;
-        if (currentXp > maxXp)
+        if (currentXp > MaxXp)
         {
-            currentXp -= maxXp;
+            currentXp -= MaxXp;
             GainLevel();
         } 
     }
@@ -192,7 +187,7 @@ public class StatsHandler : MonoBehaviour
     private void GainLevel()
     {
         characterLevel ++;
-        maxXp = maxXp * 2;
+        MaxXp = MaxXp * 2;
     }
 
         public void TakeDamage(int damageValue)
@@ -205,17 +200,17 @@ public class StatsHandler : MonoBehaviour
         currentHealth = currentHealth + healAmount;
         if (currentHealth > MaxHealth) currentHealth = MaxHealth;
     }
-    public void UpdateMana(int manaChange)
+    public void UpdateMana(int ManaChange)
     {
-        currentHealth = currentHealth + manaChange;
-        if (currentMana > maxMana) currentMana = maxMana;
+        currentHealth = currentHealth + ManaChange;
+        if (currentMana > MaxMana) currentMana = MaxMana;
         else if (currentMana < 0 ) currentMana = 0;
     }
     
-    private void GiveOverHealth(int overhealthAmount)
+    private void GiveOverHealth(int overHealthAmount)
     {
-        MaxHealth += overhealthAmount;
-        currentHealth += overhealthAmount;
+        MaxHealth += overHealthAmount;
+        currentHealth += overHealthAmount;
     }
     #endregion
 
@@ -259,12 +254,12 @@ public class StatsHandler : MonoBehaviour
             Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficult {difficulty}");
 
             MaxHealth = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
-            maxMana = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
-            maxStamina = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
+            MaxMana = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
+            MaxStamina = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
             initiative = easyScaleFactor;
-            healthRegen = easyScaleFactor;
-            manaRegen = easyScaleFactor;
-            staminaRegen = easyScaleFactor;
+            HealthRegen = easyScaleFactor;
+            ManaRegen = easyScaleFactor;
+            StaminaRegen = easyScaleFactor;
             characterLevel = easyScaleFactor;
             knownAbilities = creatureAbilities;
             
@@ -273,12 +268,12 @@ public class StatsHandler : MonoBehaviour
             case Difficulty.Medium:
             difficulty = Difficulty.Medium;
             MaxHealth = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
-            maxMana = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
-            maxStamina = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
+            MaxMana = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
+            MaxStamina = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
             initiative = mediumScaleFactor;
-            healthRegen = mediumScaleFactor;
-            manaRegen = mediumScaleFactor;
-            staminaRegen = mediumScaleFactor;
+            HealthRegen = mediumScaleFactor;
+            ManaRegen = mediumScaleFactor;
+            StaminaRegen = mediumScaleFactor;
             characterLevel = mediumScaleFactor;
             //creatureAbilities = abilities.GetWeakAbilities();
             knownAbilities = creatureAbilities;
@@ -286,12 +281,12 @@ public class StatsHandler : MonoBehaviour
             case Difficulty.Hard:
             difficulty = Difficulty.Hard;
             MaxHealth = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
-            maxMana = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
-            maxStamina = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
+            MaxMana = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
+            MaxStamina = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
             initiative = hardScaleFactor;
-            healthRegen = hardScaleFactor;
-            manaRegen = hardScaleFactor;
-            staminaRegen = hardScaleFactor;
+            HealthRegen = hardScaleFactor;
+            ManaRegen = hardScaleFactor;
+            StaminaRegen = hardScaleFactor;
             characterLevel = hardScaleFactor;
             knownAbilities = creatureAbilities;
             break;
@@ -299,12 +294,12 @@ public class StatsHandler : MonoBehaviour
             case Difficulty.Brutal:
             difficulty = Difficulty.Brutal;
             MaxHealth = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
-            maxMana = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
-            maxStamina = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
+            MaxMana = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
+            MaxStamina = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
             initiative = brutalScaleFactor;
-            healthRegen = brutalScaleFactor;
-            manaRegen = brutalScaleFactor;
-            staminaRegen = brutalScaleFactor;
+            HealthRegen = brutalScaleFactor;
+            ManaRegen = brutalScaleFactor;
+            StaminaRegen = brutalScaleFactor;
             characterLevel = brutalScaleFactor;
             //creatureAbilities = abilities.GetWeakAbilities();
             knownAbilities = creatureAbilities;
@@ -315,12 +310,12 @@ public class StatsHandler : MonoBehaviour
             Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficulty {difficulty}");
 
             MaxHealth = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
-            maxMana = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
-            maxStamina = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
+            MaxMana = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
+            MaxStamina = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
             initiative = nightmareScaleFactor;
-            healthRegen = nightmareScaleFactor;
-            manaRegen = nightmareScaleFactor;
-            staminaRegen = nightmareScaleFactor;
+            HealthRegen = nightmareScaleFactor;
+            ManaRegen = nightmareScaleFactor;
+            StaminaRegen = nightmareScaleFactor;
             characterLevel = nightmareScaleFactor;
             //creatureAbilities = abilities.GetWeakAbilities();
             knownAbilities = creatureAbilities;
@@ -328,9 +323,9 @@ public class StatsHandler : MonoBehaviour
             
         }
             currentHealth = MaxHealth;
-            currentStamina = maxStamina;
-            currentMana = maxMana;
-        Debug.Log($"Current health at time of creation = {currentHealth}");
+            currentStamina = MaxStamina;
+            currentMana = MaxMana;
+        Debug.Log($"Current Health at time of creation = {currentHealth}");
         return gameObject;
         }
 
