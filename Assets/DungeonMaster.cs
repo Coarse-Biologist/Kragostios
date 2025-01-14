@@ -57,8 +57,9 @@ private void Start()
 {
     List<Directions> directions = map.directions;
     //playerOptions.SpawnDirectionOptions(directions);
-    RequestPlayerName();
+    //RequestPlayerName();
     //InitiateCombat();
+    playerOptions.DisplayCharacterCreationScreen();
 }
 
 private void OnEnable()
@@ -186,9 +187,10 @@ private GameObject MakePlayer()
     GameObject creature = Instantiate(creaturePrefab);
     StatsHandler stats = creature.GetComponent<StatsHandler>();
     AbilityScrollStorage abilities = creature.GetComponent<AbilityScrollStorage>();
-    Player = stats.MakeCreature(Difficulty.Nightmare, Combatants.Player);  
-    stats.LearnAbility(abilities.DivineFire);
-    return Player;  
+    //Player = stats.MakeCreature(Difficulty.Nightmare, Combatants.Player);  
+    //stats.LearnAbility(abilities.DivineFire);
+
+    return creature;  
 }
 
 private GameObject MakeEnemy(Difficulty difficulty)
@@ -324,57 +326,83 @@ private void HandleStatIncremented(string stat)
     case "Max Mana":
         playerStats.AddMaxMana(5);
         break;
-    case "max Health":
+    case "Max Health":
+    playerStats.AddMaxHealth(5);
         break;
     case "Max Stamina":
+    playerStats.AddMaxStamina(5);
         break;
     case "Health Regeneration":
+    playerStats.AddHealthRegen(1);
         break;
     case "Mana Regeneration":
+    playerStats.AddManaRegen(1);
         break;
     case "Stamina Regeneration":
+    playerStats.AddStaminaRegen(1);
         break;
     case "Max Action Points":
+    playerStats.AddActionPoint(1);
         break;
     case "Action Point Regeneration":
+    playerStats.AddActionPointRegen(1);
         break;
-    case "Ice Resistence":
+    case "Ice Resistance":
+    playerStats.AddIceResist(5);
         break;
-    case "Cold Resistence":
+    case "Cold Resistance":
+    playerStats.AddColdResist(5);
         break;
-    case "Water Resistence":
+    case "Water Resistance":
+    playerStats.AddWaterResist(5);
         break;
-    case "Earth Resistence":
+    case "Earth Resistance":
+    playerStats.AddEarthResist(5);
         break;
-    case "Fire Resistence":
+    case "Fire Resistance":
+    playerStats.AddFireResist(5);
         break;
-    case "Lava Resistence":
+    case "Lava Resistance":
+    playerStats.AddLavaResist(5);
         break;
-    case "Heat Resistence":
+    case "Heat Resistance":
+    playerStats.AddHeatResist(5);
         break;
-    case "Air Resistence":
+    case "Air Resistance":
+    playerStats.AddAirResist(5);
         break;
-    case "Electricty Resistence":
+    case "Electricty Resistance":
+    playerStats.AddElectricityResist(5);
         break;
-    case "Light Resistence":
+    case "Light Resistance":
+    playerStats.AddLightResist(5);
         break;
-    case "Poison Resistence":
+    case "Poison Resistance":
+    playerStats.AddPoisonResist(5);
         break;
-    case "Acid Resistence":
+    case "Acid Resistance":
+    playerStats.AddAcidResist(5);
         break;
-    case "Bacteria Resistence":
+    case "Bacteria Resistance":
+    playerStats.AddBacteriaResist(5);
         break;
-    case "Virus Resistence":
+    case "Virus Resistance":
+    playerStats.AddVirusResist(5);
         break;
-    case "Fungi Resistence":
+    case "Fungi Resistance":
+    playerStats.AddFungiResist(5);
         break;
-    case "Radiation Resistence":
+    case "Radiation Resistance":
+    playerStats.AddRadiationResist(5);
         break;
-    case "Bludgeoning Resistence":
+    case "Bludgeoning Resistance":
+    playerStats.AddBludgeoningResist(5);
         break;
-    case "SlashingResistence":
+    case "SlashingResistance":
+    playerStats.AddSlashingResist(5);
         break;
-    case "Piercing Resistence":
+    case "Piercing Resistance":
+    playerStats.AddPiercingResist(5);
         break;
     default:
         break;

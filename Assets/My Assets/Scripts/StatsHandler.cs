@@ -30,7 +30,8 @@ public class StatsHandler : MonoBehaviour
     [SerializeField] public int MaxStamina {private set; get;} = 100;
     [SerializeField] public int initiative {private set; get;} = 100;
 
-    [Header("Current Stats")]
+    public int ActionPoints {private set; get;} = 1;
+    public int ActionPointRegen {private set; get;} = 1;
 
     [SerializeField] public int currentHealth {private set; get;}= 100;
     [SerializeField] public int currentMana {private set; get;}= 100;
@@ -43,6 +44,8 @@ public class StatsHandler : MonoBehaviour
     public int WaterResist {private set; get;} = 0;
     public int EarthResist {private set; get;} = 0;
     public int HeatResist {private set; get;} = 0;
+    public int LavaResist {private set; get;} = 0;
+    public int FireResist {private set; get;} = 0;
     public int AirResist {private set; get;} = 0;
     public int ElectrictyResist {private set; get;} = 0;
     public int LightResist {private set; get;} = 0;
@@ -52,6 +55,8 @@ public class StatsHandler : MonoBehaviour
     public int AcidResist {private set; get;} = 0;
     public int RadiationResist {private set; get;} = 0;
     public int BacteriaResist {private set; get;} = 0;
+    public int VirusResist {private set; get;} = 0;
+
 
     #endregion
 
@@ -62,7 +67,7 @@ public class StatsHandler : MonoBehaviour
 
     #endregion
 
-    #region // resourcen regen
+    #region // resource regen
     [SerializeField] public int HealthRegen {private set; get;}= 1;
     [SerializeField] public int ManaRegen {private set; get;}= 1;
     [SerializeField] public int StaminaRegen  {private set; get;}= 1;
@@ -133,6 +138,8 @@ public class StatsHandler : MonoBehaviour
     public void AddMaxHealth(int incrementValue) => MaxHealth += incrementValue;
     public void AddMaxMana(int incrementValue) => MaxMana += incrementValue;
     public void AddMaxStamina(int incrementValue) => MaxStamina += incrementValue;
+    public void AddActionPoint(int incrementValue) => MaxStamina += incrementValue;
+    public void AddActionPointRegen(int incrementValue) => MaxStamina += incrementValue;
 
     public void AddHealthRegen(int incrementValue) => HealthRegen += incrementValue;
     public void AddManaRegen(int incrementValue) => ManaRegen += incrementValue;
@@ -142,6 +149,8 @@ public class StatsHandler : MonoBehaviour
     public void AddWaterResist(int incrementValue) => WaterResist += incrementValue;
     public void AddEarthResist(int incrementValue) => EarthResist += incrementValue;
     public void AddHeatResist(int incrementValue) => HeatResist += incrementValue;
+    public void AddLavaResist(int incrementValue) => LavaResist += incrementValue;
+    public void AddFireResist(int incrementValue) => FireResist += incrementValue;
     public void AddAirResist(int incrementValue) => AirResist += incrementValue;
     public void AddElectricityResist(int incrementValue) => ElectrictyResist += incrementValue;
     public void AddLightResist(int incrementValue) => LightResist += incrementValue;
@@ -151,6 +160,7 @@ public class StatsHandler : MonoBehaviour
     public void AddAcidResist(int incrementValue) => AcidResist += incrementValue;
     public void AddRadiationResist(int incrementValue) => RadiationResist += incrementValue;
     public void AddBacteriaResist(int incrementValue) => BacteriaResist += incrementValue;
+    public void AddVirusResist(int incrementValue) => BacteriaResist += incrementValue;
     public void AddBludgeoningResist(int incrementValue) => BludgeoningResist += incrementValue;
     public void AddSlashingResist(int incrementValue) => SlashingResist += incrementValue;
     public void AddPiercingResist(int incrementValue) => PiercingResist += incrementValue;

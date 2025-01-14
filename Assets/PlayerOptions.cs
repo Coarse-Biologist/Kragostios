@@ -64,8 +64,8 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_PO = root.Q<VisualElement>("PlayerOptions");
         abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
         abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
-        myTextField = root.Q<TextField>("TextField");
-        myTextField.style.display = DisplayStyle.None;
+        //myTextField = root.Q<TextField>("TextField");
+        //myTextField.style.display = DisplayStyle.None;
 
         // char creation panels
         LeftCreationPanel = root.Q<VisualElement>("LeftCreationPanel");
@@ -300,49 +300,47 @@ public class PlayerOptions : MonoBehaviour
     {   
         //add buttons to left panel
             TemplateContainer LeftPanelButtonContainer = templateButton.Instantiate();
-            buttonContainer_CO.Add(LeftPanelButtonContainer);
+            root.Add(LeftPanelButtonContainer);
 
             #region // resource buttons
-            Button healthButton = LeftPanelButtonContainer.Q<Button>();
-            Button manaButton = LeftPanelButtonContainer.Q<Button>();
-            Button staminaButton = LeftPanelButtonContainer.Q<Button>();
-            Button healthRegenButton = LeftPanelButtonContainer.Q<Button>();
-            Button manaRegenButton = LeftPanelButtonContainer.Q<Button>();
-            Button staminaRegenButton = LeftPanelButtonContainer.Q<Button>();
+            Button healthButton = new Button();
+            Button manaButton = new Button();
+            Button staminaButton = new Button();
+            Button healthRegenButton = new Button();
+            Button manaRegenButton = new Button();
+            Button staminaRegenButton = new Button();
             #endregion
 
             #region // action point buttons
-            Button actionButton = LeftPanelButtonContainer.Q<Button>();
-            Button actionRegenButton = LeftPanelButtonContainer.Q<Button>();
+            Button actionButton = new Button();
+            Button actionRegenButton = new Button();
             #endregion
 
             #region // elemental resistence buttons
-            Button iceResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button coldResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button waterResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button earthResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button fireResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button heatResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button lavaResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button airResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button electrictyResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button lightResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button vacuumResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button psychicResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button poisonResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button acidResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button bacteriaResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button virusResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button fungiResistenceButton = LeftPanelButtonContainer.Q<Button>();
-
-
-            Button radiationResistenceButton = LeftPanelButtonContainer.Q<Button>();
+            Button iceResistenceButton = new Button();
+            Button coldResistenceButton = new Button();
+            Button waterResistenceButton = new Button();
+            Button earthResistenceButton = new Button();
+            Button fireResistenceButton = new Button();
+            Button heatResistenceButton = new Button();
+            Button lavaResistenceButton = new Button();
+            Button airResistenceButton = new Button();
+            Button electrictyResistenceButton = new Button();
+            Button lightResistenceButton = new Button();
+            Button vacuumResistenceButton = new Button();
+            Button psychicResistenceButton = new Button();
+            Button poisonResistenceButton = new Button();
+            Button acidResistenceButton = new Button();
+            Button bacteriaResistenceButton = new Button();
+            Button virusResistenceButton = new Button();
+            Button fungiResistenceButton = new Button();
+            Button radiationResistenceButton = new Button();
             #endregion
 
             #region //physical resistence buttons
-            Button bludgeoningResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button slashingResistenceButton = LeftPanelButtonContainer.Q<Button>();
-            Button piercingResistenceButton = LeftPanelButtonContainer.Q<Button>();
+            Button bludgeoningResistenceButton = new Button();
+            Button slashingResistenceButton = new Button();
+            Button piercingResistenceButton = new Button();
             #endregion
 
             #region // add buttons to left panel 
@@ -414,6 +412,8 @@ public class PlayerOptions : MonoBehaviour
             //newButton.RegisterCallback<PointerEnterEvent>(evt =>ShowCharInfo(combatant));
             //newButton.RegisterCallback<PointerLeaveEvent>(evt => HideCharInfo());
     }
+
+
 
     private void StatIncrement(string stat)
     {
