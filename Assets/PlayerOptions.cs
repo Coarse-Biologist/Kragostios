@@ -40,6 +40,7 @@ public class PlayerOptions : MonoBehaviour
 
     private Label abilityInfoText;
     private Label charInfoText;
+    private Label charCreationText;
     private TextField myTextField;
     public UnityEvent<AbilityScrollStorage.Abilities> AbilitySelected;
     public UnityEvent<GameObject> TargetSelected;
@@ -64,6 +65,7 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_PO = root.Q<VisualElement>("PlayerOptions");
         abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
         abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
+
         //myTextField = root.Q<TextField>("TextField");
         //myTextField.style.display = DisplayStyle.None;
 
@@ -71,6 +73,9 @@ public class PlayerOptions : MonoBehaviour
         LeftCreationPanel = root.Q<VisualElement>("LeftCreationPanel");
         MiddleCreationPanel = root.Q<VisualElement>("MiddleCreationPanel");
         RightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
+        charCreationText = RightCreationPanel.Q<Label>("CharCreationText");
+        
+
         
     }
     // Combat functions
@@ -295,129 +300,142 @@ public class PlayerOptions : MonoBehaviour
     {
         IntroOptionSelected?.Invoke(playerChoice);
     }
+    public void Obsolete_DisplayCharacterCreationScreen()
+{
+    // Create containers
+    TemplateContainer leftPanelButtonContainer = templateButton.Instantiate();
 
-    public void DisplayCharacterCreationScreen()
-    {   
-        //add buttons to left panel
-            TemplateContainer LeftPanelButtonContainer = templateButton.Instantiate();
-            root.Add(LeftPanelButtonContainer);
+    // Define button configurations
+    var buttonConfigs = new Dictionary<string, string>
+    {
+        // Resource buttons
+        { "healthButton", "Max Health" },
+        { "manaButton", "Max Mana" },
+        { "staminaButton", "Max Stamina" },
+        { "healthRegenButton", "Health Regeneration" },
+        { "manaRegenButton", "Mana Regeneration" },
+        { "staminaRegenButton", "Stamina Regeneration" },
 
-            #region // resource buttons
-            Button healthButton = new Button();
-            Button manaButton = new Button();
-            Button staminaButton = new Button();
-            Button healthRegenButton = new Button();
-            Button manaRegenButton = new Button();
-            Button staminaRegenButton = new Button();
-            #endregion
+        // Action points
+        { "actionButton", "Max Action Points" },
+        { "actionRegenButton", "Action Point Regeneration" },
 
-            #region // action point buttons
-            Button actionButton = new Button();
-            Button actionRegenButton = new Button();
-            #endregion
+        // Elemental affinities
+        { "iceAffinityButton", "Ice Affinity" },
+        { "coldAffinityButton", "Cold Affinity" },
+        { "waterAffinityButton", "Water Affinity" },
+        { "earthAffinityButton", "Earth Affinity" },
+        { "fireAffinityButton", "Fire Affinity" },
+        { "lavaAffinityButton", "Lava Affinity" },
+        { "heatAffinityButton", "Heat Affinity" },
+        { "airAffinityButton", "Air Affinity" },
+        { "electricityAffinityButton", "Electricity Affinity" },
+        { "lightAffinityButton", "Light Affinity" },
+        { "poisonAffinityButton", "Poison Affinity" },
+        { "acidAffinityButton", "Acid Affinity" },
+        { "bacteriaAffinityButton", "Bacteria Affinity" },
+        { "virusAffinityButton", "Virus Affinity" },
+        { "fungiAffinityButton", "Fungi Affinity" },
+        { "radiationAffinityButton", "Radiation Affinity" },
 
-            #region // elemental resistence buttons
-            Button iceResistenceButton = new Button();
-            Button coldResistenceButton = new Button();
-            Button waterResistenceButton = new Button();
-            Button earthResistenceButton = new Button();
-            Button fireResistenceButton = new Button();
-            Button heatResistenceButton = new Button();
-            Button lavaResistenceButton = new Button();
-            Button airResistenceButton = new Button();
-            Button electrictyResistenceButton = new Button();
-            Button lightResistenceButton = new Button();
-            Button vacuumResistenceButton = new Button();
-            Button psychicResistenceButton = new Button();
-            Button poisonResistenceButton = new Button();
-            Button acidResistenceButton = new Button();
-            Button bacteriaResistenceButton = new Button();
-            Button virusResistenceButton = new Button();
-            Button fungiResistenceButton = new Button();
-            Button radiationResistenceButton = new Button();
-            #endregion
+        // Physical resistance
+        { "bludgeoningResistanceButton", "Bludgeoning Resistance" },
+        { "slashingResistanceButton", "Slashing Resistance" },
+        { "piercingResistanceButton", "Piercing Resistance" }
+    };
 
-            #region //physical resistence buttons
-            Button bludgeoningResistenceButton = new Button();
-            Button slashingResistenceButton = new Button();
-            Button piercingResistenceButton = new Button();
-            #endregion
-
-            #region // add buttons to left panel 
-            LeftPanelButtonContainer.Add(healthButton);
-            LeftPanelButtonContainer.Add(manaButton);
-            LeftPanelButtonContainer.Add(staminaButton);
-            LeftPanelButtonContainer.Add(healthRegenButton);
-            LeftPanelButtonContainer.Add(manaRegenButton);
-            LeftPanelButtonContainer.Add(staminaRegenButton);
-            LeftPanelButtonContainer.Add(actionButton);
-            LeftPanelButtonContainer.Add(actionRegenButton);
-            LeftPanelButtonContainer.Add(coldResistenceButton);
-            LeftPanelButtonContainer.Add(waterResistenceButton);
-            LeftPanelButtonContainer.Add(earthResistenceButton);
-            LeftPanelButtonContainer.Add(earthResistenceButton);
-            LeftPanelButtonContainer.Add(fireResistenceButton);
-            LeftPanelButtonContainer.Add(lavaResistenceButton);
-            LeftPanelButtonContainer.Add(heatResistenceButton);
-            LeftPanelButtonContainer.Add(airResistenceButton);
-            LeftPanelButtonContainer.Add(electrictyResistenceButton);
-            LeftPanelButtonContainer.Add(lightResistenceButton);
-            LeftPanelButtonContainer.Add(poisonResistenceButton);
-            LeftPanelButtonContainer.Add(acidResistenceButton);
-            LeftPanelButtonContainer.Add(bacteriaResistenceButton);
-            LeftPanelButtonContainer.Add(virusResistenceButton);
-            LeftPanelButtonContainer.Add(radiationResistenceButton);
-            #endregion
-            
-            #region // name all buttons
-            manaButton.text = "Max Mana";
-            healthButton.text = "Max Health";
-            staminaButton.text = "Max Stamina";
-            healthRegenButton.text = "Health Regeneration";
-            manaRegenButton.text = "Mana Regeneration";
-            staminaRegenButton.text = "Stamina Regeneration";
-
-            actionButton.text = "Max Action Points";
-            actionRegenButton.text = "Action Point Regeneration";
-
-            iceResistenceButton.text = "Ice Resistance";
-            coldResistenceButton.text = "Cold Resistance";
-            waterResistenceButton.text = "Water Resistance";
-            earthResistenceButton.text = "Earth Resistance";
-            fireResistenceButton.text = "Fire Resistance";
-            lavaResistenceButton.text = "Lava Resistance";
-            heatResistenceButton.text = "Heat Resistance";
-            airResistenceButton.text = "Air Resistance";
-            electrictyResistenceButton.text = "Electricity Resistance";
-            lightResistenceButton.text = "Light Resistance";
-            poisonResistenceButton.text = "Poison Resistance";
-            acidResistenceButton.text = "Acid Resistance";
-            bacteriaResistenceButton.text = "Bacteria Resistance";
-            virusResistenceButton.text = "Virus Resistance";
-            fungiResistenceButton.text = "Fungi Resistance";
-            radiationResistenceButton.text = "Radiation Resistance";
-
-            bludgeoningResistenceButton.text = "Bludgeoning Resistence";
-            slashingResistenceButton.text = "Slashing Resistence";
-            piercingResistenceButton.text = "Piercing Resistence";
-            #endregion
-
-            List<Button> buttons = new List<Button>{ healthButton, staminaButton, manaButton, healthRegenButton, staminaRegenButton, manaRegenButton, actionButton, actionRegenButton, iceResistenceButton, waterResistenceButton, earthResistenceButton, fireResistenceButton, lavaResistenceButton, airResistenceButton, electrictyResistenceButton, lightResistenceButton, poisonResistenceButton, acidResistenceButton, bacteriaResistenceButton, virusResistenceButton, radiationResistenceButton};
-
-        // add functionality to left panel buttons
-        foreach (Button button in buttons)
-            {
-                button.RegisterCallback<ClickEvent>(e => StatIncrement(button.text));
-            }
-            //newButton.RegisterCallback<PointerEnterEvent>(evt =>ShowCharInfo(combatant));
-            //newButton.RegisterCallback<PointerLeaveEvent>(evt => HideCharInfo());
+    // Create and configure buttons
+    foreach (var config in buttonConfigs)
+    {
+        Button button = new Button { text = config.Value };
+        button.style.position = Position.Relative;
+        button.RegisterCallback<ClickEvent>(e => StatIncrement(config.Value));
+        leftPanelButtonContainer.Add(button);
+        LeftCreationPanel.Add(button);
     }
+
+    // Add the container to the UI (if not already added)
+    if (!LeftCreationPanel.Contains(leftPanelButtonContainer))
+    {
+        LeftCreationPanel.Add(leftPanelButtonContainer);
+    }
+}
+
+public void DisplayCharacterCreationScreen()
+{
+    // Create containers
+    TemplateContainer leftPanelButtonContainer = templateButton.Instantiate();
+    root.MarkDirtyRepaint();
+
+    // Define button configurations
+    var buttonConfigs = new Dictionary<string, string>
+    {
+        // Resource buttons
+        { "healthButton", "Max Health" },
+        { "manaButton", "Max Mana" },
+        { "staminaButton", "Max Stamina" },
+        { "healthRegenButton", "Health Regeneration" },
+        { "manaRegenButton", "Mana Regeneration" },
+        { "staminaRegenButton", "Stamina Regeneration" },
+
+        // Action points
+        { "actionButton", "Max Action Points" },
+        { "actionRegenButton", "Action Point Regeneration" },
+
+        // Elemental affinities
+        { "iceAffinityButton", "Ice Affinity" },
+        { "coldAffinityButton", "Cold Affinity" },
+        { "waterAffinityButton", "Water Affinity" },
+        { "earthAffinityButton", "Earth Affinity" },
+        { "fireAffinityButton", "Fire Affinity" },
+        { "lavaAffinityButton", "Lava Affinity" },
+        { "heatAffinityButton", "Heat Affinity" },
+        { "airAffinityButton", "Air Affinity" },
+        { "electricityAffinityButton", "Electricity Affinity" },
+        { "lightAffinityButton", "Light Affinity" },
+        { "poisonAffinityButton", "Poison Affinity" },
+        { "acidAffinityButton", "Acid Affinity" },
+        { "bacteriaAffinityButton", "Bacteria Affinity" },
+        { "virusAffinityButton", "Virus Affinity" },
+        { "fungiAffinityButton", "Fungi Affinity" },
+        { "radiationAffinityButton", "Radiation Affinity" },
+
+        // Physical resistance
+        { "bludgeoningResistanceButton", "Bludgeoning Resistance" },
+        { "slashingResistanceButton", "Slashing Resistance" },
+        { "piercingResistanceButton", "Piercing Resistance" }
+    };
+
+    // Create and configure buttons
+    foreach (var config in buttonConfigs)
+    {
+        Button button = new Button { text = config.Value };
+        button.style.position = Position.Relative;
+        button.RegisterCallback<ClickEvent>(e => StatIncrement(config.Value));
+        leftPanelButtonContainer.Add(button);
+        LeftCreationPanel.Add(button);
+    }
+
+    // Add the container to the UI (if not already added)
+    if (!LeftCreationPanel.Contains(leftPanelButtonContainer))
+    {
+        LeftCreationPanel.Add(leftPanelButtonContainer);
+    }
+}
 
 
 
     private void StatIncrement(string stat)
     {
         StatIncrented?.Invoke(stat);
+    }
+
+    public void DisplayeIncrementEffect(string statIncremented)
+    {
+        RightCreationPanel.style.display = DisplayStyle.Flex;
+        charCreationText.style.whiteSpace = WhiteSpace.Normal;
+        charCreationText.style.color = Color.white;
+        charCreationText.text = statIncremented + "was Increased";
     }
     
 }

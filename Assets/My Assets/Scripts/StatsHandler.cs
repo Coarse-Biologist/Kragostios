@@ -38,29 +38,29 @@ public class StatsHandler : MonoBehaviour
     [SerializeField] public int currentStamina  {private set; get;}= 100;
     #endregion
 
-    #region // Elemental resistences
-    public int ColdResist {private set; get;} = 0;
-    public int IceResist {private set; get;} = 0;
-    public int WaterResist {private set; get;} = 0;
-    public int EarthResist {private set; get;} = 0;
-    public int HeatResist {private set; get;} = 0;
-    public int LavaResist {private set; get;} = 0;
-    public int FireResist {private set; get;} = 0;
-    public int AirResist {private set; get;} = 0;
-    public int ElectrictyResist {private set; get;} = 0;
-    public int LightResist {private set; get;} = 0;
-    public int PsychicResist {private set; get;} = 0;
-    public int FungiResist {private set; get;} = 0;
-    public int PoisonResist {private set; get;} = 0;
-    public int AcidResist {private set; get;} = 0;
-    public int RadiationResist {private set; get;} = 0;
-    public int BacteriaResist {private set; get;} = 0;
-    public int VirusResist {private set; get;} = 0;
+    #region // Elemental Affinityences
+    public int ColdAffinity {private set; get;} = 0;
+    public int IceAffinity {private set; get;} = 0;
+    public int WaterAffinity {private set; get;} = 0;
+    public int EarthAffinity {private set; get;} = 0;
+    public int HeatAffinity {private set; get;} = 0;
+    public int LavaAffinity {private set; get;} = 0;
+    public int FireAffinity {private set; get;} = 0;
+    public int AirAffinity {private set; get;} = 0;
+    public int ElectrictyAffinity {private set; get;} = 0;
+    public int LightAffinity {private set; get;} = 0;
+    public int PsychicAffinity {private set; get;} = 0;
+    public int FungiAffinity {private set; get;} = 0;
+    public int PoisonAffinity {private set; get;} = 0;
+    public int AcidAffinity {private set; get;} = 0;
+    public int RadiationAffinity {private set; get;} = 0;
+    public int BacteriaAffinity {private set; get;} = 0;
+    public int VirusAffinity {private set; get;} = 0;
 
 
     #endregion
 
-    #region // Physical resistences 
+    #region // Physical Affinityences 
     public int BludgeoningResist {private set; get;} = 0;
     public int SlashingResist {private set; get;} = 0;
     public int PiercingResist {private set; get;} = 0;
@@ -144,23 +144,23 @@ public class StatsHandler : MonoBehaviour
     public void AddHealthRegen(int incrementValue) => HealthRegen += incrementValue;
     public void AddManaRegen(int incrementValue) => ManaRegen += incrementValue;
     public void AddStaminaRegen(int incrementValue) => StaminaRegen += incrementValue;
-    public void AddColdResist(int incrementValue) => ColdResist += incrementValue;
-    public void AddIceResist(int incrementValue) => IceResist += incrementValue;
-    public void AddWaterResist(int incrementValue) => WaterResist += incrementValue;
-    public void AddEarthResist(int incrementValue) => EarthResist += incrementValue;
-    public void AddHeatResist(int incrementValue) => HeatResist += incrementValue;
-    public void AddLavaResist(int incrementValue) => LavaResist += incrementValue;
-    public void AddFireResist(int incrementValue) => FireResist += incrementValue;
-    public void AddAirResist(int incrementValue) => AirResist += incrementValue;
-    public void AddElectricityResist(int incrementValue) => ElectrictyResist += incrementValue;
-    public void AddLightResist(int incrementValue) => LightResist += incrementValue;
-    public void AddPsychicResist(int incrementValue) => PsychicResist += incrementValue;
-    public void AddFungiResist(int incrementValue) => FungiResist += incrementValue;
-    public void AddPoisonResist(int incrementValue) => PoisonResist += incrementValue;
-    public void AddAcidResist(int incrementValue) => AcidResist += incrementValue;
-    public void AddRadiationResist(int incrementValue) => RadiationResist += incrementValue;
-    public void AddBacteriaResist(int incrementValue) => BacteriaResist += incrementValue;
-    public void AddVirusResist(int incrementValue) => BacteriaResist += incrementValue;
+    public void AddColdAffinity(int incrementValue) => ColdAffinity += incrementValue;
+    public void AddIceAffinity(int incrementValue) => IceAffinity += incrementValue;
+    public void AddWaterAffinity(int incrementValue) => WaterAffinity += incrementValue;
+    public void AddEarthAffinity(int incrementValue) => EarthAffinity += incrementValue;
+    public void AddHeatAffinity(int incrementValue) => HeatAffinity += incrementValue;
+    public void AddLavaAffinity(int incrementValue) => LavaAffinity += incrementValue;
+    public void AddFireAffinity(int incrementValue) => FireAffinity += incrementValue;
+    public void AddAirAffinity(int incrementValue) => AirAffinity += incrementValue;
+    public void AddElectricityAffinity(int incrementValue) => ElectrictyAffinity += incrementValue;
+    public void AddLightAffinity(int incrementValue) => LightAffinity += incrementValue;
+    public void AddPsychicAffinity(int incrementValue) => PsychicAffinity += incrementValue;
+    public void AddFungiAffinity(int incrementValue) => FungiAffinity += incrementValue;
+    public void AddPoisonAffinity(int incrementValue) => PoisonAffinity += incrementValue;
+    public void AddAcidAffinity(int incrementValue) => AcidAffinity += incrementValue;
+    public void AddRadiationAffinity(int incrementValue) => RadiationAffinity += incrementValue;
+    public void AddBacteriaAffinity(int incrementValue) => BacteriaAffinity += incrementValue;
+    public void AddVirusAffinity(int incrementValue) => BacteriaAffinity += incrementValue;
     public void AddBludgeoningResist(int incrementValue) => BludgeoningResist += incrementValue;
     public void AddSlashingResist(int incrementValue) => SlashingResist += incrementValue;
     public void AddPiercingResist(int incrementValue) => PiercingResist += incrementValue;

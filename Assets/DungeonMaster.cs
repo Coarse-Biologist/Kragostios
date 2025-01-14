@@ -347,58 +347,58 @@ private void HandleStatIncremented(string stat)
     case "Action Point Regeneration":
     playerStats.AddActionPointRegen(1);
         break;
-    case "Ice Resistance":
-    playerStats.AddIceResist(5);
+    case "Ice Affinity":
+    playerStats.AddIceAffinity(5);
         break;
-    case "Cold Resistance":
-    playerStats.AddColdResist(5);
+    case "Cold Affinity":
+    playerStats.AddColdAffinity(5);
         break;
-    case "Water Resistance":
-    playerStats.AddWaterResist(5);
+    case "Water Affinity":
+    playerStats.AddWaterAffinity(5);
         break;
-    case "Earth Resistance":
-    playerStats.AddEarthResist(5);
+    case "Earth Affinity":
+    playerStats.AddEarthAffinity(5);
         break;
-    case "Fire Resistance":
-    playerStats.AddFireResist(5);
+    case "Fire Affinity":
+    playerStats.AddFireAffinity(5);
         break;
-    case "Lava Resistance":
-    playerStats.AddLavaResist(5);
+    case "Lava Affinity":
+    playerStats.AddLavaAffinity(5);
         break;
-    case "Heat Resistance":
-    playerStats.AddHeatResist(5);
+    case "Heat Affinity":
+    playerStats.AddHeatAffinity(5);
         break;
-    case "Air Resistance":
-    playerStats.AddAirResist(5);
+    case "Air Affinity":
+    playerStats.AddAirAffinity(5);
         break;
-    case "Electricty Resistance":
-    playerStats.AddElectricityResist(5);
+    case "Electricty Affinity":
+    playerStats.AddElectricityAffinity(5);
         break;
-    case "Light Resistance":
-    playerStats.AddLightResist(5);
+    case "Light Affinity":
+    playerStats.AddLightAffinity(5);
         break;
-    case "Poison Resistance":
-    playerStats.AddPoisonResist(5);
+    case "Poison Affinity":
+    playerStats.AddPoisonAffinity(5);
         break;
-    case "Acid Resistance":
-    playerStats.AddAcidResist(5);
+    case "Acid Affinity":
+    playerStats.AddAcidAffinity(5);
         break;
-    case "Bacteria Resistance":
-    playerStats.AddBacteriaResist(5);
+    case "Bacteria Affinity":
+    playerStats.AddBacteriaAffinity(5);
         break;
-    case "Virus Resistance":
-    playerStats.AddVirusResist(5);
+    case "Virus Affinity":
+    playerStats.AddVirusAffinity(5);
         break;
-    case "Fungi Resistance":
-    playerStats.AddFungiResist(5);
+    case "Fungi Affinity":
+    playerStats.AddFungiAffinity(5);
         break;
-    case "Radiation Resistance":
-    playerStats.AddRadiationResist(5);
+    case "Radiation Affinity":
+    playerStats.AddRadiationAffinity(5);
         break;
     case "Bludgeoning Resistance":
     playerStats.AddBludgeoningResist(5);
         break;
-    case "SlashingResistance":
+    case "Slashing Resistance":
     playerStats.AddSlashingResist(5);
         break;
     case "Piercing Resistance":
@@ -407,6 +407,7 @@ private void HandleStatIncremented(string stat)
     default:
         break;
     }
+    playerOptions.DisplayeIncrementEffect(stat);
 }
 }
 

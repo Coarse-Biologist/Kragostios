@@ -30,7 +30,7 @@ public class NarrationScript : MonoBehaviour
     //    narratorText = narratorWindow.Q<Label>("NarratorText");
     //}
     private void Awake()
-{
+    {
     root = UIDocument.rootVisualElement;
 
     if (root == null)
@@ -57,6 +57,7 @@ public class NarrationScript : MonoBehaviour
     root.style.backgroundColor = Color.black;
     narratorText.style.color = Color.white;
     root.MarkDirtyRepaint();
+    narratorWindow.style.display = DisplayStyle.None;
     }
 
 
