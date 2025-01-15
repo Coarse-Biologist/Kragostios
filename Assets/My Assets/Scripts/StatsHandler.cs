@@ -104,20 +104,21 @@ public class StatsHandler : MonoBehaviour
     private string GetKnownAbilitiesString()
     {
         string knownAbilitiesString = "";
-        if (knownAbilities.Count != 0)
-        {
-            foreach( AbilityScrollStorage.Abilities ability in knownAbilities)
+        foreach( AbilityScrollStorage.Abilities ability in knownAbilities)
         {
             knownAbilitiesString += ability.AbilityName + ", ";
         }
-        }
-        
         return knownAbilitiesString;
     }
     public string GetCharInfo()
     {
         string knownAbilitiesString = GetKnownAbilitiesString();
-        string charInfo = $"Character Name: {characterName} \n Description: {description} \n Char Type: {charType} \n  Difficulty: {difficulty} \n Max Health: {MaxHealth} \n  Max Mana: {MaxMana} \n  Max Stamina: {MaxStamina} \n  Initiative: {initiative} \n  Current Health: {currentHealth} \n Current Mana: {currentMana} Current Stamina: {currentStamina}, Health Regen: {HealthRegen} \n  Mana Regen: {ManaRegen} \n  Stamina Regen: {StaminaRegen} \n  Character Level: {characterLevel} \n Available Stat Points: {availableStatPoints} \n  Current XP: {currentXp} \n Max XP: {MaxXp} \n  Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+        string charInfo = $"Character Name: {characterName}, Description: {description}, Char Type: {charType}, Difficulty: {difficulty}, " +
+        $"Max Health: {MaxHealth}, Max Mana: {MaxMana}, Max Stamina: {MaxStamina}, Initiative: {initiative}, " +
+        $"Current Health: {currentHealth}, Current Mana: {currentMana}, Current Stamina: {currentStamina}, " +
+        $"Health Regen: {HealthRegen}, Mana Regen: {ManaRegen}, Stamina Regen: {StaminaRegen}, " +
+        $"Character Level: {characterLevel}, Available Stat Points: {availableStatPoints}, Current XP: {currentXp}, Max XP: {MaxXp}, " +
+        $"Known Abilities: {string.Join(", ", knownAbilitiesString)}";
         return charInfo;
 
     }
