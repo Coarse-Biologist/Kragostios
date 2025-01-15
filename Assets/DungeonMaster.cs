@@ -58,8 +58,8 @@ private void Start()
     List<Directions> directions = map.directions;
     //playerOptions.SpawnDirectionOptions(directions);
     //RequestPlayerName();
-    //InitiateCombat();
-    playerOptions.DisplayCharacterCreationScreen();
+    InitiateCombat();
+    //playerOptions.DisplayCharacterCreationScreen();
 }
 
 private void OnEnable()
@@ -407,7 +407,9 @@ private void HandleStatIncremented(string stat)
     default:
         break;
     }
-    playerOptions.DisplayeIncrementEffect(stat);
+    string charInfo = playerStats.GetCharInfo();
+
+    playerOptions.DisplayeIncrementEffect(stat, charInfo);
 }
 }
 

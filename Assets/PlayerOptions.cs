@@ -430,12 +430,12 @@ public void DisplayCharacterCreationScreen()
         StatIncrented?.Invoke(stat);
     }
 
-    public void DisplayeIncrementEffect(string statIncremented)
+    public void DisplayeIncrementEffect(string statIncremented, string charInfo)
     {
         RightCreationPanel.style.display = DisplayStyle.Flex;
         charCreationText.style.whiteSpace = WhiteSpace.Normal;
         charCreationText.style.color = Color.white;
-        charCreationText.text = statIncremented + "was Increased";
+        charCreationText.text = statIncremented + " was Increased" + $"{charInfo}" ;
     }
     
 }
