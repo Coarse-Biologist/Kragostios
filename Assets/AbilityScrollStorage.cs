@@ -2,7 +2,7 @@ using KragostiosAllEnums;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilityScrollStorage : MonoBehaviour
+public class Obsolete_AbilityScrollStorage : MonoBehaviour
 {
     public Abilities Fireball { get; private set; }
     public Abilities DivineFire { get; private set; }

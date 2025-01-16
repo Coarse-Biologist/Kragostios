@@ -14,7 +14,7 @@ public class CombatFlow : MonoBehaviour
 
     public UnityEvent<string> NarrationRequest;
 
-    public UnityEvent<List<AbilityScrollStorage.Abilities>> OptionButtonRequest;
+    public UnityEvent<List<Ability_SO>> OptionButtonRequest;
     public UnityEvent<List<GameObject>> TargetButtonRequest;
     public UnityEvent ContinueButtonRequest; 
     public UnityEvent<List<GameObject>> CombatEnded;
@@ -23,7 +23,7 @@ public class CombatFlow : MonoBehaviour
     private bool awaitingAbilitySelection;
     private int targetsExpected;
     private List<GameObject> selectedTargets = new List<GameObject>();
-    private AbilityScrollStorage.Abilities selectedAbility;
+    private Ability_SO selectedAbility;
     private int currentTurnIndex = 0;
     public GameObject caster {private set; get;}
     
@@ -95,8 +95,8 @@ public class CombatFlow : MonoBehaviour
         bool enemiesRemaining = CheckEnemiesRemaining();
         bool alliesRemaining = CheckAlliesRemaining();
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
-        List<AbilityScrollStorage.Abilities> usableAbilities = new List<AbilityScrollStorage.Abilities>();
-        foreach (AbilityScrollStorage.Abilities ability in stats.knownAbilities)
+        List<Ability_SO> usableAbilities = new List<Ability_SO>();
+        foreach (Ability_SO ability in stats.knownAbilities)
         {
             if (enemiesRemaining)
             {
@@ -122,10 +122,10 @@ public class CombatFlow : MonoBehaviour
             
         }
         int numberKnownAbilities = usableAbilities.Count();
-        int randomSkillIndex = Random.Range(0, numberKnownAbilities - 1);
+        int randomSkillIndex = Random.Range(0, numberKnownAbilities);
         
-
-        AbilityScrollStorage.Abilities selectedAbility = usableAbilities[randomSkillIndex];
+        Debug.Log($"{numberKnownAbilities} = number of known abilities");
+        Ability_SO selectedAbility = usableAbilities[randomSkillIndex];
         
         List<GameObject> targets = new List<GameObject>();
 
@@ -236,7 +236,7 @@ public class CombatFlow : MonoBehaviour
         
 
     }
-    private void HandleAbilityEffect(List<GameObject> targets, AbilityScrollStorage.Abilities selectedAbility)
+    private void HandleAbilityEffect(List<GameObject> targets, Ability_SO selectedAbility)
     {   
         foreach(GameObject target in targets)
         {
@@ -288,7 +288,7 @@ public class CombatFlow : MonoBehaviour
     {
         ContinueButtonRequest?.Invoke();
     }
-    private void RequestOptionButtons(List<AbilityScrollStorage.Abilities> abilities)
+    private void RequestOptionButtons(List<Ability_SO> abilities)
     {
         Debug.Log("Ability Button request sent?");
 
@@ -305,11 +305,13 @@ public class CombatFlow : MonoBehaviour
     {
         combatants = assignedCombatants;
     }
-    public void SetSelectedAbility(AbilityScrollStorage.Abilities ability)
+    public void SetSelectedAbility(Ability_SO ability)
     {
         selectedAbility = ability;
     }
 
+
+    
     public void AddSelectedTarget(GameObject target)
     {
         selectedTargets.Add(target);

@@ -485,7 +485,6 @@ GameObject:
   - component: {fileID: 1889742910}
   - component: {fileID: 1889742909}
   - component: {fileID: 1889742908}
-  - component: {fileID: 1889742914}
   m_Layer: 0
   m_Name: DungeonMaster
   m_TagString: Untagged
@@ -521,6 +520,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIDocument: {fileID: 47796375}
+  abilityLibrary: {fileID: 3956530751801943913, guid: 951288479506768488d1e9f93148f190, type: 3}
   creaturePrefab: {fileID: 6120357300266039415, guid: 559decf9aba7d754fa44fe2814adfb31, type: 3}
 --- !u!114 &1889742909
 MonoBehaviour:
@@ -558,6 +558,19 @@ MonoBehaviour:
   JourneyDirectionSelected:
     m_PersistentCalls:
       m_Calls: []
+  ContinueSelected:
+    m_PersistentCalls:
+      m_Calls: []
+  IntroOptionSelected:
+    m_PersistentCalls:
+      m_Calls: []
+  PlayertextInput:
+    m_PersistentCalls:
+      m_Calls: []
+  StatIncrented:
+    m_PersistentCalls:
+      m_Calls: []
+  abilityScript: {fileID: 0}
 --- !u!114 &1889742911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -582,14 +595,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2f48a4641fc9e94ca089205e6d8fd18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combatants: []
   NarrationRequest:
     m_PersistentCalls:
       m_Calls: []
-  AbilityButtonRequest:
+  OptionButtonRequest:
     m_PersistentCalls:
       m_Calls: []
   TargetButtonRequest:
+    m_PersistentCalls:
+      m_Calls: []
+  ContinueButtonRequest:
+    m_PersistentCalls:
+      m_Calls: []
+  CombatEnded:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &1889742913
@@ -614,18 +632,63 @@ MonoBehaviour:
   impassableTerrainDensity: 1
   healerDensity: 1
   barrenDensity: 1
---- !u!114 &1889742914
-MonoBehaviour:
+--- !u!1001 &8866020246099511803
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1889742905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f8c7c16cccc0ce43a0dd2ff91c32740, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3973652823167170597, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_Name
+      value: AbilityLibrary
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.7672446
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.054581
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 316.813
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857741140804078155, guid: 951288479506768488d1e9f93148f190, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 951288479506768488d1e9f93148f190, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -635,3 +698,4 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1889742907}
   - {fileID: 47796376}
+  - {fileID: 8866020246099511803}

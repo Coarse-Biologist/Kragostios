@@ -15,7 +15,7 @@ public class PlayerOptions : MonoBehaviour
     private VisualElement root;
     public VisualTreeAsset templateButton;
     private VisualElement buttonContainer_CO;
-    private VisualElement buttonContainer_PO;
+    private VisualElement buttonContainer_AO;
     private VisualElement charInfoPanel;
     private VisualElement abilityInfoPanel;
 
@@ -25,24 +25,13 @@ public class PlayerOptions : MonoBehaviour
     private VisualElement MiddleCreationPanel;
     private VisualElement RightCreationPanel;
 
-    private Button HealthButton;
-    private Button ManaButton;
-    private Button StaminaButton;
-    private Button HealthRegenButton;
-    private Button ManaRegenButton;
-    private Button StaminaRegenButton;
-
-
-
-
-
     # endregion
 
     private Label abilityInfoText;
     private Label charInfoText;
     private Label charCreationText;
     private TextField myTextField;
-    public UnityEvent<AbilityScrollStorage.Abilities> AbilitySelected;
+    public UnityEvent<Ability_SO> AbilitySelected;
     public UnityEvent<GameObject> TargetSelected;
     public UnityEvent<Directions> JourneyDirectionSelected;
     public UnityEvent ContinueSelected;
@@ -54,7 +43,7 @@ public class PlayerOptions : MonoBehaviour
     public Dictionary<string, List<string>> IntroOptionDict {private set; get;}
     
 
-    [SerializeField] public AbilityScrollStorage abilityScript;
+    [SerializeField] public AbilityLibrary abilityLibrary;
 
     private void Awake()
     {
@@ -62,7 +51,7 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_CO = root.Q<VisualElement>("CombatantButtons");
         charInfoPanel = root.Q<VisualElement>("CharInfoPanel");
         charInfoText = charInfoPanel.Q<Label>("CharInfo");
-        buttonContainer_PO = root.Q<VisualElement>("PlayerOptions");
+        buttonContainer_AO = root.Q<VisualElement>("PlayerOptions");
         abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
         abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
 
@@ -74,6 +63,7 @@ public class PlayerOptions : MonoBehaviour
         MiddleCreationPanel = root.Q<VisualElement>("MiddleCreationPanel");
         RightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         charCreationText = RightCreationPanel.Q<Label>("CharCreationText");
+        buttonContainer_AO.style.display = DisplayStyle.None;
         
 
         
@@ -91,10 +81,11 @@ public class PlayerOptions : MonoBehaviour
             //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
 
             newButton.text = direction.ToString();
-            buttonContainer_PO.Add(newButtonContainer);
+            buttonContainer_AO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnJourneyDirectionSelected(direction));
         }
+        buttonContainer_AO.MarkDirtyRepaint();
     }
     public void SpawnTargetButtons(List<GameObject> combatants) // make this list start with friendly options
     {   
@@ -112,28 +103,36 @@ public class PlayerOptions : MonoBehaviour
             newButton.RegisterCallback<PointerEnterEvent>(evt =>ShowCharInfo(combatant));
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideCharInfo());
         }
+        buttonContainer_CO.MarkDirtyRepaint();
+
         
     }
-    public void SpawnAbilityButtons(List<AbilityScrollStorage.Abilities> abilities)
+    public void SpawnAbilityButtons(List<Ability_SO> abilities)
     {   
         ClearTargetContainer();
         awaitingAbilitySelection = true;
         
-        foreach (AbilityScrollStorage.Abilities ability in abilities)
+        foreach (Ability_SO ability in abilities)
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
             Debug.Log($"new ability Button requested and being processed");
 
             newButton.text = ability.AbilityName;
-            buttonContainer_PO.Add(newButtonContainer);
+            buttonContainer_AO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnAbilitySelected(ability));
             newButton.RegisterCallback<PointerEnterEvent>(evt => ShowAbilityInfo(ability));
             newButton.RegisterCallback<PointerEnterEvent>(evt => HideCharInfo());
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideAbilityInfo());
+            
         }
-        
+        buttonContainer_AO.MarkDirtyRepaint();
+        //root.MarkDirtyRepaint();  
+    }
+    public void SetAbilitiesScript(AbilityLibrary theAbilityLibrary)
+    {
+        abilityLibrary = theAbilityLibrary;
     }
 
     public void SpawnPlayerInfoButton(GameObject player)
@@ -142,12 +141,13 @@ public class PlayerOptions : MonoBehaviour
         Button newButton = newButtonContainer.Q<Button>();
         StatsHandler stats = player.GetComponent<StatsHandler>();
         newButton.text = $"Show {stats.characterName}'s Info";
-        buttonContainer_PO.Add(newButtonContainer);
+        buttonContainer_AO.Add(newButtonContainer);
         newButtonContainer.Add(newButton);
         //newButton.style.position = Position.Absolute;
         //newButton.style.bottom = 0; // Set to 0 to anchor to the bottom
         //newButton.style.left = 0;
         newButton.RegisterCallback<ClickEvent>(e => ShowPlayerInfo(player));
+        buttonContainer_CO.MarkDirtyRepaint();
     }
     public void SpawnContinueButton()
     {   
@@ -157,10 +157,11 @@ public class PlayerOptions : MonoBehaviour
         TemplateContainer newButtonContainer = templateButton.Instantiate();
         Button newButton = newButtonContainer.Q<Button>();
         newButton.text = "Continue";
-        buttonContainer_PO.Add(newButtonContainer);
+        buttonContainer_AO.Add(newButtonContainer);
         newButtonContainer.Add(newButton);
         newButton.RegisterCallback<ClickEvent>(e => OnContinueSelected());
-        
+        buttonContainer_AO.MarkDirtyRepaint();
+        root.MarkDirtyRepaint();
     }
 
     private void OnJourneyDirectionSelected(Directions direction)
@@ -168,7 +169,7 @@ public class PlayerOptions : MonoBehaviour
         JourneyDirectionSelected?.Invoke(direction);
         ClearAbilityContainer();
     }
-    public void OnAbilitySelected(AbilityScrollStorage.Abilities ability)
+    public void OnAbilitySelected(Ability_SO ability)
     {   
         HideAbilityInfo();
         HideCharInfo();
@@ -199,13 +200,23 @@ public class PlayerOptions : MonoBehaviour
         //Debug.Log("Hovering over button!");
     }
 
-    private void ShowAbilityInfo(AbilityScrollStorage.Abilities ability)
+    private void ShowAbilityInfo(Ability_SO ability)
     {
-        string abilityInfo = ability.GetAbilityInfo(ability);
+        try {string abilityInfo = abilityLibrary.GetAbilityInfo(ability);
         abilityInfoPanel.style.display = DisplayStyle.Flex;
         abilityInfoText.style.whiteSpace = WhiteSpace.Normal;
         abilityInfoText.style.color = Color.white;
         abilityInfoText.text = abilityInfo;
+        }
+        catch(NullReferenceException)
+        {
+            Debug.Log("Hovering over button! but something doesnt exist");
+                    Debug.Log($"ability library script: {abilityLibrary}!");
+
+
+        }
+        
+        
         //newButton.style.backgroundColor = new StyleColor(Color.red); 
         Debug.Log("Hovering over button!");
 
@@ -221,6 +232,13 @@ public class PlayerOptions : MonoBehaviour
         charInfoPanel.style.display = DisplayStyle.None;
         charInfoText.text = " ";
         Debug.Log("Not hovering over button!");    
+    }
+
+    public void HideCreationScreen()
+    {
+        LeftCreationPanel.style.display = DisplayStyle.None;
+        RightCreationPanel.style.display = DisplayStyle.None;
+        
     }
     private void OnContinueSelected()
     {
@@ -242,7 +260,7 @@ public class PlayerOptions : MonoBehaviour
     public void ClearAbilityContainer()
     {
 
-        buttonContainer_PO.Clear();
+        buttonContainer_AO.Clear();
     }
     
     public void ClearTargetContainer()
@@ -253,11 +271,6 @@ public class PlayerOptions : MonoBehaviour
     public void SetAwaitingAbilitySelection(bool awaiting)
     {
         awaitingAbilitySelection = awaiting;
-    }
-
-    public void SetAbilitiesScript(AbilityScrollStorage script)
-    {
-        abilityScript = script;
     }
 
     // Intro functions
@@ -288,7 +301,7 @@ public class PlayerOptions : MonoBehaviour
         {        
             Button newButton = newButtonContainer.Q<Button>();
             newButton.text = option;
-            buttonContainer_PO.Add(newButtonContainer);
+            buttonContainer_AO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OptionSelected(option));
             //newButton.RegisterCallback<PointerEnterEvent>(evt => ());
@@ -363,9 +376,12 @@ public class PlayerOptions : MonoBehaviour
 
 public void DisplayCharacterCreationScreen()
 {
+    buttonContainer_AO.style.display = DisplayStyle.None;
     // Create containers
-    TemplateContainer leftPanelButtonContainer = templateButton.Instantiate();
-    root.MarkDirtyRepaint();
+    //TemplateContainer leftPanelButtonContainer = templateButton.Instantiate();
+    LeftCreationPanel.style.display = DisplayStyle.Flex;
+    //root.MarkDirtyRepaint();
+    //LeftCreationPanel.MarkDirtyRepaint();
 
     // Define button configurations
     var buttonConfigs = new Dictionary<string, string>
@@ -412,15 +428,19 @@ public void DisplayCharacterCreationScreen()
         Button button = new Button { text = config.Value };
         button.style.position = Position.Relative;
         button.RegisterCallback<ClickEvent>(e => StatIncrement(config.Value));
-        leftPanelButtonContainer.Add(button);
+        //leftPanelButtonContainer.Add(button);
         LeftCreationPanel.Add(button);
+        button.MarkDirtyRepaint();
     }
 
     // Add the container to the UI (if not already added)
-    if (!LeftCreationPanel.Contains(leftPanelButtonContainer))
-    {
-        LeftCreationPanel.Add(leftPanelButtonContainer);
-    }
+    //if (!LeftCreationPanel.Contains(leftPanelButtonContainer))
+    //{
+    //    LeftCreationPanel.Add(leftPanelButtonContainer);
+    //}
+    //root.MarkDirtyRepaint();
+    LeftCreationPanel.MarkDirtyRepaint();
+    //leftPanelButtonContainer.MarkDirtyRepaint();
 }
 
 
@@ -430,12 +450,12 @@ public void DisplayCharacterCreationScreen()
         StatIncrented?.Invoke(stat);
     }
 
-    public void DisplayeIncrementEffect(string statIncremented)
+    public void DisplayeIncrementEffect(string statIncremented, StatsHandler playerStats)
     {
         RightCreationPanel.style.display = DisplayStyle.Flex;
         charCreationText.style.whiteSpace = WhiteSpace.Normal;
         charCreationText.style.color = Color.white;
-        charCreationText.text = statIncremented + "was Increased";
+        charCreationText.text = statIncremented + $"was Increased \n {playerStats.GetCharInfo()}";
     }
     
 }

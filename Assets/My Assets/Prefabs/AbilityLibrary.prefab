@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6120357300266039415
+--- !u!1 &3973652823167170597
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7518009890777103411}
-  - component: {fileID: 8530983893580638941}
+  - component: {fileID: 5857741140804078155}
+  - component: {fileID: 3956530751801943913}
   m_Layer: 0
-  m_Name: Creature
+  m_Name: AbilityLibrary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7518009890777103411
+--- !u!4 &5857741140804078155
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6120357300266039415}
+  m_GameObject: {fileID: 3973652823167170597}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.7672446, y: -1.054581, z: 316.813}
@@ -32,16 +32,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8530983893580638941
+--- !u!114 &3956530751801943913
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6120357300266039415}
+  m_GameObject: {fileID: 3973652823167170597}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 696b1ac6f6cc1774f9dda5cbe5ac83ac, type: 3}
+  m_Script: {fileID: 11500000, guid: 612d61d094a616e49b0199d885305de7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityLibrary: {fileID: 3956530751801943913, guid: 951288479506768488d1e9f93148f190, type: 3}
+  FireBall: {fileID: 11400000, guid: 9218559d6049c9542a2b75e209b5ddde, type: 2}
+  HealingTouch: {fileID: 11400000, guid: f9a5bbc405549af45a9157fe0f766f0d, type: 2}
+  DivineStrike: {fileID: 11400000, guid: e3682d3b773b518409e00476831aaa8b, type: 2}
+  Melee: {fileID: 11400000, guid: 0772147ad1f01f54b882879d93ba7f29, type: 2}

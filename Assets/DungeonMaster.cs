@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using KragostiosAllEnums;
+using AbilityEnums;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.VersionControl;
@@ -24,6 +25,8 @@ private NarrationScript narrator;
 private TravelScript travel;
 private CombatFlow combat;
 
+[SerializeField] AbilityLibrary abilityLibrary;
+
 [Header("player")]
 
 [SerializeField] GameObject creaturePrefab;
@@ -41,13 +44,10 @@ private bool awaitingPlayerDescription = false;
 // SetUp
 private void Awake()
 {
-    Player = MakePlayer();
-    playerStats = Player.GetComponent<StatsHandler>();
-    AbilityScrollStorage abilities = Player.GetComponent<AbilityScrollStorage>();
-    List<AbilityScrollStorage.Abilities> knownAbilities = playerStats.knownAbilities;
+    Player = MakePlayer();    
     // Initialize component references
     playerOptions = GetComponent<PlayerOptions>();
-    playerOptions.SetAbilitiesScript(abilities);
+    playerOptions.SetAbilitiesScript(abilityLibrary);
     map = GetComponent<Map>();
     narrator = GetComponent<NarrationScript>();
     travel = GetComponent<TravelScript>();
@@ -59,7 +59,8 @@ private void Start()
     //playerOptions.SpawnDirectionOptions(directions);
     //RequestPlayerName();
     //InitiateCombat();
-    playerOptions.DisplayCharacterCreationScreen();
+    CharacterCreation();
+    
 }
 
 private void OnEnable()
@@ -109,7 +110,7 @@ private void DisplayNarration(string message)
     narrator.DisplayNarrationText(message);
 }
 
-private void SpawnOptionButtons(List<AbilityScrollStorage.Abilities> abilities)
+private void SpawnOptionButtons(List<Ability_SO> abilities)
 {
     Debug.Log("Spawn ability request recieved?");
     playerOptions.SpawnAbilityButtons(abilities);
@@ -131,7 +132,7 @@ public void HandleTargetSelected(GameObject target) // needs a lot of work
     combat.AddSelectedTarget(target);
 }
 
-public void HandleAbilitySelected(AbilityScrollStorage.Abilities ability) // needs a lot of work
+public void HandleAbilitySelected(Ability_SO ability) // needs a lot of work
 {
     StatsHandler casterStats = combat.caster.GetComponent<StatsHandler>();
     
@@ -185,12 +186,9 @@ private void HandleCombatContinuePressed()
 private GameObject MakePlayer()
 {
     GameObject creature = Instantiate(creaturePrefab);
-    StatsHandler stats = creature.GetComponent<StatsHandler>();
-    AbilityScrollStorage abilities = creature.GetComponent<AbilityScrollStorage>();
-    //Player = stats.MakeCreature(Difficulty.Nightmare, Combatants.Player);  
-    //stats.LearnAbility(abilities.DivineFire);
-
-    return creature;  
+    playerStats = creature.GetComponent<StatsHandler>();
+    Player = playerStats.MakePlayer();
+    return Player;  
 }
 
 private GameObject MakeEnemy(Difficulty difficulty)
@@ -234,7 +232,7 @@ private void InitiateCombat()
     combat.SetCombatants(combatants);
     combat.DecideTurnOrder();
     combat.CombatCycle();//combatants);
-    playerOptions.SpawnPlayerInfoButton(Player);
+    
 }
 
 // Map and main menu
@@ -316,7 +314,11 @@ private void HandlePlayerTextInput(string playerInput)
         awaitingPlayerDescription = false;
     }
 }
-
+private void CharacterCreation()
+{
+    narratorWindow.style.display = DisplayStyle.None;
+    playerOptions.DisplayCharacterCreationScreen();
+}
 private void HandleStatIncremented(string stat)
 {
     
@@ -407,7 +409,7 @@ private void HandleStatIncremented(string stat)
     default:
         break;
     }
-    playerOptions.DisplayeIncrementEffect(stat);
+    playerOptions.DisplayeIncrementEffect(stat, playerStats);
 }
 }
 

@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 //using UnityEngine.Accessibility;
 using KragostiosAllEnums;
+using AbilityEnums;
 using System;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 //using UnityEngine.UI;
 //using UnityEditor.SceneManagement;
 //using UnityEditor.Rendering;
@@ -12,8 +14,8 @@ public class StatsHandler : MonoBehaviour
 {
 
     #region // class references
-    private AbilityScrollStorage scrollStorage;
-    private AbilityScrollStorage.Abilities abilities;
+    private Ability_SO ability;
+    [SerializeField] public AbilityLibrary abilityLibrary;
     #endregion
 
     #region // char description
@@ -88,12 +90,12 @@ public class StatsHandler : MonoBehaviour
     #region // inventory
     [SerializeField] public List<Rewards> rewards{private set; get;} = new List<Rewards>{ Rewards.Gold, Rewards.Xp};
     [SerializeField] public int characterGold {private set; get;} = 0;
-    [SerializeField] public List<AbilityScrollStorage.Abilities> knownAbilities {private set; get;}
+    [SerializeField] public List<Ability_SO> knownAbilities {private set; get;} = new List<Ability_SO>();
 
     #endregion
     private void Awake()
     {
-        scrollStorage = GetComponent<AbilityScrollStorage>();
+        //scrollStorage = GetComponent<Ability_SO>(); #TODO
     }
     #region // getters
     private bool IsAlive()
@@ -104,7 +106,7 @@ public class StatsHandler : MonoBehaviour
     private string GetKnownAbilitiesString()
     {
         string knownAbilitiesString = "";
-        foreach( AbilityScrollStorage.Abilities ability in knownAbilities)
+        foreach( Ability_SO ability in knownAbilities)
         {
             knownAbilitiesString += ability.AbilityName + ", ";
         }
@@ -184,9 +186,9 @@ public class StatsHandler : MonoBehaviour
             GainLevel();
         } 
     }
-    public void LearnAbility(AbilityScrollStorage.Abilities newAbility)
+    public void LearnAbility(Abilities newAbility)
     {
-        knownAbilities.Add(newAbility);
+        knownAbilities.Add(abilityLibrary.abilityDict[newAbility]);
     }
 
     public void GainGold(int GoldAmount)
@@ -223,24 +225,63 @@ public class StatsHandler : MonoBehaviour
         currentHealth += overHealthAmount;
     }
     #endregion
+    public GameObject MakePlayer()
+    {
+    characterName = "Borgauss";
+    description = "World dominator currently in fetus-form";
+    charType = Combatants.Player;
+    difficulty = Difficulty.Easy;
+    MaxHealth =10;
+    MaxMana = 10;
+    MaxStamina = 10;
+    initiative = 100;
+    ActionPoints = 1;
+    ActionPointRegen = 1;
+    currentHealth = 10;
+    currentMana = 10;
+    currentStamina = 10;
+    ColdAffinity = 0;
+    IceAffinity = 0;
+    WaterAffinity = 0;
+    EarthAffinity = 0;
+    HeatAffinity = 0;
+    LavaAffinity = 0;
+    FireAffinity = 0;
+    AirAffinity = 0;
+    ElectrictyAffinity = 0;
+    LightAffinity = 0;
+    PsychicAffinity = 0;
+    FungiAffinity = 0;
+    PoisonAffinity = 0;
+    AcidAffinity = 0;
+    RadiationAffinity = 0;
+    BacteriaAffinity = 0;
+    VirusAffinity = 0;
+    BludgeoningResist = 0;
+    SlashingResist = 0;
+    PiercingResist = 0;
+    HealthRegen = 0;
+    ManaRegen = 0;
+    StaminaRegen = 0;
+    characterLevel = 0;
+    availableStatPoints = 0;
+    currentXp = 0;
+    MaxXp = 0;
+    rewards = new List<Rewards>();
+    characterGold = 0;
+    knownAbilities = new List<Ability_SO>{
+    abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch
+    };
 
+    return gameObject;
+
+    }
     public GameObject MakeCreature(Difficulty difficultyLevel, Combatants combatantType)
     {
         Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel}");
-        //StatsHandler stats = GetComponent<StatsHandler>();
-        //Abilities abilities = GetComponent<Abilities>();
-        //Abilities.AbilityScrollStorage scrolls = GetComponent<Abilities.AbilityScrollStorage>(); 
-        List<AbilityScrollStorage.Abilities> creatureAbilities = new List<AbilityScrollStorage.Abilities>();
-        creatureAbilities = scrollStorage.GetWeakAbilities();
+        
         switch (combatantType)
         {
-            case (Combatants.Player):
-            charType = Combatants.Player;
-            characterName = "Player";
-            creatureAbilities = scrollStorage.GetWeakAbilities();
-            knownAbilities = creatureAbilities;
-            //return gameObject;
-            break;
             case(Combatants.Enemy):
             charType = Combatants.Enemy;
             characterName = "Enemy";
@@ -271,7 +312,10 @@ public class StatsHandler : MonoBehaviour
             ManaRegen = easyScaleFactor;
             StaminaRegen = easyScaleFactor;
             characterLevel = easyScaleFactor;
-            knownAbilities = creatureAbilities;
+            knownAbilities = abilityLibrary.GetAbilities(easyScaleFactor);
+            Debug.Log($"{knownAbilities}");
+
+            
             
             break;
 
@@ -285,8 +329,8 @@ public class StatsHandler : MonoBehaviour
             ManaRegen = mediumScaleFactor;
             StaminaRegen = mediumScaleFactor;
             characterLevel = mediumScaleFactor;
-            //creatureAbilities = abilities.GetWeakAbilities();
-            knownAbilities = creatureAbilities;
+            knownAbilities = abilityLibrary.GetAbilities(mediumScaleFactor);
+            
             break;
             case Difficulty.Hard:
             difficulty = Difficulty.Hard;
@@ -298,7 +342,8 @@ public class StatsHandler : MonoBehaviour
             ManaRegen = hardScaleFactor;
             StaminaRegen = hardScaleFactor;
             characterLevel = hardScaleFactor;
-            knownAbilities = creatureAbilities;
+            knownAbilities = abilityLibrary.GetAbilities(hardScaleFactor);
+            Debug.Log($"{knownAbilities.ToString()}");
             break;
 
             case Difficulty.Brutal:
@@ -311,8 +356,7 @@ public class StatsHandler : MonoBehaviour
             ManaRegen = brutalScaleFactor;
             StaminaRegen = brutalScaleFactor;
             characterLevel = brutalScaleFactor;
-            //creatureAbilities = abilities.GetWeakAbilities();
-            knownAbilities = creatureAbilities;
+            knownAbilities = abilityLibrary.GetAbilities(brutalScaleFactor);
             break;
 
             case Difficulty.Nightmare:
@@ -327,8 +371,7 @@ public class StatsHandler : MonoBehaviour
             ManaRegen = nightmareScaleFactor;
             StaminaRegen = nightmareScaleFactor;
             characterLevel = nightmareScaleFactor;
-            //creatureAbilities = abilities.GetWeakAbilities();
-            knownAbilities = creatureAbilities;
+            knownAbilities = abilityLibrary.GetAbilities(nightmareScaleFactor);
             break;
             
         }

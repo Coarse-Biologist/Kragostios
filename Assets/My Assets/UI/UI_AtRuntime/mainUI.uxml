@@ -1,17 +1,16 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <engine:VisualElement name="PlayerOptions" style="flex-grow: 1; align-self: flex-start; max-width: 50%; min-width: 50%; height: 50%; max-height: 50%; min-height: 50%; align-content: flex-end; flex-direction: column; flex-wrap: wrap; bottom: 0; left: auto; position: absolute;" />
     <engine:VisualElement name="LeftCreationPanel" style="flex-grow: 1; position: absolute; width: 50%; height: 100%; max-width: 50%; max-height: 100%; min-width: 50%; min-height: 100%; left: 0; align-items: flex-start; flex-wrap: wrap; align-content: auto; flex-basis: 2%;" />
-    <engine:VisualElement name="MiddleCreationPanel" style="flex-grow: 1; position: absolute; width: 25%; height: 100%; max-width: 25%; max-height: 100%; min-width: 25%; min-height: 100%; top: 0; bottom: 0; left: auto; right: auto; align-self: center;" />
-    <engine:VisualElement name="RightCreationPanel" style="flex-grow: 1; position: absolute; width: 25%; height: 100%; max-width: 25%; max-height: 100%; min-width: 25%; min-height: 100%; top: 0; bottom: 0; left: auto; right: 0; align-self: flex-end;">
+    <engine:VisualElement name="RightCreationPanel" style="flex-grow: 1; position: absolute; width: 50%; height: 100%; max-width: 50%; max-height: 100%; min-width: 25%; min-height: 100%; top: 0; bottom: 0; left: auto; right: 0; align-self: flex-end;">
         <engine:Label name="CharCreationText" style="flex-wrap: wrap; align-self: flex-start; flex-basis: 100%; align-items: flex-start; width: 325px;" />
     </engine:VisualElement>
-    <engine:VisualElement name="NarratorWindow" enabled="true" style="flex-grow: 1; top: 0; width: 100%; height: 50%; max-height: 50%; max-width: 100%; min-height: 50%;">
+    <engine:VisualElement name="NarratorWindow" enabled="true" style="flex-grow: 1; top: 0; width: 100%; height: 50%; max-height: 50%; max-width: 100%; min-height: 50%; min-width: 50px;">
         <engine:Label name="NarratorText" style="height: 100%; max-height: 100%; min-height: 100%; flex-wrap: wrap;" />
     </engine:VisualElement>
-    <engine:VisualElement name="CombatantButtons" style="flex-grow: 1; right: 0; flex-direction: row-reverse; height: 50%; max-height: 50%; min-height: 50%; max-width: 50%; min-width: 50%; width: 50%; bottom: 0; position: absolute;" />
+    <engine:VisualElement name="CombatantButtons" style="flex-grow: 1; right: 0; flex-direction: row-reverse; height: 50%; max-height: 50%; min-height: 50%; max-width: 50%; min-width: 50%; width: 50%; bottom: 0; position: absolute; white-space: pre-wrap; flex-wrap: wrap;" />
     <engine:VisualElement name="CharInfoPanel" enabled="true" style="flex-grow: 1; position: absolute; top: 0; right: 0; height: 50%; width: 50%; max-height: 50%; max-width: 50%; min-height: 50%; min-width: 50%; text-overflow: ellipsis; white-space: pre-wrap;">
         <engine:Label name="CharInfo" style="flex-wrap: wrap;" />
     </engine:VisualElement>
+    <engine:VisualElement name="PlayerOptions" style="flex-grow: 1; right: auto; flex-direction: row-reverse; height: 50%; max-height: 50%; min-height: 50%; max-width: 50%; min-width: 50%; width: 50%; bottom: 0; position: absolute; white-space: pre-wrap; flex-wrap: wrap; left: 0;" />
     <engine:VisualElement name="AbilityInfoPanel" style="flex-grow: 1; top: 3px; position: absolute; right: 0; flex-wrap: wrap; height: 50%; max-height: 50%; min-height: 50%; width: 50%; max-width: 50%; min-width: 50%; flex-basis: auto; white-space: pre-wrap; text-overflow: ellipsis;">
         <engine:Label name="AbilityInfo" style="top: 0; flex-wrap: wrap;" />
     </engine:VisualElement>
