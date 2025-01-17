@@ -4,7 +4,9 @@ using UnityEngine;
 using KragostiosAllEnums;
 using AbilityEnums;
 using System;
+using System.Reflection;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using Mono.Cecil.Cil;
 //using UnityEngine.UI;
 //using UnityEditor.SceneManagement;
 //using UnityEditor.Rendering;
@@ -59,6 +61,42 @@ public class StatsHandler : MonoBehaviour
     public int BacteriaAffinity {private set; get;} = 0;
     public int VirusAffinity {private set; get;} = 0;
 
+    public List<int> affinityList;
+    public Dictionary<string, int> AffinityDict;
+
+    public void Awake()
+    {
+        AffinityDict = GetAffinityDict();
+    }
+    public Dictionary<string, int> GetAffinityDict()
+    {
+    // Create a new dictionary with string keys and int values
+        AffinityDict = new Dictionary<string, int>
+        {
+            { "Cold Affinity", ColdAffinity },
+            { "Ice Affinity", IceAffinity },
+            { "Water Affinity", WaterAffinity },
+            { "Earth Affinity", EarthAffinity },
+            { "Heat Affinity", HeatAffinity },
+            { "Lava Affinity", LavaAffinity },
+            { "Fire Affinity", FireAffinity },
+            { "Air Affinity", AirAffinity },
+            { "Electricity Affinity", ElectrictyAffinity },
+            { "Light Affinity", LightAffinity },
+            { "Psychic Affinity", PsychicAffinity },
+            { "Fungi Affinity", FungiAffinity },
+            { "Poison Affinity", PoisonAffinity },
+            { "Acid Affinity", AcidAffinity },
+            { "Radiation Affinity", RadiationAffinity },
+            { "Bacteria Affinity", BacteriaAffinity },
+            { "Virus Affinity", VirusAffinity }
+        };
+        return AffinityDict;
+
+    }
+
+   
+
 
     #endregion
 
@@ -80,7 +118,7 @@ public class StatsHandler : MonoBehaviour
     #region // "Level Stats"
 
     [SerializeField] public int characterLevel  {private set; get;}= 1;
-    [SerializeField] public int availableStatPoints {private set; get;}= 0;
+    [SerializeField] public int availableStatPoints {private set; get;}= 40;
     [SerializeField] public int currentXp  {private set; get;}= 0;
     [SerializeField] public int MaxXp {private set; get;} = 100;
 
@@ -93,10 +131,7 @@ public class StatsHandler : MonoBehaviour
     [SerializeField] public List<Ability_SO> knownAbilities {private set; get;} = new List<Ability_SO>();
 
     #endregion
-    private void Awake()
-    {
-        //scrollStorage = GetComponent<Ability_SO>(); #TODO
-    }
+    
     #region // getters
     private bool IsAlive()
     {
@@ -115,15 +150,35 @@ public class StatsHandler : MonoBehaviour
     public string GetCharInfo()
     {
         string knownAbilitiesString = GetKnownAbilitiesString();
-        string charInfo = $"Character Name: {characterName}, Description: {description}, Char Type: {charType}, Difficulty: {difficulty}, " +
-        $"Max Health: {MaxHealth}, Max Mana: {MaxMana}, Max Stamina: {MaxStamina}, Initiative: {initiative}, " +
-        $"Current Health: {currentHealth}, Current Mana: {currentMana}, Current Stamina: {currentStamina}, " +
-        $"Health Regen: {HealthRegen}, Mana Regen: {ManaRegen}, Stamina Regen: {StaminaRegen}, " +
-        $"Character Level: {characterLevel}, Available Stat Points: {availableStatPoints}, Current XP: {currentXp}, Max XP: {MaxXp}, " +
-        $"Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+        string charInfo = $"Character Name: {characterName} || Description: {description} || Char Type: {charType} || Difficulty: {difficulty} Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
         return charInfo;
-
     }
+    public string GetCharCreationStats()
+    {
+        string charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen}";
+
+        return charInfo;
+    }
+
+    public string GetAffinityString()
+    {
+
+        string affinityString = "";
+        AffinityDict = GetAffinityDict();   
+        
+        foreach(KeyValuePair<string, int> kvp in AffinityDict)
+        {
+            affinityString += $"{kvp.Key}: {kvp.Value} \n";
+        }
+        return affinityString;
+    }
+    public string GetResistString()
+    {
+        string resistString = $"Bludgeoning resistance: {BludgeoningResist} \n Slashing resistance: {SlashingResist} \n Piercing resistance: {PiercingResist}";
+
+        return resistString;
+    }
+
 
     #endregion
     
@@ -137,35 +192,197 @@ public class StatsHandler : MonoBehaviour
 
     #region // Setters
 
-    public void AddMaxHealth(int incrementValue) => MaxHealth += incrementValue;
-    public void AddMaxMana(int incrementValue) => MaxMana += incrementValue;
-    public void AddMaxStamina(int incrementValue) => MaxStamina += incrementValue;
-    public void AddActionPoint(int incrementValue) => MaxStamina += incrementValue;
-    public void AddActionPointRegen(int incrementValue) => MaxStamina += incrementValue;
+        public void AddMaxHealth(int incrementValue, int cost)
+    {
+        MaxHealth += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddMaxMana(int incrementValue, int cost)
+    {
+        MaxMana += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddMaxStamina(int incrementValue, int cost)
+    {
+        MaxStamina += incrementValue;
+        availableStatPoints -= cost;
+    }
 
-    public void AddHealthRegen(int incrementValue) => HealthRegen += incrementValue;
-    public void AddManaRegen(int incrementValue) => ManaRegen += incrementValue;
-    public void AddStaminaRegen(int incrementValue) => StaminaRegen += incrementValue;
-    public void AddColdAffinity(int incrementValue) => ColdAffinity += incrementValue;
-    public void AddIceAffinity(int incrementValue) => IceAffinity += incrementValue;
-    public void AddWaterAffinity(int incrementValue) => WaterAffinity += incrementValue;
-    public void AddEarthAffinity(int incrementValue) => EarthAffinity += incrementValue;
-    public void AddHeatAffinity(int incrementValue) => HeatAffinity += incrementValue;
-    public void AddLavaAffinity(int incrementValue) => LavaAffinity += incrementValue;
-    public void AddFireAffinity(int incrementValue) => FireAffinity += incrementValue;
-    public void AddAirAffinity(int incrementValue) => AirAffinity += incrementValue;
-    public void AddElectricityAffinity(int incrementValue) => ElectrictyAffinity += incrementValue;
-    public void AddLightAffinity(int incrementValue) => LightAffinity += incrementValue;
-    public void AddPsychicAffinity(int incrementValue) => PsychicAffinity += incrementValue;
-    public void AddFungiAffinity(int incrementValue) => FungiAffinity += incrementValue;
-    public void AddPoisonAffinity(int incrementValue) => PoisonAffinity += incrementValue;
-    public void AddAcidAffinity(int incrementValue) => AcidAffinity += incrementValue;
-    public void AddRadiationAffinity(int incrementValue) => RadiationAffinity += incrementValue;
-    public void AddBacteriaAffinity(int incrementValue) => BacteriaAffinity += incrementValue;
-    public void AddVirusAffinity(int incrementValue) => BacteriaAffinity += incrementValue;
-    public void AddBludgeoningResist(int incrementValue) => BludgeoningResist += incrementValue;
-    public void AddSlashingResist(int incrementValue) => SlashingResist += incrementValue;
-    public void AddPiercingResist(int incrementValue) => PiercingResist += incrementValue;
+    public void AddActionPoint(int incrementValue, int cost)
+    {
+        MaxStamina += incrementValue;
+        availableStatPoints -= cost;
+    }
+
+    public void AddActionPointRegen(int incrementValue, int cost)
+    {
+        MaxStamina += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddHealthRegen(int incrementValue, int cost)
+    {
+        HealthRegen += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddManaRegen(int incrementValue, int cost)
+    {
+        ManaRegen += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddStaminaRegen(int incrementValue, int cost)
+    {
+        StaminaRegen += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddColdAffinity(int incrementValue, int cost)
+    {
+        ColdAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        IceAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddIceAffinity(int incrementValue, int cost)
+    {
+        IceAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        ColdAffinity += (int)Math.Round(splashIncrement, 2);
+
+        decimal splashIncrement2 = incrementValue/2;
+        WaterAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddWaterAffinity(int incrementValue, int cost)
+    {
+        WaterAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        IceAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddEarthAffinity(int incrementValue, int cost)
+    {
+        EarthAffinity += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddHeatAffinity(int incrementValue, int cost)
+    {
+        HeatAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        LavaAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddLavaAffinity(int incrementValue, int cost)
+    {
+        LavaAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        HeatAffinity += (int)Math.Round(splashIncrement, 2);
+
+        decimal splashIncrement2 = incrementValue/2;
+        EarthAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddFireAffinity(int incrementValue, int cost)
+    {
+        FireAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        HeatAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddAirAffinity(int incrementValue, int cost)
+    {
+        AirAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        ElectrictyAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddElectricityAffinity(int incrementValue, int cost)
+    {
+        ElectrictyAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        AirAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddLightAffinity(int incrementValue, int cost)
+    {
+        LightAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+
+    public void AddRadiationAffinity(int incrementValue, int cost)
+    {
+        RadiationAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        AirAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+
+    public void AddPsychicAffinity(int incrementValue, int cost)
+    {
+        PsychicAffinity += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddFungiAffinity(int incrementValue, int cost)
+    {
+        FungiAffinity += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddPoisonAffinity(int incrementValue, int cost)
+    {
+        PoisonAffinity += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddAcidAffinity(int incrementValue, int cost)
+    {
+        AcidAffinity += incrementValue;
+        availableStatPoints -= cost;
+    }
+    
+    public void AddBacteriaAffinity(int incrementValue, int cost)
+    {
+        BacteriaAffinity += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddVirusAffinity(int incrementValue, int cost)
+    {
+        VirusAffinity += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddBludgeoningResist(int incrementValue, int cost)
+    {
+        BludgeoningResist += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddSlashingResist(int incrementValue, int cost)
+    {
+        SlashingResist += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddPiercingResist(int incrementValue, int cost)
+    {
+        PiercingResist += incrementValue;
+        availableStatPoints -= cost;
+    }
 
     public void SetName(string name)
     {
@@ -176,7 +393,6 @@ public class StatsHandler : MonoBehaviour
         description = newDesciption;
     }
 
-    
     public void GainXp(int XpGain)
     {
         currentXp = currentXp + XpGain;
@@ -202,7 +418,7 @@ public class StatsHandler : MonoBehaviour
         MaxXp = MaxXp * 2;
     }
 
-        public void TakeDamage(int damageValue)
+    public void TakeDamage(int damageValue)
     {
         currentHealth = currentHealth - damageValue;
 
@@ -225,6 +441,8 @@ public class StatsHandler : MonoBehaviour
         currentHealth += overHealthAmount;
     }
     #endregion
+
+    #region // make player and creatures;
     public GameObject MakePlayer()
     {
     characterName = "Borgauss";
@@ -264,7 +482,7 @@ public class StatsHandler : MonoBehaviour
     ManaRegen = 0;
     StaminaRegen = 0;
     characterLevel = 0;
-    availableStatPoints = 0;
+    availableStatPoints = 40;
     currentXp = 0;
     MaxXp = 0;
     rewards = new List<Rewards>();
@@ -381,6 +599,6 @@ public class StatsHandler : MonoBehaviour
         Debug.Log($"Current Health at time of creation = {currentHealth}");
         return gameObject;
         }
-
+    #endregion
 
 }

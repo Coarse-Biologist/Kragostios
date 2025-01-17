@@ -57,7 +57,7 @@ public class NarrationScript : MonoBehaviour
     root.style.backgroundColor = Color.black;
     narratorText.style.color = Color.white;
     root.MarkDirtyRepaint();
-    narratorWindow.style.display = DisplayStyle.Flex;
+    narratorWindow.style.display = DisplayStyle.None;
     }
 
 

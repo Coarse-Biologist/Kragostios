@@ -316,101 +316,110 @@ private void HandlePlayerTextInput(string playerInput)
 }
 private void CharacterCreation()
 {
-    narratorWindow.style.display = DisplayStyle.None;
     playerOptions.DisplayCharacterCreationScreen();
 }
 private void HandleStatIncremented(string stat)
 {
-    
+    if (playerStats.availableStatPoints > 0)
+    {
     switch(stat)
     {
         
     case "Max Mana":
-        playerStats.AddMaxMana(5);
-        break;
+    if (playerStats.availableStatPoints >= 1) playerStats.AddMaxMana(5, 1);
+    break;
     case "Max Health":
-    playerStats.AddMaxHealth(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddMaxHealth(5, 1);
         break;
     case "Max Stamina":
-    playerStats.AddMaxStamina(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddMaxStamina(5, 1);
         break;
     case "Health Regeneration":
-    playerStats.AddHealthRegen(1);
+    if (playerStats.availableStatPoints >= 3) playerStats.AddHealthRegen(1, 3);
         break;
     case "Mana Regeneration":
-    playerStats.AddManaRegen(1);
+    if (playerStats.availableStatPoints >= 3) playerStats.AddManaRegen(1, 3);
         break;
     case "Stamina Regeneration":
-    playerStats.AddStaminaRegen(1);
+    if (playerStats.availableStatPoints >= 3 ) playerStats.AddStaminaRegen(1, 3);
         break;
     case "Max Action Points":
-    playerStats.AddActionPoint(1);
+    if (playerStats.availableStatPoints >= 20) playerStats.AddActionPoint(1, 20);
         break;
     case "Action Point Regeneration":
-    playerStats.AddActionPointRegen(1);
+    if (playerStats.availableStatPoints >= 20) playerStats.AddActionPointRegen(1, 20);
         break;
     case "Ice Affinity":
-    playerStats.AddIceAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddIceAffinity(5, 1);
         break;
     case "Cold Affinity":
-    playerStats.AddColdAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddColdAffinity(5, 1);
         break;
     case "Water Affinity":
-    playerStats.AddWaterAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddWaterAffinity(5, 1);
         break;
     case "Earth Affinity":
-    playerStats.AddEarthAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddEarthAffinity(5, 1);
         break;
     case "Fire Affinity":
-    playerStats.AddFireAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddFireAffinity(5, 1);
         break;
     case "Lava Affinity":
-    playerStats.AddLavaAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddLavaAffinity(5, 1);
         break;
     case "Heat Affinity":
-    playerStats.AddHeatAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddHeatAffinity(5, 1);
         break;
     case "Air Affinity":
-    playerStats.AddAirAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddAirAffinity(5, 1);
         break;
     case "Electricty Affinity":
-    playerStats.AddElectricityAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddElectricityAffinity(5, 1);
         break;
     case "Light Affinity":
-    playerStats.AddLightAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddLightAffinity(5, 1);
         break;
     case "Poison Affinity":
-    playerStats.AddPoisonAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddPoisonAffinity(5, 1);
         break;
     case "Acid Affinity":
-    playerStats.AddAcidAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddAcidAffinity(5, 1);
         break;
     case "Bacteria Affinity":
-    playerStats.AddBacteriaAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddBacteriaAffinity(5, 1);
         break;
     case "Virus Affinity":
-    playerStats.AddVirusAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddVirusAffinity(5, 1);
         break;
     case "Fungi Affinity":
-    playerStats.AddFungiAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddFungiAffinity(5, 1);
         break;
     case "Radiation Affinity":
-    playerStats.AddRadiationAffinity(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddRadiationAffinity(5, 1);
         break;
     case "Bludgeoning Resistance":
-    playerStats.AddBludgeoningResist(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddBludgeoningResist(5, 1);
         break;
     case "Slashing Resistance":
-    playerStats.AddSlashingResist(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddSlashingResist(5, 1);
         break;
     case "Piercing Resistance":
-    playerStats.AddPiercingResist(5);
+    if (playerStats.availableStatPoints >= 1) playerStats.AddPiercingResist(5, 1);
         break;
     default:
         break;
     }
     playerOptions.DisplayeIncrementEffect(stat, playerStats);
 }
+else
+
+{
+    Debug.Log("Insufficient sttatpoints");
+    //SpawnContinueButton();
 }
+
+}
+}
+
 
 

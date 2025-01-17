@@ -313,66 +313,6 @@ public class PlayerOptions : MonoBehaviour
     {
         IntroOptionSelected?.Invoke(playerChoice);
     }
-    public void Obsolete_DisplayCharacterCreationScreen()
-{
-    // Create containers
-    TemplateContainer leftPanelButtonContainer = templateButton.Instantiate();
-
-    // Define button configurations
-    var buttonConfigs = new Dictionary<string, string>
-    {
-        // Resource buttons
-        { "healthButton", "Max Health" },
-        { "manaButton", "Max Mana" },
-        { "staminaButton", "Max Stamina" },
-        { "healthRegenButton", "Health Regeneration" },
-        { "manaRegenButton", "Mana Regeneration" },
-        { "staminaRegenButton", "Stamina Regeneration" },
-
-        // Action points
-        { "actionButton", "Max Action Points" },
-        { "actionRegenButton", "Action Point Regeneration" },
-
-        // Elemental affinities
-        { "iceAffinityButton", "Ice Affinity" },
-        { "coldAffinityButton", "Cold Affinity" },
-        { "waterAffinityButton", "Water Affinity" },
-        { "earthAffinityButton", "Earth Affinity" },
-        { "fireAffinityButton", "Fire Affinity" },
-        { "lavaAffinityButton", "Lava Affinity" },
-        { "heatAffinityButton", "Heat Affinity" },
-        { "airAffinityButton", "Air Affinity" },
-        { "electricityAffinityButton", "Electricity Affinity" },
-        { "lightAffinityButton", "Light Affinity" },
-        { "poisonAffinityButton", "Poison Affinity" },
-        { "acidAffinityButton", "Acid Affinity" },
-        { "bacteriaAffinityButton", "Bacteria Affinity" },
-        { "virusAffinityButton", "Virus Affinity" },
-        { "fungiAffinityButton", "Fungi Affinity" },
-        { "radiationAffinityButton", "Radiation Affinity" },
-
-        // Physical resistance
-        { "bludgeoningResistanceButton", "Bludgeoning Resistance" },
-        { "slashingResistanceButton", "Slashing Resistance" },
-        { "piercingResistanceButton", "Piercing Resistance" }
-    };
-
-    // Create and configure buttons
-    foreach (var config in buttonConfigs)
-    {
-        Button button = new Button { text = config.Value };
-        button.style.position = Position.Relative;
-        button.RegisterCallback<ClickEvent>(e => StatIncrement(config.Value));
-        leftPanelButtonContainer.Add(button);
-        LeftCreationPanel.Add(button);
-    }
-
-    // Add the container to the UI (if not already added)
-    if (!LeftCreationPanel.Contains(leftPanelButtonContainer))
-    {
-        LeftCreationPanel.Add(leftPanelButtonContainer);
-    }
-}
 
 public void DisplayCharacterCreationScreen()
 {
@@ -455,7 +395,9 @@ public void DisplayCharacterCreationScreen()
         RightCreationPanel.style.display = DisplayStyle.Flex;
         charCreationText.style.whiteSpace = WhiteSpace.Normal;
         charCreationText.style.color = Color.white;
-        charCreationText.text = statIncremented + $"was Increased \n {playerStats.GetCharInfo()}";
+        string playerAffinity = playerStats.GetAffinityString();
+        string playerResist = playerStats.GetResistString();
+        charCreationText.text = $"{statIncremented} was Increased. \n {playerStats.availableStatPoints} remaining. \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity} \n {playerResist}";
     }
     
 }
