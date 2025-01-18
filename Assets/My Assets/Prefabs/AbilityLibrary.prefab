@@ -48,3 +48,6 @@ MonoBehaviour:
   HealingTouch: {fileID: 11400000, guid: f9a5bbc405549af45a9157fe0f766f0d, type: 2}
   DivineStrike: {fileID: 11400000, guid: e3682d3b773b518409e00476831aaa8b, type: 2}
   Melee: {fileID: 11400000, guid: 0772147ad1f01f54b882879d93ba7f29, type: 2}
+  Push: {fileID: 11400000, guid: 4760590002f89ff499ee971313f0ebb0, type: 2}
+  ColdLight: {fileID: 11400000, guid: 66cda9e7a8e4c294484bdf68918006ce, type: 2}
+  BrainDamage: {fileID: 11400000, guid: ae6b590521127bb4e869e30f3ae6c4ca, type: 2}

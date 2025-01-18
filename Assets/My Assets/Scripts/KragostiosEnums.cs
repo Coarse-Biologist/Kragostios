@@ -139,7 +139,7 @@ Chill,
 Hot,
 Proned,
 Restrained,
-
+Retarted //retarted decreases the enemy accuracy and adds a chance the foe will attack their buddies or themselves.
 
 }
 }

@@ -112,7 +112,7 @@ public class StatsHandler : MonoBehaviour
         if (currentHealth <= 0) return false;
         else return true;
     }    
-    private string GetKnownAbilitiesString()
+    public string GetKnownAbilitiesString()
     {
         string knownAbilitiesString = "";
         foreach( Ability_SO ability in knownAbilities)
@@ -554,7 +554,7 @@ public class StatsHandler : MonoBehaviour
     rewards = new List<Rewards>();
     characterGold = 0;
     knownAbilities = new List<Ability_SO>{
-    abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch
+    abilityLibrary.Melee, abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch, abilityLibrary.ColdLight, abilityLibrary.BrainDamage, abilityLibrary.ColdLight
     };
 
     return gameObject;

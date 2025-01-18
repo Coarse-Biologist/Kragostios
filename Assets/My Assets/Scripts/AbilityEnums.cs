@@ -9,7 +9,7 @@ public enum Abilities
     HealingTouch,
     DivineStrike,
     Push,
-    ColdLight
-
+    ColdLight,
+    BrainDamage,
 }
 }

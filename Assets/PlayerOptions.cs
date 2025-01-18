@@ -66,7 +66,9 @@ public class PlayerOptions : MonoBehaviour
         MiddleCreationPanel = root.Q<VisualElement>("MiddleCreationPanel");
         RightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         charCreationText = RightCreationPanel.Q<Label>("CharCreationText");
-        buttonContainer_AO.style.display = DisplayStyle.None;
+        buttonContainer_AO.style.display = DisplayStyle.Flex;
+        buttonContainer_CO.style.display = DisplayStyle.Flex;
+
         
 
         
@@ -119,7 +121,7 @@ public class PlayerOptions : MonoBehaviour
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
-            Debug.Log($"new ability Button requested and being processed");
+            Debug.Log($"new ability {ability} Button requested and being processed");
 
             newButton.text = ability.AbilityName;
             buttonContainer_AO.Add(newButtonContainer);
@@ -388,7 +390,7 @@ public void DisplayCharacterCreationScreen()
     TextField charDescriptionField = LeftCreationPanel.Q<TextField>("CharDescription");
     string charDescription = charDescriptionField.text;
 
-    LeftCreationPanel.MarkDirtyRepaint();
+    LeftCreationPanel.MarkDirtyRepaint(); 
 
     charNameField.RegisterValueChangedCallback(evt =>
     StatIncrement(charNameField.text +"charName"));

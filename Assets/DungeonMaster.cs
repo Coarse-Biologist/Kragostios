@@ -59,8 +59,9 @@ private void Start()
 {
     
     //RequestPlayerName();
-    //InitiateCombat();
-    CharacterCreation();
+    //CharacterCreation();
+    InitiateCombat();
+
     
 }
 
@@ -116,7 +117,7 @@ private void DisplayNarration(string message)
 private void SpawnOptionButtons(List<Ability_SO> abilities)
 {
     Debug.Log("Spawn ability request recieved?");
-    playerOptions.SpawnAbilityButtons(abilities);
+    playerOptions.SpawnAbilityButtons(playerStats.knownAbilities);
     List<GameObject> combatants = combat.combatants;
     playerOptions.SpawnTargetButtons(combatants);
 }
@@ -231,6 +232,8 @@ private void InitiateCombat()
         numberofEnemies --; 
         combatants.Add(enemy);
     }
+    //Debug.Log($"{playerStats.GetKnownAbilitiesString()} = player known abilities");
+    playerOptions.HideCreationScreen();
     combatants.Add(Player);
     combat.SetCombatants(combatants);
     combat.DecideTurnOrder();

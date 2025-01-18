@@ -10,6 +10,7 @@ public class AbilityLibrary : MonoBehaviour
     public Ability_SO Melee;
     public Ability_SO Push;
     public Ability_SO ColdLight;
+    public Ability_SO BrainDamage;
 
     public Dictionary<Abilities, Ability_SO> abilityDict {private set; get;} = new Dictionary<Abilities, Ability_SO>();
 
@@ -21,7 +22,12 @@ public class AbilityLibrary : MonoBehaviour
         abilityDict.Add(Abilities.Melee, Melee);
         abilityDict.Add(Abilities.Push, Push);
         abilityDict.Add(Abilities.ColdLight, ColdLight);
+        abilityDict.Add(Abilities.BrainDamage, BrainDamage);
+
+        Debug.Log($"{GetAbilityInfo(BrainDamage)}");
+
     }
+
 
     public List<Ability_SO> GetAbilities (int creatureDifficulty)
     {

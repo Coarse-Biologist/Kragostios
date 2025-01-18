@@ -86,14 +86,24 @@ public class CombatFlow : MonoBehaviour
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
         string playerTurnIntro = $"{stats.characterName} Has big plans!... What are they?...";
         RequestNarration(playerTurnIntro);
+        Debug.Log($"known ability count = {stats.knownAbilities.Count}");
         RequestOptionButtons(stats.knownAbilities);
+        
     }
     private void ExecuteEnemyTurn (GameObject combatant)
     {
         //Debug.Log($"{randomSkillIndex} = ability selected");
         //Debug.Log($"{numberKnownAbilities} = number of known abilities");
-        bool enemiesRemaining = CheckEnemiesRemaining();
+        bool enemiesRemaining = CheckEnemiesRemaining(); // boolean statement // true or false
         bool alliesRemaining = CheckAlliesRemaining();
+
+        //if(//combatant.statusEffects contains BrainDamage)
+        //{
+        //    List<GameObject> targets = new List<GameObject>();
+        //    targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
+        //    
+        //}
+
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
         List<Ability_SO> usableAbilities = new List<Ability_SO>();
         foreach (Ability_SO ability in stats.knownAbilities)
