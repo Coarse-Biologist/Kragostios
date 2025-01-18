@@ -7,6 +7,7 @@ using System;
 using System.Reflection;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using Mono.Cecil.Cil;
+using System.Runtime.CompilerServices;
 //using UnityEngine.UI;
 //using UnityEditor.SceneManagement;
 //using UnityEditor.Rendering;
@@ -44,17 +45,18 @@ public class StatsHandler : MonoBehaviour
 
     #region // Elemental Affinityences
     public int ColdAffinity {private set; get;} = 0;
-    public int IceAffinity {private set; get;} = 0;
+    //public int IceAffinity {private set; get;} = 0;
     public int WaterAffinity {private set; get;} = 0;
     public int EarthAffinity {private set; get;} = 0;
     public int HeatAffinity {private set; get;} = 0;
-    public int LavaAffinity {private set; get;} = 0;
+    //public int LavaAffinity {private set; get;} = 0;
     public int FireAffinity {private set; get;} = 0;
     public int AirAffinity {private set; get;} = 0;
     public int ElectrictyAffinity {private set; get;} = 0;
     public int LightAffinity {private set; get;} = 0;
     public int PsychicAffinity {private set; get;} = 0;
     public int FungiAffinity {private set; get;} = 0;
+    public int PlantAffinity;// (private set; get;) = 0;
     public int PoisonAffinity {private set; get;} = 0;
     public int AcidAffinity {private set; get;} = 0;
     public int RadiationAffinity {private set; get;} = 0;
@@ -68,34 +70,6 @@ public class StatsHandler : MonoBehaviour
     {
         AffinityDict = GetAffinityDict();
     }
-    public Dictionary<string, int> GetAffinityDict()
-    {
-    // Create a new dictionary with string keys and int values
-        AffinityDict = new Dictionary<string, int>
-        {
-            { "Cold Affinity", ColdAffinity },
-            { "Ice Affinity", IceAffinity },
-            { "Water Affinity", WaterAffinity },
-            { "Earth Affinity", EarthAffinity },
-            { "Heat Affinity", HeatAffinity },
-            { "Lava Affinity", LavaAffinity },
-            { "Fire Affinity", FireAffinity },
-            { "Air Affinity", AirAffinity },
-            { "Electricity Affinity", ElectrictyAffinity },
-            { "Light Affinity", LightAffinity },
-            { "Psychic Affinity", PsychicAffinity },
-            { "Fungi Affinity", FungiAffinity },
-            { "Poison Affinity", PoisonAffinity },
-            { "Acid Affinity", AcidAffinity },
-            { "Radiation Affinity", RadiationAffinity },
-            { "Bacteria Affinity", BacteriaAffinity },
-            { "Virus Affinity", VirusAffinity }
-        };
-        return AffinityDict;
-
-    }
-
-   
 
 
     #endregion
@@ -155,10 +129,39 @@ public class StatsHandler : MonoBehaviour
     }
     public string GetCharCreationStats()
     {
-        string charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen}";
+        string charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Action Points: {ActionPoints} || Action Point Regen Rate: {ActionPointRegen}";
 
         return charInfo;
     }
+        public Dictionary<string, int> GetAffinityDict()
+    {
+    // Create a new dictionary with string keys and int values
+        AffinityDict = new Dictionary<string, int>
+        {
+            { "Cold Affinity", ColdAffinity },
+            //{ "Ice Affinity", IceAffinity },
+            { "Water Affinity", WaterAffinity },
+            { "Earth Affinity", EarthAffinity },
+            { "Heat Affinity", HeatAffinity },
+            //{ "Lava Affinity", LavaAffinity },
+            { "Fire Affinity", FireAffinity },
+            { "Air Affinity", AirAffinity },
+            { "Electricity Affinity", ElectrictyAffinity },
+            { "Light Affinity", LightAffinity },
+            { "Psychic Affinity", PsychicAffinity },
+            { "Fungi Affinity", FungiAffinity },
+            { "Plant Affinity", PlantAffinity },
+            { "Poison Affinity", PoisonAffinity },
+            { "Acid Affinity", AcidAffinity },
+            { "Radiation Affinity", RadiationAffinity },
+            { "Bacteria Affinity", BacteriaAffinity },
+            { "Virus Affinity", VirusAffinity }
+        };
+        return AffinityDict;
+
+    }
+
+   
 
     public string GetAffinityString()
     {
@@ -210,13 +213,13 @@ public class StatsHandler : MonoBehaviour
 
     public void AddActionPoint(int incrementValue, int cost)
     {
-        MaxStamina += incrementValue;
+        ActionPoints += incrementValue;
         availableStatPoints -= cost;
     }
 
     public void AddActionPointRegen(int incrementValue, int cost)
     {
-        MaxStamina += incrementValue;
+        ActionPointRegen += incrementValue;
         availableStatPoints -= cost;
     }
     public void AddHealthRegen(int incrementValue, int cost)
@@ -234,39 +237,43 @@ public class StatsHandler : MonoBehaviour
         StaminaRegen += incrementValue;
         availableStatPoints -= cost;
     }
+
     public void AddColdAffinity(int incrementValue, int cost)
     {
         ColdAffinity += incrementValue;
 
         decimal splashIncrement = incrementValue/2;
-        IceAffinity += (int)Math.Round(splashIncrement, 2);
 
         availableStatPoints -= cost;
     }
-    public void AddIceAffinity(int incrementValue, int cost)
-    {
-        IceAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue/2;
-        ColdAffinity += (int)Math.Round(splashIncrement, 2);
-
-        decimal splashIncrement2 = incrementValue/2;
-        WaterAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
+    //public void AddIceAffinity(int incrementValue, int cost)
+    //{
+    //    IceAffinity += incrementValue;
+//
+    //    decimal splashIncrement = incrementValue/2;
+    //    ColdAffinity += (int)Math.Round(splashIncrement, 2);
+//
+    //    decimal splashIncrement2 = incrementValue/2;
+    //    WaterAffinity += (int)Math.Round(splashIncrement, 2);
+//
+    //    availableStatPoints -= cost;
+    //}
     public void AddWaterAffinity(int incrementValue, int cost)
     {
         WaterAffinity += incrementValue;
 
         decimal splashIncrement = incrementValue/2;
-        IceAffinity += (int)Math.Round(splashIncrement, 2);
+        ColdAffinity += (int)Math.Round(splashIncrement, 2);
 
         availableStatPoints -= cost;
     }
     public void AddEarthAffinity(int incrementValue, int cost)
     {
         EarthAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        PlantAffinity += (int)Math.Round(splashIncrement, 2);
+
         availableStatPoints -= cost;
     }
     public void AddHeatAffinity(int incrementValue, int cost)
@@ -274,22 +281,25 @@ public class StatsHandler : MonoBehaviour
         HeatAffinity += incrementValue;
 
         decimal splashIncrement = incrementValue/2;
-        LavaAffinity += (int)Math.Round(splashIncrement, 2);
+        FireAffinity += (int)Math.Round(splashIncrement, 2);
+
+        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+
+
 
         availableStatPoints -= cost;
     }
-    public void AddLavaAffinity(int incrementValue, int cost)
-    {
-        LavaAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue/2;
-        HeatAffinity += (int)Math.Round(splashIncrement, 2);
-
-        decimal splashIncrement2 = incrementValue/2;
-        EarthAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
+    //public void AddLavaAffinity(int incrementValue, int cost)
+    //{
+    //    LavaAffinity += incrementValue;
+//
+    //    decimal splashIncrement = incrementValue/2;
+    //    HeatAffinity += (int)Math.Round(splashIncrement, 2);
+//
+    //    EarthAffinity += (int)Math.Round(splashIncrement, 2);
+//
+    //    availableStatPoints -= cost;
+    //}
     public void AddFireAffinity(int incrementValue, int cost)
     {
         FireAffinity += incrementValue;
@@ -322,7 +332,11 @@ public class StatsHandler : MonoBehaviour
         LightAffinity += incrementValue;
 
         decimal splashIncrement = incrementValue/2;
+
         RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+
+        HeatAffinity += (int)Math.Round(splashIncrement, 2);
+
 
         availableStatPoints -= cost;
     }
@@ -332,6 +346,7 @@ public class StatsHandler : MonoBehaviour
         RadiationAffinity += incrementValue;
 
         decimal splashIncrement = incrementValue/2;
+
         AirAffinity += (int)Math.Round(splashIncrement, 2);
 
         availableStatPoints -= cost;
@@ -345,27 +360,77 @@ public class StatsHandler : MonoBehaviour
     public void AddFungiAffinity(int incrementValue, int cost)
     {
         FungiAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+
+        PlantAffinity += (int)Math.Round(splashIncrement, 2);
+
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
+
+        availableStatPoints -= cost;
+    }
+    public void AddPlantAffinity(int incrementValue, int cost)
+    {
+        PlantAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+
+        FungiAffinity += (int)Math.Round(splashIncrement, 2);
+
+        WaterAffinity += (int)Math.Round(splashIncrement, 2);
+        
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
         availableStatPoints -= cost;
     }
     public void AddPoisonAffinity(int incrementValue, int cost)
     {
         PoisonAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
+
         availableStatPoints -= cost;
     }
     public void AddAcidAffinity(int incrementValue, int cost)
     {
         AcidAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        
+        HeatAffinity += (int)Math.Round(splashIncrement, 2);
+
+        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+
         availableStatPoints -= cost;
     }
     
     public void AddBacteriaAffinity(int incrementValue, int cost)
     {
         BacteriaAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue/2;
+        
+        VirusAffinity += (int)Math.Round(splashIncrement, 2);
+        
+        PoisonAffinity += (int)Math.Round(splashIncrement, 2);
+
         availableStatPoints -= cost;
     }
     public void AddVirusAffinity(int incrementValue, int cost)
     {
         VirusAffinity += incrementValue;
+        decimal splashIncrement = incrementValue/2;
+        
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+        
+        PoisonAffinity += (int)Math.Round(splashIncrement, 2);
+
         availableStatPoints -= cost;
     }
     public void AddBludgeoningResist(int incrementValue, int cost)
@@ -459,17 +524,18 @@ public class StatsHandler : MonoBehaviour
     currentMana = 10;
     currentStamina = 10;
     ColdAffinity = 0;
-    IceAffinity = 0;
+    //IceAffinity = 0;
     WaterAffinity = 0;
     EarthAffinity = 0;
     HeatAffinity = 0;
-    LavaAffinity = 0;
+    //LavaAffinity = 0;
     FireAffinity = 0;
     AirAffinity = 0;
     ElectrictyAffinity = 0;
     LightAffinity = 0;
     PsychicAffinity = 0;
     FungiAffinity = 0;
+    PlantAffinity = 0;
     PoisonAffinity = 0;
     AcidAffinity = 0;
     RadiationAffinity = 0;

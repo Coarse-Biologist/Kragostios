@@ -13,7 +13,12 @@ MonoBehaviour:
   m_Name: FireBall
   m_EditorClassIdentifier: 
   AbilityName: FireBall
+  Description: None
+  Resource: 1
   Type: 1
+  ElementType: 5
+  PhysicalType: 0
+  AbilityCost: 5
   HealValue: 0
   DamageValue: 5
   TurnDuration: 0
@@ -21,5 +26,3 @@ MonoBehaviour:
   Summons: 0
   SyphonPercentage: 0
   AbilityLevel: 0
-  Resource: 1
-  AbilityCost: 5

@@ -69,6 +69,8 @@ public class NarrationScript : MonoBehaviour
     
     public void DisplayNarrationText(string message)
     {   
+        narratorWindow.style.display = DisplayStyle.Flex;
+        
         linesOfNarration ++; 
 
         if (linesOfNarration >= 6)

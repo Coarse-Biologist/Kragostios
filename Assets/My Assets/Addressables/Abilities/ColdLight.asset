@@ -10,19 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
-  m_Name: DivineSmite
+  m_Name: ColdLight
   m_EditorClassIdentifier: 
-  AbilityName: DivineSmite
-  Description: None
+  AbilityName: Create Cold Light
+  Description: creates floating orb of cold light
   Resource: 1
-  Type: 1
-  ElementType: 16
+  Type: 4
+  ElementType: 1
   PhysicalType: 0
-  AbilityCost: 10
+  AbilityCost: 5
   HealValue: 0
-  DamageValue: 100
-  TurnDuration: 0
-  Targets: 1
+  DamageValue: 5
+  TurnDuration: 5
+  Targets: 6
   Summons: 0
   SyphonPercentage: 0
-  AbilityLevel: 0
+  AbilityLevel: 1
+  BuffEffects: 
+  DebuffEffects: 0200000003000000

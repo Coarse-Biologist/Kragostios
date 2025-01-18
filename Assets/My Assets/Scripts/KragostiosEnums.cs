@@ -39,12 +39,13 @@ public enum LocationType
 
 public enum Elements
 {
+    None,
     Cold,
-    Ice,
+    //Ice,
     Water,
     Earth,
     Fire,
-    Lava,
+    //Lava,
     Heat,
     Air,
     Electricty,
@@ -52,6 +53,7 @@ public enum Elements
     Acid,
     Bacteria,
     Fungi,
+    Plant,
     Virus,
     Radiation,
     Light,
@@ -60,6 +62,7 @@ public enum Elements
 
 public enum PhysicalDamage
 {
+    None,
     Bludgeoning,
     Slashing,
     Piercing
@@ -118,5 +121,25 @@ public enum Biomes
     EverGreenForest,
     PerenialForest,
     Desert
+}
+
+public enum Buffs
+{
+Invisibility,
+Shield,
+Strengthen,
+}
+
+public enum Debuffs
+{
+Stun,
+Shock,
+StaminaDrain,
+Chill,
+Hot,
+Proned,
+Restrained,
+
+
 }
 }

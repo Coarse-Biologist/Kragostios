@@ -5,12 +5,11 @@ using AbilityEnums;
 public class AbilityLibrary : MonoBehaviour
 {
     public Ability_SO FireBall;
-
     public Ability_SO HealingTouch;
-
     public Ability_SO DivineStrike;
-
     public Ability_SO Melee;
+    public Ability_SO Push;
+    public Ability_SO ColdLight;
 
     public Dictionary<Abilities, Ability_SO> abilityDict {private set; get;} = new Dictionary<Abilities, Ability_SO>();
 
@@ -20,6 +19,8 @@ public class AbilityLibrary : MonoBehaviour
         abilityDict.Add(Abilities.HealingTouch, HealingTouch);
         abilityDict.Add(Abilities.DivineStrike, DivineStrike);
         abilityDict.Add(Abilities.Melee, Melee);
+        abilityDict.Add(Abilities.Push, Push);
+        abilityDict.Add(Abilities.ColdLight, ColdLight);
     }
 
     public List<Ability_SO> GetAbilities (int creatureDifficulty)

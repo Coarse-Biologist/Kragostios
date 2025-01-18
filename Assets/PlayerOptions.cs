@@ -30,7 +30,9 @@ public class PlayerOptions : MonoBehaviour
     private Label abilityInfoText;
     private Label charInfoText;
     private Label charCreationText;
+
     private TextField myTextField;
+    public UnityEvent CharacterCreationConfirmed;
     public UnityEvent<Ability_SO> AbilitySelected;
     public UnityEvent<GameObject> TargetSelected;
     public UnityEvent<Directions> JourneyDirectionSelected;
@@ -38,6 +40,7 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent<string> IntroOptionSelected;
     public UnityEvent<string> PlayertextInput;
     public UnityEvent<string> StatIncrented;
+
     public bool awaitingAbilitySelection {private set; get;}
 
     public Dictionary<string, List<string>> IntroOptionDict {private set; get;}
@@ -339,12 +342,12 @@ public void DisplayCharacterCreationScreen()
         { "actionRegenButton", "Action Point Regeneration" },
 
         // Elemental affinities
-        { "iceAffinityButton", "Ice Affinity" },
+        //{ "iceAffinityButton", "Ice Affinity" },
         { "coldAffinityButton", "Cold Affinity" },
         { "waterAffinityButton", "Water Affinity" },
         { "earthAffinityButton", "Earth Affinity" },
         { "fireAffinityButton", "Fire Affinity" },
-        { "lavaAffinityButton", "Lava Affinity" },
+        //{ "lavaAffinityButton", "Lava Affinity" },
         { "heatAffinityButton", "Heat Affinity" },
         { "airAffinityButton", "Air Affinity" },
         { "electricityAffinityButton", "Electricity Affinity" },
@@ -354,6 +357,8 @@ public void DisplayCharacterCreationScreen()
         { "bacteriaAffinityButton", "Bacteria Affinity" },
         { "virusAffinityButton", "Virus Affinity" },
         { "fungiAffinityButton", "Fungi Affinity" },
+        { "plantAffinityButton", "Plant Affinity" },
+
         { "radiationAffinityButton", "Radiation Affinity" },
 
         // Physical resistance
@@ -372,18 +377,34 @@ public void DisplayCharacterCreationScreen()
         LeftCreationPanel.Add(button);
         button.MarkDirtyRepaint();
     }
+    TemplateContainer newButtonContainer = templateButton.Instantiate();
+    Button confirmButton = newButtonContainer.Q<Button>();
+    LeftCreationPanel.Add(confirmButton);
+    confirmButton.text = "Confirm Character and Proceed";
+    confirmButton.RegisterCallback<ClickEvent>(e => CharStatsConfirmed());
 
-    // Add the container to the UI (if not already added)
-    //if (!LeftCreationPanel.Contains(leftPanelButtonContainer))
-    //{
-    //    LeftCreationPanel.Add(leftPanelButtonContainer);
-    //}
-    //root.MarkDirtyRepaint();
+    TextField charNameField = LeftCreationPanel.Q<TextField>("CharName");
+    string charName = charNameField.text;
+    TextField charDescriptionField = LeftCreationPanel.Q<TextField>("CharDescription");
+    string charDescription = charDescriptionField.text;
+
     LeftCreationPanel.MarkDirtyRepaint();
-    //leftPanelButtonContainer.MarkDirtyRepaint();
-}
 
+    charNameField.RegisterValueChangedCallback(evt =>
+    StatIncrement(charNameField.text +"charName"));
+    charDescriptionField.RegisterValueChangedCallback(evt =>
+    StatIncrement(charDescriptionField.text +"charDescription"));
+    }
 
+    private void CharStatsConfirmed()
+    {
+        //TextField charNameField = LeftCreationPanel.Q<TextField>("CharName");
+        //string charName = charNameField.text;
+        //TextField charDescriptionField = LeftCreationPanel.Q<TextField>("CharDescription");
+        //string charDescription = charDescriptionField.text;
+        //
+        CharacterCreationConfirmed?.Invoke();
+    }
 
     private void StatIncrement(string stat)
     {
@@ -397,7 +418,7 @@ public void DisplayCharacterCreationScreen()
         charCreationText.style.color = Color.white;
         string playerAffinity = playerStats.GetAffinityString();
         string playerResist = playerStats.GetResistString();
-        charCreationText.text = $"{statIncremented} was Increased. \n {playerStats.availableStatPoints} remaining. \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity} \n {playerResist}";
+        charCreationText.text = $"{playerStats.availableStatPoints} remaining. \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity} \n {playerResist}";
     }
     
 }

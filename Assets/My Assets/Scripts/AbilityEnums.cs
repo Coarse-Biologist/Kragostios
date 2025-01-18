@@ -8,6 +8,8 @@ public enum Abilities
     Melee,
     HealingTouch,
     DivineStrike,
+    Push,
+    ColdLight
 
 }
 }

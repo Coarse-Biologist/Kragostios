@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class DungeonMaster : MonoBehaviour
 
 {
-
+#region // class variables 
 [Header("UI Interface")]
 [SerializeField] UIDocument UIDocument;
 private VisualElement root;
@@ -41,6 +41,8 @@ Dictionary<string, string> playerToNarratorDict;
 private bool awaitingPlayerName = false;
 private bool awaitingPlayerDescription = false;
 
+#endregion
+
 // SetUp
 private void Awake()
 {
@@ -55,8 +57,7 @@ private void Awake()
 }
 private void Start()
 {
-    List<Directions> directions = map.directions;
-    //playerOptions.SpawnDirectionOptions(directions);
+    
     //RequestPlayerName();
     //InitiateCombat();
     CharacterCreation();
@@ -78,6 +79,7 @@ private void OnEnable()
     playerOptions.PlayertextInput.AddListener(HandlePlayerTextInput);
 
     playerOptions.StatIncrented.AddListener(HandleStatIncremented);
+    playerOptions.CharacterCreationConfirmed.AddListener(CharacterCreationComplete);
 
 
     
@@ -99,6 +101,7 @@ private void OnDisable()
     playerOptions.IntroOptionSelected.RemoveListener(NarratorResponseToPlayer);
 
     playerOptions.StatIncrented.RemoveListener(HandleStatIncremented);
+    playerOptions.CharacterCreationConfirmed.RemoveListener(CharacterCreationComplete);
 
 
 }
@@ -285,7 +288,7 @@ private void RequestPlayerDescription()
     awaitingPlayerDescription = true;
 }
 
-private void SetnarratorToPlayerDict()
+private void SetNarratorToPlayerDict()
 {
     narratorToPlayerDict = new Dictionary<string, List<string>>
 {
@@ -350,8 +353,8 @@ private void HandleStatIncremented(string stat)
     if (playerStats.availableStatPoints >= 20) playerStats.AddActionPointRegen(1, 20);
         break;
     case "Ice Affinity":
-    if (playerStats.availableStatPoints >= 1) playerStats.AddIceAffinity(5, 1);
-        break;
+    //if (playerStats.availableStatPoints >= 1) playerStats.AddIceAffinity(5, 1);
+    //    break;
     case "Cold Affinity":
     if (playerStats.availableStatPoints >= 1) playerStats.AddColdAffinity(5, 1);
         break;
@@ -365,15 +368,15 @@ private void HandleStatIncremented(string stat)
     if (playerStats.availableStatPoints >= 1) playerStats.AddFireAffinity(5, 1);
         break;
     case "Lava Affinity":
-    if (playerStats.availableStatPoints >= 1) playerStats.AddLavaAffinity(5, 1);
-        break;
+    //if (playerStats.availableStatPoints >= 1) playerStats.AddLavaAffinity(5, 1);
+    //    break;
     case "Heat Affinity":
     if (playerStats.availableStatPoints >= 1) playerStats.AddHeatAffinity(5, 1);
         break;
     case "Air Affinity":
     if (playerStats.availableStatPoints >= 1) playerStats.AddAirAffinity(5, 1);
         break;
-    case "Electricty Affinity":
+    case "Electricity Affinity":
     if (playerStats.availableStatPoints >= 1) playerStats.AddElectricityAffinity(5, 1);
         break;
     case "Light Affinity":
@@ -394,6 +397,9 @@ private void HandleStatIncremented(string stat)
     case "Fungi Affinity":
     if (playerStats.availableStatPoints >= 1) playerStats.AddFungiAffinity(5, 1);
         break;
+    case "Plant Affinity":
+    if (playerStats.availableStatPoints >= 1) playerStats.AddPlantAffinity(5, 1);
+        break;
     case "Radiation Affinity":
     if (playerStats.availableStatPoints >= 1) playerStats.AddRadiationAffinity(5, 1);
         break;
@@ -409,6 +415,8 @@ private void HandleStatIncremented(string stat)
     default:
         break;
     }
+    if (stat.EndsWith("charName")) playerStats.SetName(stat.Replace("charName", ""));
+    if (stat.EndsWith("charDescription")) playerStats.SetDescription(stat.Replace("charDescription", ""));
     playerOptions.DisplayeIncrementEffect(stat, playerStats);
 }
 else
@@ -418,6 +426,14 @@ else
     //SpawnContinueButton();
 }
 
+}
+
+private void CharacterCreationComplete()
+{
+    playerOptions.HideCreationScreen();
+    narrator.DisplayNarrationText("The Story begins.");
+    List<Directions> directions = map.directions;
+    playerOptions.SpawnDirectionOptions(directions);
 }
 }
 

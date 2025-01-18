@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: HealingTouch
   m_EditorClassIdentifier: 
   AbilityName: HealingTouch
+  Description: None
   Resource: 1
   Type: 0
+  ElementType: 16
+  PhysicalType: 0
   AbilityCost: 5
   HealValue: 10
   DamageValue: 0
