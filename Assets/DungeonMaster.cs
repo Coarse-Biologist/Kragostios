@@ -38,14 +38,12 @@ private StatsHandler playerStats;
 Dictionary<string, List<string>> narratorToPlayerDict;
 Dictionary<string, string> playerToNarratorDict;
 
-private bool awaitingPlayerName = false;
-private bool awaitingPlayerDescription = false;
-
 #endregion
 
-// SetUp
+#region // SetUp
 private void Awake()
 {
+    KDebug.SeekBug("yeah");
     Player = MakePlayer();    
     // Initialize component references
     playerOptions = GetComponent<PlayerOptions>();
@@ -59,8 +57,8 @@ private void Start()
 {
     
     //RequestPlayerName();
-    //CharacterCreation();
-    InitiateCombat();
+    CharacterCreation();
+    //InitiateCombat();
 
     
 }
@@ -77,7 +75,7 @@ private void OnEnable()
     playerOptions.TargetSelected.AddListener(HandleTargetSelected);
     playerOptions.ContinueSelected.AddListener(HandleCombatContinuePressed);
     playerOptions.IntroOptionSelected.AddListener(NarratorResponseToPlayer);
-    playerOptions.PlayertextInput.AddListener(HandlePlayerTextInput);
+    //playerOptions.PlayertextInput.AddListener(HandlePlayerTextInput);
 
     playerOptions.StatIncrented.AddListener(HandleStatIncremented);
     playerOptions.CharacterCreationConfirmed.AddListener(CharacterCreationComplete);
@@ -98,7 +96,7 @@ private void OnDisable()
     playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
     playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
     playerOptions.ContinueSelected.RemoveListener(HandleCombatContinuePressed);
-    playerOptions.PlayertextInput.RemoveListener(HandlePlayerTextInput);
+    //playerOptions.PlayertextInput.RemoveListener(HandlePlayerTextInput);
     playerOptions.IntroOptionSelected.RemoveListener(NarratorResponseToPlayer);
 
     playerOptions.StatIncrented.RemoveListener(HandleStatIncremented);
@@ -106,8 +104,9 @@ private void OnDisable()
 
 
 }
+#endregion
 
-// Comand UI
+#region // Comand UI
 private void DisplayNarration(string message)
 {
     Debug.Log("Display Narration request recieved?");
@@ -127,8 +126,10 @@ private void SpawnContinueButton()
     playerOptions.SpawnContinueButton();
 }
 
-/// Handle Player input
-        
+#endregion
+
+#region /// Handle Player Input 
+
 public void HandleTargetSelected(GameObject target) // needs a lot of work
 {
     Debug.Log("Handle target Selected request recieved?");
@@ -173,12 +174,12 @@ private void HandleCombatContinuePressed()
     } 
     else if (enemiesRemaining && !alliesRemaining) 
     {
-        narrator.DisplayNarrationText("YOur party has been defeated");
+        narrator.DisplayNarrationText("Your party has been defeated!");
         HandleCombatEnd(combat.combatants);   
     }
     else if (!enemiesRemaining && alliesRemaining)
     {
-        narrator.DisplayNarrationText("YOU WON");
+        narrator.DisplayNarrationText("YOU WON!");
         HandleCombatEnd(combat.combatants);
     }
 
@@ -186,7 +187,10 @@ private void HandleCombatContinuePressed()
 
 }
 
-/// Combat Setup
+#endregion
+
+#region /// Combat Setup
+
 private GameObject MakePlayer()
 {
     GameObject creature = Instantiate(creaturePrefab);
@@ -220,10 +224,12 @@ private GameObject MakeCompanion(Difficulty difficulty)
 }
 private void HandleCombatEnd(List<GameObject> survivingCombatants)
 {
-    // do stuff
+    List<Directions> directions = map.directions;
+    playerOptions.SpawnDirectionOptions(directions);
 }
 private void InitiateCombat()
 {
+    combat.ResetCombat();
     List<GameObject> combatants = new List<GameObject>();
     int numberofEnemies = Random.Range(1, 3);
     while(numberofEnemies > 0)
@@ -234,6 +240,7 @@ private void InitiateCombat()
     }
     //Debug.Log($"{playerStats.GetKnownAbilitiesString()} = player known abilities");
     playerOptions.HideCreationScreen();
+    playerOptions.ShowCombatScreen();
     combatants.Add(Player);
     combat.SetCombatants(combatants);
     combat.DecideTurnOrder();
@@ -241,27 +248,81 @@ private void InitiateCombat()
     
 }
 
-// Map and main menu
+#endregion
+
+#region // Travel
 public void HandlePlayerTraveled(Directions direction)
 {
+    List<Directions> directions = map.directions;
     travel.TravelInDirection(direction);
     Vector2 playerLocation = travel.playerLocation;
     LocationType locationType = map.GetLocationType(playerLocation);
-    narrator.PlayerTraveled(direction, playerLocation, locationType);
-    //locationType = LocationType.Hostile;
     switch(locationType)
     {
         case LocationType.Hostile:
+        narrator.DisplayNarrationText("Your being tingles with the threat of eminent danger! Hostiles are upon you!");
         InitiateCombat();
         break;
 
-        default:
-        List<Directions> directions = map.directions;
+        case LocationType.ImpassableTerrain:
+        KDebug.SeekBug($"location is a {locationType}");
+        narrator.DisplayNarrationText("You found impassable terrain and needed to return the way you came.");
+        HandlePlayerTraveled(map.oppositeDirections[direction]);
+        break;
+        
+        case LocationType.City:
+        narrator.DisplayNarrationText("You found a city. Would you like to stay and have a look around, or journey on?");
         playerOptions.SpawnDirectionOptions(directions);
         break;
+
+        case LocationType.Village:
+        narrator.DisplayNarrationText("You found a village. Would you like to stay and have a look around, or journey on?");
+        playerOptions.SpawnDirectionOptions(directions);
+        break;
+
+        case LocationType.Healer:
+        narrator.DisplayNarrationText("You found a healer. Would you like to look at their services, or journey on?");
+        playerOptions.SpawnDirectionOptions(directions);
+        break;
+
+        case LocationType.Trader:
+        narrator.DisplayNarrationText("You found a trader. Would you like to look at their services, or journey on?");
+        playerOptions.SpawnDirectionOptions(directions);
+        break;
+
+
+        case LocationType.HiddenTreasure:
+        narrator.DisplayNarrationText("You found a chest! See what's inside!");
+        playerOptions.SpawnDirectionOptions(directions);
+        break;
+
+        case LocationType.Barren:
+        narrator.DisplayNarrationText("You find yourself in a rather barren wasteland. Nothing but dry futility for you here. It is likely time to journey on.");
+        playerOptions.SpawnDirectionOptions(directions);
+        break;
+
+        case LocationType.Campsite:
+        narrator.DisplayNarrationText("You found an excellent spot for a campsite. Would you like to stay and camp for the night, or journey on?");
+        playerOptions.SpawnDirectionOptions(directions);
+        break;
+
+        case LocationType.EdgeOfTheWorld:
+        narrator.DisplayNarrationText("You find yourself at the feet of the legendary Sagar'had mountain range which is said to encircle the world. Beyond this point you can find no way to progress.");
+        HandlePlayerTraveled(map.oppositeDirections[direction]);
+        break;
+
+        default:
+        KDebug.SeekBug($"location is a {locationType}");
+        playerOptions.SpawnDirectionOptions(directions);
+        break;
+
+        
     }
 }
 
+#endregion 
+
+#region // player narrator/npc dialogue
 private void NarratorResponseToPlayer(string playerChoice)
 {
     string narratorResponse = playerToNarratorDict[playerChoice];
@@ -274,23 +335,6 @@ private void PresentPlayerOptions (string narratorPromt)
     playerOptions.SpawnOptionButtons(playerAnswerOptions);
 }
 
-private void RequestPlayerName()
-{
-    string message = "What are you called?";
-    string message1 = "what does this even do???"; // from hydn
-    narrator.DisplayNarrationText(message1 + message );
-    playerOptions.DisplayTextField(message);
-    awaitingPlayerName = true;
-}
-
-private void RequestPlayerDescription()
-{
-    string message = "How can one describe you? In what do you consist? Where are you from and of what are you made?";
-    narrator.DisplayNarrationText(message);
-    playerOptions.DisplayTextField(message);
-    awaitingPlayerDescription = true;
-}
-
 private void SetNarratorToPlayerDict()
 {
     narratorToPlayerDict = new Dictionary<string, List<string>>
@@ -300,26 +344,13 @@ private void SetNarratorToPlayerDict()
     
 }
 
-private Dictionary<string, List<string>> GetnarratorToPlayerDict()
+private Dictionary<string, List<string>> GetNarratorToPlayerDict()
 {
     return narratorToPlayerDict;
 }
-private void HandlePlayerTextInput(string playerInput)
-{
-    if (awaitingPlayerName)
-    {
-        playerStats.SetName(playerInput);
-        narrator.DisplayNarrationText($"Greetings, most exaulted {playerStats.characterName}!");
-        awaitingPlayerName = false;
-        Invoke("RequestPlayerDescription", 1f);
-    }
-    if (awaitingPlayerDescription)
-    {
-        playerStats.SetDescription(playerInput);
-        narrator.DisplayNarrationText($"Your character description will be changed to {playerStats.description}!");
-        awaitingPlayerDescription = false;
-    }
-}
+#endregion
+
+#region // char creation
 private void CharacterCreation()
 {
     playerOptions.DisplayCharacterCreationScreen();
@@ -436,8 +467,11 @@ private void CharacterCreationComplete()
     playerOptions.HideCreationScreen();
     narrator.DisplayNarrationText("The Story begins.");
     List<Directions> directions = map.directions;
+    playerOptions.ClearCharCreation();
+    playerOptions.ShowCombatScreen();
     playerOptions.SpawnDirectionOptions(directions);
 }
+#endregion
 }
 
 

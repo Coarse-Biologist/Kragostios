@@ -7,7 +7,7 @@ using UnityEditor.Rendering;
 
 public class Map : MonoBehaviour
 {
-    [SerializeField] private int mapSize = 5;
+    [SerializeField] private int mapSize = 4;
     [SerializeField] private int hostileDensity; 
     [SerializeField] private int traderDensity;
     [SerializeField] private int cityDensity;
@@ -18,6 +18,13 @@ public class Map : MonoBehaviour
     [SerializeField] private int healerDensity;
     [SerializeField] private int barrenDensity;
     private Vector2 mapDimensions;
+    public Dictionary<Directions, Directions> oppositeDirections = new Dictionary<Directions, Directions>
+    {
+        {Directions.North, Directions.South},
+        {Directions.East, Directions.West},
+        {Directions.South,Directions.North}, 
+        {Directions.West, Directions.East}
+    };
 
     [SerializeField] private Dictionary<Vector2, LocationType> mapDict;
     private Dictionary<Vector2, Tuple<Kingdoms, Biomes>> map;
@@ -28,6 +35,7 @@ public class Map : MonoBehaviour
         Directions.South, 
         Directions.West
     };
+
     private List<Vector2> vectorDirections = new List<Vector2>
     {
         new Vector2(0, 1),  // Up
@@ -44,9 +52,9 @@ public class Map : MonoBehaviour
     {
         mapDict = new Dictionary<Vector2, LocationType>();
 
-        for (int x = 0; x < mapSize; x++)
+        for (int x = -mapSize * mapSize; x < mapSize; x++)
         {
-            for (int y = 0; y < mapSize; y++)
+            for (int y = -mapSize * mapSize; y < mapSize; y++)
             { 
                 LocationType locationType = GetRandomLocation();
                 mapDict.Add(new Vector2(x , y), locationType);
@@ -133,8 +141,14 @@ public class Map : MonoBehaviour
     {
         if (mapDict != null)
         {
-            LocationType locationType = mapDict[playerlocation];
-            return locationType;
+            if (playerlocation.x <= mapSize || playerlocation.y <= mapSize
+            || playerlocation.x >= -mapSize || playerlocation.y <= -mapSize)
+            {
+                LocationType locationType = mapDict[playerlocation];
+                return locationType;
+            }
+            else return LocationType.EdgeOfTheWorld;
+
         }
         else return LocationType.Barren;
     }

@@ -466,6 +466,7 @@ public class StatsHandler : MonoBehaviour
             currentXp -= MaxXp;
             GainLevel();
         } 
+        KDebug.SeekBug($"{characterName} gained {XpGain}");
     }
     public void LearnAbility(Abilities newAbility)
     {
@@ -474,6 +475,7 @@ public class StatsHandler : MonoBehaviour
 
     public void GainGold(int GoldAmount)
     {
+        KDebug.SeekBug($"{characterName} gained {GoldAmount}");
         characterGold += GoldAmount;
     }
 

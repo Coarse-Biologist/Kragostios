@@ -61,11 +61,6 @@ public class NarrationScript : MonoBehaviour
     }
 
 
-    public void PlayerTraveled(Directions direction, UnityEngine.Vector2 playerLocation, LocationType locationType)
-    {
-        narratorText.text = $"You journey {direction}. You are at the coordinates {playerLocation.ToString()}. The area is {locationType.ToString()}";
-    }
-
     
     public void DisplayNarrationText(string message)
     {   

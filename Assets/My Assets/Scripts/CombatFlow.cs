@@ -18,23 +18,20 @@ public class CombatFlow : MonoBehaviour
     public UnityEvent<List<GameObject>> TargetButtonRequest;
     public UnityEvent ContinueButtonRequest; 
     public UnityEvent<List<GameObject>> CombatEnded;
-
-    private bool awaitingTargetSelection;
-    private bool awaitingAbilitySelection;
     private int targetsExpected;
     private List<GameObject> selectedTargets = new List<GameObject>();
     private Ability_SO selectedAbility;
     private int currentTurnIndex = 0;
     public GameObject caster {private set; get;}
     
-  
+    public Dictionary<GameObject, Dictionary<Buffs, int>> combatantBuffDurations;
+    public Dictionary<GameObject, Dictionary<Debuffs, int>> combatantDebuffDurations;
+
 
     public void CombatCycle()
     {
-            //sortedturnOrder = DecideTurnOrder();
-
-            //var list = sortedturnOrder.ToList();
-
+            
+            
             if (currentTurnIndex > sortedturnOrder.Count - 1) currentTurnIndex = 0;
 
             GameObject combatant = sortedturnOrder[currentTurnIndex].Key;
@@ -173,6 +170,7 @@ public class CombatFlow : MonoBehaviour
         {
             Debug.Log($"No targets possible fopr {combatant} turn");
             RequestNarration($"No targets possible for {combatant} turn");
+            ResetCombat();
             CombatEnded?.Invoke(combatants);
         }
         else 
@@ -371,13 +369,13 @@ public class CombatFlow : MonoBehaviour
         foreach(Rewards reward in stats.rewards) // iterate through rewards in each deadCombatants reward list
         {   switch(reward)
             {
-                case (Rewards.Gold):
-                int goldGained = (int)stats.difficulty * Random.Range(1, 10);   //multiply difficulty level x random value
+                case Rewards.Gold:
+                int goldGained = ((int)stats.difficulty + 1) * Random.Range(1, 10);   //multiply difficulty level x random value
                 rewardDict.TryAdd(Rewards.Gold, goldGained);
                 break;
 
-                case(Rewards.Xp):
-                int XpGained = (int)stats.difficulty * Random.Range(1, 10);    //multiply difficulty level x random value
+                case Rewards.Xp:
+                int XpGained = ((int)stats.difficulty + 1) * 10 * Random.Range(1, 10);    //multiply difficulty level x random value
                 rewardDict.TryAdd(Rewards.Xp, XpGained);
                 break;
             }
@@ -394,6 +392,7 @@ public class CombatFlow : MonoBehaviour
                 int XpGained = rewardDict[Rewards.Xp];
                 victorStats.GainGold(goldGained);
                 victorStats.GainXp(XpGained);
+                RequestNarration($"{victorStats.characterName} gained {goldGained} gold and {XpGained} XP!");
             }
         }   
     }
@@ -408,6 +407,13 @@ public class CombatFlow : MonoBehaviour
         //sortedturnOrder = list.AsEnumerable();     
         Debug.Log($"{sortedturnOrder} = sorted turnOrder.");
         // sets the list to be the new value of the sortedTurnOrder ienumerator
+    }
+
+    public void ResetCombat()
+    {
+        combatants.Clear();
+        sortedturnOrder.Clear();
+        uncookedList.Clear();
     }
 
     private void GivePlayerCompanionsInventory(GameObject companion)

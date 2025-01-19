@@ -18,12 +18,14 @@ public class PlayerOptions : MonoBehaviour
     private VisualElement buttonContainer_AO;
     private VisualElement charInfoPanel;
     private VisualElement abilityInfoPanel;
+    private VisualElement narratorWindow;
 
 
     #region // Character creation screen
     private VisualElement LeftCreationPanel;
     private VisualElement MiddleCreationPanel;
     private VisualElement RightCreationPanel;
+    
 
     # endregion
 
@@ -57,6 +59,7 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_AO = root.Q<VisualElement>("PlayerOptions");
         abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
         abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
+        narratorWindow = root.Q<VisualElement>("NarratorWindow");
 
         //myTextField = root.Q<TextField>("TextField");
         //myTextField.style.display = DisplayStyle.None;
@@ -66,8 +69,7 @@ public class PlayerOptions : MonoBehaviour
         MiddleCreationPanel = root.Q<VisualElement>("MiddleCreationPanel");
         RightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         charCreationText = RightCreationPanel.Q<Label>("CharCreationText");
-        buttonContainer_AO.style.display = DisplayStyle.Flex;
-        buttonContainer_CO.style.display = DisplayStyle.Flex;
+        
 
         
 
@@ -76,11 +78,18 @@ public class PlayerOptions : MonoBehaviour
     // Combat functions
     public void SpawnDirectionOptions(List<Directions> directions)
     {
+        KDebug.SeekBug($"directions available to travel: {directions}");
+
         ClearAbilityContainer();
         ClearTargetContainer();
-        
+        ShowCombatScreen();
+        HideCreationScreen();
+   
         foreach (Directions direction in directions)
         {
+
+            KDebug.SeekBug($"spawning direction button: {directions}");
+
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
             //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
@@ -90,6 +99,7 @@ public class PlayerOptions : MonoBehaviour
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnJourneyDirectionSelected(direction));
         }
+
         buttonContainer_AO.MarkDirtyRepaint();
     }
     public void SpawnTargetButtons(List<GameObject> combatants) // make this list start with friendly options
@@ -171,8 +181,9 @@ public class PlayerOptions : MonoBehaviour
 
     private void OnJourneyDirectionSelected(Directions direction)
     {
-        JourneyDirectionSelected?.Invoke(direction);
         ClearAbilityContainer();
+        JourneyDirectionSelected?.Invoke(direction);
+        
     }
     public void OnAbilitySelected(Ability_SO ability)
     {   
@@ -203,6 +214,13 @@ public class PlayerOptions : MonoBehaviour
         charInfoText.style.color = Color.white;
         charInfoText.text = charInfo;
         //Debug.Log("Hovering over button!");
+    }
+    public void ShowCombatScreen()
+    {
+        buttonContainer_AO.style.display = DisplayStyle.Flex;
+        buttonContainer_CO.style.display = DisplayStyle.Flex;
+        narratorWindow.style.display = DisplayStyle.Flex;
+
     }
 
     private void ShowAbilityInfo(Ability_SO ability)
@@ -247,9 +265,9 @@ public class PlayerOptions : MonoBehaviour
     }
     private void OnContinueSelected()
     {
-        ContinueSelected?.Invoke();
         ClearTargetContainer();
         ClearAbilityContainer();
+        ContinueSelected?.Invoke();
     }
     public void OnTargetSelected(GameObject target)
     {
@@ -272,6 +290,11 @@ public class PlayerOptions : MonoBehaviour
     {
   
         buttonContainer_CO.Clear();
+    }
+
+    public void ClearCharCreation()
+    {
+        LeftCreationPanel.Clear();
     }
     public void SetAwaitingAbilitySelection(bool awaiting)
     {

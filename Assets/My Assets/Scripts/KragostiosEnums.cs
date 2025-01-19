@@ -35,6 +35,7 @@ public enum LocationType
     Campsite,
     ImpassableTerrain,
     HiddenTreasure,
+    EdgeOfTheWorld
 }
 
 public enum Elements
