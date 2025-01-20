@@ -4,33 +4,52 @@ using KragostiosAllEnums;
 using System.Linq;
 using UnityEngine.Events;
 using System.Net.NetworkInformation;
+using System;
+using Unity.VisualScripting;
 
 public class CombatFlow : MonoBehaviour
 {
-    private int turnNumber;
+#region // class variables
+
+    #region // combatant variables
     public List<GameObject> combatants {private set; get;}
+    public GameObject caster {private set; get;}
     private Dictionary<GameObject, int> uncookedList = new Dictionary<GameObject, int>();
     private List<KeyValuePair<GameObject,int>> sortedturnOrder;
 
-    public UnityEvent<string> NarrationRequest;
+    #endregion
 
+    #region // event variables
+    public UnityEvent<string> NarrationRequest;
     public UnityEvent<List<Ability_SO>> OptionButtonRequest;
     public UnityEvent<List<GameObject>> TargetButtonRequest;
     public UnityEvent ContinueButtonRequest; 
-    public UnityEvent<List<GameObject>> CombatEnded;
+    public UnityEvent CombatEnded;
+
+    #endregion
+    
+    #region // turn variables
+    private int turnNumber;
+    private int currentTurnIndex = 0;
+
+    #endregion
+    
+    #region // ability/ target variables
     private int targetsExpected;
     private List<GameObject> selectedTargets = new List<GameObject>();
     private Ability_SO selectedAbility;
-    private int currentTurnIndex = 0;
-    public GameObject caster {private set; get;}
+
+    #endregion
     
+    #region // buff debuff variables
     public Dictionary<GameObject, Dictionary<Buffs, int>> combatantBuffDurations;
     public Dictionary<GameObject, Dictionary<Debuffs, int>> combatantDebuffDurations;
+    #endregion
+    #endregion
 
-
+#region // combat loop
     public void CombatCycle()
     {
-            
             
             if (currentTurnIndex > sortedturnOrder.Count - 1) currentTurnIndex = 0;
 
@@ -79,14 +98,15 @@ public class CombatFlow : MonoBehaviour
 
     private void ExecutePlayerTurn (GameObject combatant)
     {
-        Debug.Log("Player turn executing method called");
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
         string playerTurnIntro = $"{stats.characterName} Has big plans!... What are they?...";
+
         RequestNarration(playerTurnIntro);
-        Debug.Log($"known ability count = {stats.knownAbilities.Count}");
+
         RequestOptionButtons(stats.knownAbilities);
         
     }
+
     private void ExecuteEnemyTurn (GameObject combatant)
     {
         //Debug.Log($"{randomSkillIndex} = ability selected");
@@ -129,7 +149,7 @@ public class CombatFlow : MonoBehaviour
             
         }
         int numberKnownAbilities = usableAbilities.Count();
-        int randomSkillIndex = Random.Range(0, numberKnownAbilities);
+        int randomSkillIndex = UnityEngine.Random.Range(0, numberKnownAbilities);
         
         Debug.Log($"{numberKnownAbilities} = number of known abilities");
         Ability_SO selectedAbility = usableAbilities[randomSkillIndex];
@@ -170,8 +190,8 @@ public class CombatFlow : MonoBehaviour
         {
             Debug.Log($"No targets possible fopr {combatant} turn");
             RequestNarration($"No targets possible for {combatant} turn");
-            ResetCombat();
-            CombatEnded?.Invoke(combatants);
+            ResetCombat(); 
+            CombatEnded?.Invoke();
         }
         else 
         {
@@ -188,16 +208,21 @@ public class CombatFlow : MonoBehaviour
         
         RequestContinueButton();
     }
+
     private void ExecuteSummonTurn (GameObject combatant)
     {
         Debug.Log("Summon turn executing method called");
     }
+
     private void ExecuteCompanionTurn (GameObject combatant)
     {
         Debug.Log("Companion turn executing method called");
 
     }
 
+#endregion
+
+#region // ability management
     private List<GameObject> SelectRandomCharofType(Combatants charType, int targetNum, bool allAllies = false) //if true, will make a list of all combatants that are not of type chartype
     {
     List<GameObject> possibleTargets = new List<GameObject>();
@@ -232,7 +257,7 @@ public class CombatFlow : MonoBehaviour
         {
             while (targetsSelected < targets)
         {
-            int randomTargetIndex = Random.Range(0, numberOfEnemies - 1);
+            int randomTargetIndex = UnityEngine.Random.Range(0, numberOfEnemies - 1);
             GameObject randomTarget = possibleTargets[randomTargetIndex];
             selectedTargets.Add(randomTarget);
             targetsSelected ++;
@@ -244,6 +269,7 @@ public class CombatFlow : MonoBehaviour
         
 
     }
+
     private void HandleAbilityEffect(List<GameObject> targets, Ability_SO selectedAbility)
     {   
         foreach(GameObject target in targets)
@@ -278,6 +304,17 @@ public class CombatFlow : MonoBehaviour
         RequestNarration($"{selectedAbility.AbilityName} ability effects have been handled");
         RequestContinueButton();
     }
+
+   public void AddSelectedTarget(GameObject target)
+    {
+        selectedTargets.Add(target);
+        if (selectedTargets.Count == targetsExpected)
+        {
+            HandleAbilityEffect(selectedTargets, selectedAbility);
+        }
+
+    }
+
     public void NextTurn()
     {
         selectedTargets = new List<GameObject>();
@@ -285,7 +322,9 @@ public class CombatFlow : MonoBehaviour
         Invoke("CombatCycle", 1f);
     }
 
-// Event functions
+#endregion
+
+#region // Event functions
     private void RequestNarration(string message)
     {
         Debug.Log("Narration request sent?");
@@ -296,6 +335,7 @@ public class CombatFlow : MonoBehaviour
     {
         ContinueButtonRequest?.Invoke();
     }
+
     private void RequestOptionButtons(List<Ability_SO> abilities)
     {
         Debug.Log("Ability Button request sent?");
@@ -303,7 +343,9 @@ public class CombatFlow : MonoBehaviour
         OptionButtonRequest?.Invoke(abilities);
     }
 
-// Setup functions
+#endregion
+
+#region // Setup functions
     public void SetExpectedTargets(int targetNum)
     {
         targetsExpected = targetNum;
@@ -318,23 +360,14 @@ public class CombatFlow : MonoBehaviour
         selectedAbility = ability;
     }
 
-
-    
-    public void AddSelectedTarget(GameObject target)
-    {
-        selectedTargets.Add(target);
-        if (selectedTargets.Count == targetsExpected)
-        {
-           HandleAbilityEffect(selectedTargets, selectedAbility);
-        }
-    }
-
     public IEnumerable<KeyValuePair<GameObject,int>> DecideTurnOrder()
     {
+        ResetCombat();
+        
         foreach (GameObject combatant in combatants)
         {
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
-            int initiativeRoll = Random.Range(0, 20) + stats.initiative;
+            int initiativeRoll = UnityEngine.Random.Range(0, 20) + stats.initiative;
             //Debug.Log($"{uncookedList} = uncooked list");
             uncookedList.Add(combatant, initiativeRoll);
         }
@@ -343,7 +376,9 @@ public class CombatFlow : MonoBehaviour
         return sortedturnOrder;
     }
 
-// Death functions
+#endregion
+
+#region // Death functions
 
     private void HandleDeath(GameObject deadCombatant)
     {
@@ -370,12 +405,12 @@ public class CombatFlow : MonoBehaviour
         {   switch(reward)
             {
                 case Rewards.Gold:
-                int goldGained = ((int)stats.difficulty + 1) * Random.Range(1, 10);   //multiply difficulty level x random value
+                int goldGained = ((int)stats.difficulty + 1) * UnityEngine.Random.Range(1, 10);   //multiply difficulty level x random value
                 rewardDict.TryAdd(Rewards.Gold, goldGained);
                 break;
 
                 case Rewards.Xp:
-                int XpGained = ((int)stats.difficulty + 1) * 10 * Random.Range(1, 10);    //multiply difficulty level x random value
+                int XpGained = ((int)stats.difficulty + 1) * 10 * UnityEngine.Random.Range(1, 10);    //multiply difficulty level x random value
                 rewardDict.TryAdd(Rewards.Xp, XpGained);
                 break;
             }
@@ -409,18 +444,14 @@ public class CombatFlow : MonoBehaviour
         // sets the list to be the new value of the sortedTurnOrder ienumerator
     }
 
-    public void ResetCombat()
-    {
-        combatants.Clear();
-        sortedturnOrder.Clear();
-        uncookedList.Clear();
-    }
-
-    private void GivePlayerCompanionsInventory(GameObject companion)
+   private void GivePlayerCompanionsInventory(GameObject companion)
     {
 
     }
 
+#endregion
+
+#region // getters
     public bool CheckEnemiesRemaining() // true if any enemy remains 
     {
         bool enemiesRemaining = false;
@@ -468,5 +499,69 @@ public class CombatFlow : MonoBehaviour
         return alliesRemaining;
     }
 
+#endregion
+
+#region //buff Debuff functions
+    private Dictionary<Debuffs, int> GetCombatantsDebuffs(GameObject combatant)
+    {
+        
+        if (combatantDebuffDurations.TryGetValue(combatant, out Dictionary<Debuffs, int> combatantDebuffs))
+        {
+            return combatantDebuffs;
+        }
+        else return new Dictionary<Debuffs, int>();
+    }
+
+    private Dictionary<Buffs, int> GetCombatantsBuffs(GameObject combatant)
+    {
+        
+        if (combatantBuffDurations.TryGetValue(combatant, out Dictionary<Buffs, int> combatantBuffs))
+        {
+            return combatantBuffs;
+        }
+        else return new Dictionary<Buffs, int>();
+    }
+
+    private void DecrementBuffsandDebuffs(GameObject combatant)
+    {
+        Dictionary<Debuffs, int> combatantDebuffs = GetCombatantsDebuffs(combatant);
+        Dictionary<Buffs, int> combatantBuffs = GetCombatantsBuffs(combatant);
+        foreach (KeyValuePair<Debuffs, int> kvp in combatantDebuffs)
+        {
+            int duration = kvp.Value;
+            if(duration > 0)
+            {
+              combatantDebuffs.Remove(kvp.Key);
+              combatantDebuffs.Add(kvp.Key , kvp.Value - 1);
+            }
+            if (duration == 0)
+            {
+                combatantDebuffs.Remove(kvp.Key);
+            }
+        }
+        foreach (KeyValuePair<Buffs, int> kvp in combatantBuffs)
+        {
+            int duration = kvp.Value;
+            if(duration > 0)
+            {
+              combatantBuffs.Remove(kvp.Key);
+              combatantBuffs.Add(kvp.Key , kvp.Value - 1);
+            }
+            if (duration == 0)
+            {
+                combatantBuffs.Remove(kvp.Key);
+            }
+        }
+    }
+#endregion
+
+#region // cycle maintainance
+    public void ResetCombat()
+    {     
+        selectedTargets.Clear();
+        uncookedList.Clear();
+    }
+
+#endregion
 
 }

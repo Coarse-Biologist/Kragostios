@@ -175,12 +175,12 @@ private void HandleCombatContinuePressed()
     else if (enemiesRemaining && !alliesRemaining) 
     {
         narrator.DisplayNarrationText("Your party has been defeated!");
-        HandleCombatEnd(combat.combatants);   
+        HandleCombatEnd();   
     }
     else if (!enemiesRemaining && alliesRemaining)
     {
         narrator.DisplayNarrationText("YOU WON!");
-        HandleCombatEnd(combat.combatants);
+        HandleCombatEnd();
     }
 
     
@@ -222,14 +222,14 @@ private GameObject MakeCompanion(Difficulty difficulty)
     GameObject companion = stats.MakeCreature(difficulty, Combatants.Companion);  
     return companion;  
 }
-private void HandleCombatEnd(List<GameObject> survivingCombatants)
+private void HandleCombatEnd()
 {
     List<Directions> directions = map.directions;
     playerOptions.SpawnDirectionOptions(directions);
 }
 private void InitiateCombat()
 {
-    combat.ResetCombat();
+    
     List<GameObject> combatants = new List<GameObject>();
     int numberofEnemies = Random.Range(1, 3);
     while(numberofEnemies > 0)
@@ -316,7 +316,6 @@ public void HandlePlayerTraveled(Directions direction)
         playerOptions.SpawnDirectionOptions(directions);
         break;
 
-        
     }
 }
 

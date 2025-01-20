@@ -104,6 +104,7 @@ public class PlayerOptions : MonoBehaviour
     }
     public void SpawnTargetButtons(List<GameObject> combatants) // make this list start with friendly options
     {   
+
         ClearTargetContainer();
         foreach (GameObject combatant in combatants)
         {
@@ -209,10 +210,11 @@ public class PlayerOptions : MonoBehaviour
     {
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
         string charInfo = stats.GetCharInfo();
+        string charAffinities = stats.GetAffinityString();
         charInfoPanel.style.display = DisplayStyle.Flex;
         charInfoText.style.whiteSpace = WhiteSpace.Normal;
         charInfoText.style.color = Color.white;
-        charInfoText.text = charInfo;
+        charInfoText.text = charInfo + charAffinities;
         //Debug.Log("Hovering over button!");
     }
     public void ShowCombatScreen()

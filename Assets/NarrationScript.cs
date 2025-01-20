@@ -70,6 +70,7 @@ public class NarrationScript : MonoBehaviour
 
         if (linesOfNarration >= 6)
         {
+            linesOfNarration = 0;
             narratorText.text = message;
         }
         else 
