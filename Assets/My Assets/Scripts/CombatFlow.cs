@@ -528,31 +528,75 @@ public class CombatFlow : MonoBehaviour
         Dictionary<Buffs, int> combatantBuffs = GetCombatantsBuffs(combatant);
         foreach (KeyValuePair<Debuffs, int> kvp in combatantDebuffs)
         {
-            int duration = kvp.Value;
-            if(duration > 0)
+            Debuffs debuff = kvp.Key;
+            int remainingDuration = kvp.Value;
+            if(remainingDuration > 0)      //if remaining duration is not 0
             {
               combatantDebuffs.Remove(kvp.Key);
-              combatantDebuffs.Add(kvp.Key , kvp.Value - 1);
+              combatantDebuffs.Add(debuff , remainingDuration - 1);     // remove and readd decremented duration 
             }
-            if (duration == 0)
+            if (remainingDuration == 0)
             {
-                combatantDebuffs.Remove(kvp.Key);
+                combatantDebuffs.Remove(debuff);     // else simply remove the debuff from active debuff list
             }
         }
         foreach (KeyValuePair<Buffs, int> kvp in combatantBuffs)
         {
-            int duration = kvp.Value;
-            if(duration > 0)
+            Buffs buff = kvp.Key;
+            int remainingDuration = kvp.Value;
+            if(remainingDuration > 0)
             {
               combatantBuffs.Remove(kvp.Key);
-              combatantBuffs.Add(kvp.Key , kvp.Value - 1);
+              combatantBuffs.Add(buff, remainingDuration - 1);
             }
-            if (duration == 0)
+            if (remainingDuration == 0)
             {
-                combatantBuffs.Remove(kvp.Key);
+                combatantBuffs.Remove(buff);
             }
         }
     }
+
+    private void ApplyDebufftoCombatants(Debuffs debuff, int duration, List<GameObject> combatants)
+    {
+
+        foreach (GameObject combatant in combatants)
+            {
+            Dictionary<Debuffs, int> debuffDict = GetCombatantsDebuffs(combatant);
+            combatantDebuffDurations.Add(combatant, debuffDict);
+
+            }
+            if (!debuffDict.TryGetValue(debuff, out duration))
+            {
+                debuffDict.Add(debuff, duration);
+            }
+            else
+            {
+                debuffDict.Remove(debuff);
+                debuffDict.Add(debuff, duration);
+            }
+    }
+
+    private void ApplyBufftoCombatants(Buffs buff, int duration, List<GameObject> combatants)
+    {
+        foreach (GameObject combatant in combatants)
+        {
+            if (!combatantBuffDurations.TryGetValue(combatant, out Dictionary<Buffs, int> buffDict))
+            {
+                buffDict = new Dictionary<Buffs, int>{{buff, duration}};
+                combatantBuffDurations.Add(combatant, buffDict);
+            }
+            if (!buffDict.TryGetValue(buff, out duration))
+            {
+                buffDict.Add(buff, duration);
+            }
+            else
+            {
+                buffDict.Remove(buff);
+                buffDict.Add(buff, duration);
+            }
+        }
+    }
+
 #endregion
 
 #region // cycle maintainance
