@@ -135,12 +135,44 @@ public enum Debuffs
 {
 Stun,
 Shock,
+HealthDrain,
 StaminaDrain,
+ManaDrain,
 Chill,
 Hot,
 Proned,
 Restrained,
-Retarted //retarted decreases the enemy accuracy and adds a chance the foe will attack their buddies or themselves.
+Retarted, //retarted decreases the enemy accuracy and adds a chance the foe will attack their buddies or themselves.
+InefficientHeart,
+InefficientStrength,
+InefficientSpirit,
 
+#region //inflict weakness
+ColdWeakness,
+WaterWeakness,
+EarthWeakness,
+FireWeakness,
+HeatWeakness,
+AirWeakness,
+ElectrictyWeakness,
+PoisonWeakness,
+AcidWeakness,
+BacteriaWeakness,
+FungiWeakness,
+PlantWeakness,
+VirusWeakness,
+RadiationWeakness,
+LightWeakness,
+PsychiWeakness,
+
+#endregion
+
+#region //physical weakness
+
+BludgeoningWeakness,
+SlashingWeakness,
+PiercingWeakness
+
+#endregion
 }
 }

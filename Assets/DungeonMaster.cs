@@ -257,6 +257,7 @@ public void HandlePlayerTraveled(Directions direction)
     travel.TravelInDirection(direction);
     Vector2 playerLocation = travel.playerLocation;
     LocationType locationType = map.GetLocationType(playerLocation);
+    locationType = LocationType.Hostile;
     switch(locationType)
     {
         case LocationType.Hostile:

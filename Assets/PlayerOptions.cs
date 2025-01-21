@@ -69,11 +69,7 @@ public class PlayerOptions : MonoBehaviour
         MiddleCreationPanel = root.Q<VisualElement>("MiddleCreationPanel");
         RightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         charCreationText = RightCreationPanel.Q<Label>("CharCreationText");
-        
-
-        
-
-        
+       
     }
     // Combat functions
     public void SpawnDirectionOptions(List<Directions> directions)
@@ -92,7 +88,7 @@ public class PlayerOptions : MonoBehaviour
 
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
-            //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
+            //KDebug.SeekBug($"{newButton} = new Button. button container = {buttonContainer}///");
 
             newButton.text = direction.ToString();
             buttonContainer_AO.Add(newButtonContainer);
@@ -110,7 +106,7 @@ public class PlayerOptions : MonoBehaviour
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
-            //Debug.Log($"{newButton} = new Button. button container = {buttonContainer}///");
+            //KDebug.SeekBug($"{newButton} = new Button. button container = {buttonContainer}///");
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
             newButton.text = stats.characterName + stats.charType;
             buttonContainer_CO.Add(newButtonContainer);
@@ -132,7 +128,7 @@ public class PlayerOptions : MonoBehaviour
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
-            Debug.Log($"new ability {ability} Button requested and being processed");
+            KDebug.SeekBug($"new ability {ability} Button requested and being processed");
 
             newButton.text = ability.AbilityName;
             buttonContainer_AO.Add(newButtonContainer);
@@ -141,7 +137,7 @@ public class PlayerOptions : MonoBehaviour
             newButton.RegisterCallback<PointerEnterEvent>(evt => ShowAbilityInfo(ability));
             newButton.RegisterCallback<PointerEnterEvent>(evt => HideCharInfo());
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideAbilityInfo());
-            
+                      
         }
         buttonContainer_AO.MarkDirtyRepaint();
         //root.MarkDirtyRepaint();  
@@ -194,8 +190,7 @@ public class PlayerOptions : MonoBehaviour
         {
             awaitingAbilitySelection = false;
             AbilitySelected?.Invoke(ability);
-        }
-        
+        } 
     }
     public void ShowPlayerInfo(GameObject player)
     {
@@ -215,7 +210,7 @@ public class PlayerOptions : MonoBehaviour
         charInfoText.style.whiteSpace = WhiteSpace.Normal;
         charInfoText.style.color = Color.white;
         charInfoText.text = charInfo + charAffinities;
-        //Debug.Log("Hovering over button!");
+        //KDebug.SeekBug("Hovering over button!");
     }
     public void ShowCombatScreen()
     {
@@ -235,28 +230,24 @@ public class PlayerOptions : MonoBehaviour
         }
         catch(NullReferenceException)
         {
-            Debug.Log("Hovering over button! but something doesnt exist");
-                    Debug.Log($"ability library script: {abilityLibrary}!");
-
-
+            KDebug.SeekBug("Hovering over button! but something doesnt exist");
+            KDebug.SeekBug($"ability library script: {abilityLibrary}!");
         }
         
-        
-        //newButton.style.backgroundColor = new StyleColor(Color.red); 
-        Debug.Log("Hovering over button!");
+        KDebug.SeekBug("Hovering over button!");
 
     }
     private void HideAbilityInfo()
     {
         abilityInfoText.text = " ";
         abilityInfoPanel.style.display = DisplayStyle.None;
-        Debug.Log("Not hovering over button!");
+        KDebug.SeekBug("Not hovering over button!");
     }
     private void HideCharInfo()
     {
         charInfoPanel.style.display = DisplayStyle.None;
         charInfoText.text = " ";
-        Debug.Log("Not hovering over button!");    
+        KDebug.SeekBug("Not hovering over button!");    
     }
 
     public void HideCreationScreen()
@@ -317,7 +308,7 @@ public class PlayerOptions : MonoBehaviour
         {
         if (evt.keyCode == KeyCode.Return) // Check for Enter key
         {
-            Debug.Log("Sqreeeeeech");
+            KDebug.SeekBug("Sqreeeeeech");
             string playerMessage = myTextField.value;
             PlayertextInput?.Invoke(playerMessage);
             myTextField.style.display = DisplayStyle.None;

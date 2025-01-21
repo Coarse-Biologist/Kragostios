@@ -42,8 +42,35 @@ public class CombatFlow : MonoBehaviour
     #endregion
     
     #region // buff debuff variables
-    public Dictionary<GameObject, Dictionary<Buffs, int>> combatantBuffDurations;
-    public Dictionary<GameObject, Dictionary<Debuffs, int>> combatantDebuffDurations;
+    public Dictionary<GameObject, Dictionary<Buffs, int>> combatantBuffDurations = new Dictionary<GameObject, Dictionary<Buffs, int>>();
+    public Dictionary<GameObject, Dictionary<Debuffs, int>> combatantDebuffDurations = new Dictionary<GameObject, Dictionary<Debuffs, int>>();
+    public List<Debuffs> abilitySelectionDebuffs = new List<Debuffs>{Debuffs.Retarted};
+    public List<Debuffs> targetSelectionDebuffs = new List<Debuffs>{Debuffs.Retarted};
+    public List<Debuffs> turnStartDebuffs = new List<Debuffs>{Debuffs.Stun};
+    public List<Debuffs> abilityUsedDebuffs = new List<Debuffs>{Debuffs.InefficientHeart, Debuffs.InefficientStrength, Debuffs.InefficientSpirit};
+    public List<Debuffs> attackRecievedDebuffs = new List<Debuffs>
+    {
+        Debuffs.WaterWeakness,
+        Debuffs.ColdWeakness,
+        Debuffs.EarthWeakness,
+        Debuffs.FireWeakness,
+        Debuffs.HeatWeakness,
+        Debuffs.AirWeakness,
+        Debuffs.ElectrictyWeakness,
+        Debuffs.PoisonWeakness,
+        Debuffs.AcidWeakness,
+        Debuffs.BacteriaWeakness,
+        Debuffs.FungiWeakness,
+        Debuffs.PlantWeakness,
+        Debuffs.VirusWeakness,
+        Debuffs.RadiationWeakness,
+        Debuffs.LightWeakness,
+        Debuffs.PsychiWeakness,
+        Debuffs.BludgeoningWeakness,
+        Debuffs.SlashingWeakness,
+        Debuffs.PiercingWeakness
+    };
+
     #endregion
     #endregion
 
@@ -109,20 +136,14 @@ public class CombatFlow : MonoBehaviour
 
     private void ExecuteEnemyTurn (GameObject combatant)
     {
-        //Debug.Log($"{randomSkillIndex} = ability selected");
-        //Debug.Log($"{numberKnownAbilities} = number of known abilities");
+        List<Debuffs> relevantDebuffs = GetRelevantDebuffs(turnStartDebuffs, combatant);
+
         bool enemiesRemaining = CheckEnemiesRemaining(); // boolean statement // true or false
         bool alliesRemaining = CheckAlliesRemaining();
 
-        //if(//combatant.statusEffects contains BrainDamage)
-        //{
-        //    List<GameObject> targets = new List<GameObject>();
-        //    targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
-        //    
-        //}
-
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
         List<Ability_SO> usableAbilities = new List<Ability_SO>();
+
         foreach (Ability_SO ability in stats.knownAbilities)
         {
             if (enemiesRemaining)
@@ -131,7 +152,6 @@ public class CombatFlow : MonoBehaviour
                 || ability.Type == AbilityCategories.Heal
                 || ability.Type == AbilityCategories.BuffHeal)
                 {
-
                     {
                         usableAbilities.Add(ability);
                     }
@@ -149,6 +169,7 @@ public class CombatFlow : MonoBehaviour
             
         }
         int numberKnownAbilities = usableAbilities.Count();
+
         int randomSkillIndex = UnityEngine.Random.Range(0, numberKnownAbilities);
         
         Debug.Log($"{numberKnownAbilities} = number of known abilities");
@@ -512,6 +533,23 @@ public class CombatFlow : MonoBehaviour
         else return new Dictionary<Debuffs, int>();
     }
 
+    private List<Debuffs> GetRelevantDebuffs(List<Debuffs> desiredDebuffType, GameObject combatant)
+    {
+        List<Debuffs> relevantDebuffs = new List<Debuffs>();
+        Dictionary <Debuffs, int> debuffDict = GetCombatantsDebuffs(combatant);
+        foreach(KeyValuePair<Debuffs, int> kvp in debuffDict)
+        {
+            Debuffs debuff = kvp.Key;
+            if(debuffDict.TryGetValue(debuff, out int duration))
+            {
+                if(desiredDebuffType.Contains(debuff))
+                {
+                    relevantDebuffs.Add(debuff);
+                }
+            }
+        }
+        return relevantDebuffs;
+    }
     private Dictionary<Buffs, int> GetCombatantsBuffs(GameObject combatant)
     {
         
@@ -556,13 +594,16 @@ public class CombatFlow : MonoBehaviour
         }
     }
 
+
     private void ApplyDebufftoCombatants(Debuffs debuff, int duration, List<GameObject> combatants)
     {
 
         foreach (GameObject combatant in combatants)
+        {
+            if (!combatantDebuffDurations.TryGetValue(combatant, out Dictionary<Debuffs, int> debuffDict))
             {
-            Dictionary<Debuffs, int> debuffDict = GetCombatantsDebuffs(combatant);
-            combatantDebuffDurations.Add(combatant, debuffDict);
+                debuffDict = new Dictionary<Debuffs, int>{{debuff, duration}};
+                combatantDebuffDurations.Add(combatant, debuffDict);
 
             }
             if (!debuffDict.TryGetValue(debuff, out duration))
@@ -574,6 +615,7 @@ public class CombatFlow : MonoBehaviour
                 debuffDict.Remove(debuff);
                 debuffDict.Add(debuff, duration);
             }
+        }
     }
 
     private void ApplyBufftoCombatants(Buffs buff, int duration, List<GameObject> combatants)
@@ -608,4 +650,48 @@ public class CombatFlow : MonoBehaviour
 
 #endregion
 
+#region // enemy turn based on Debuffs
+private List<GameObject> GetAbility(List<Debuffs> debuffs, GameObject combatant)
+    {
+        bool enemiesRemaining = CheckEnemiesRemaining(); // boolean statement // true or false
+        bool alliesRemaining = CheckAlliesRemaining();
+
+        StatsHandler stats = combatant.GetComponent<StatsHandler>();
+        List<Ability_SO> usableAbilities = new List<Ability_SO>();
+
+        foreach (Ability_SO ability in stats.knownAbilities)
+        {
+            if (enemiesRemaining)
+            {
+                if (ability.Type == AbilityCategories.Buff
+                || ability.Type == AbilityCategories.Heal
+                || ability.Type == AbilityCategories.BuffHeal)
+                {
+                    {
+                        usableAbilities.Add(ability);
+                    }
+                }
+            }
+            if (alliesRemaining)
+            {
+                if (ability.Type == AbilityCategories.Attack
+                || ability.Type == AbilityCategories.Debuff
+                || ability.Type == AbilityCategories.DebuffAttack)
+                {
+                    usableAbilities.Add(ability);
+                }
+            }
+            
+        }
+        int numberKnownAbilities = usableAbilities.Count();
+
+        int randomSkillIndex = UnityEngine.Random.Range(0, numberKnownAbilities);
+        
+        Debug.Log($"{numberKnownAbilities} = number of known abilities");
+        Ability_SO selectedAbility = usableAbilities[randomSkillIndex];
+        
+        List<GameObject> targets = new List<GameObject>();
+        return targets;
+}
+#endregion 
 }
