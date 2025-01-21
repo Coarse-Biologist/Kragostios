@@ -80,8 +80,6 @@ private void OnEnable()
     playerOptions.StatIncrented.AddListener(HandleStatIncremented);
     playerOptions.CharacterCreationConfirmed.AddListener(CharacterCreationComplete);
 
-
-    
 }
 
 private void OnDisable()
@@ -109,13 +107,11 @@ private void OnDisable()
 #region // Comand UI
 private void DisplayNarration(string message)
 {
-    Debug.Log("Display Narration request recieved?");
     narrator.DisplayNarrationText(message);
 }
 
 private void SpawnOptionButtons(List<Ability_SO> abilities)
 {
-    Debug.Log("Spawn ability request recieved?");
     playerOptions.SpawnAbilityButtons(playerStats.knownAbilities);
     List<GameObject> combatants = combat.combatants;
     playerOptions.SpawnTargetButtons(combatants);
@@ -132,8 +128,6 @@ private void SpawnContinueButton()
 
 public void HandleTargetSelected(GameObject target) // needs a lot of work
 {
-    Debug.Log("Handle target Selected request recieved?");
-
     combat.AddSelectedTarget(target);
 }
 
@@ -166,11 +160,11 @@ private void HandleCombatContinuePressed()
 {
     bool enemiesRemaining = combat.CheckEnemiesRemaining();
     bool alliesRemaining = combat.CheckAlliesRemaining();
+
     if (enemiesRemaining && alliesRemaining)
     {
-        Debug.Log("Show goes on");
-    combat.NextTurn();
-    playerOptions.SpawnPlayerInfoButton(Player);
+        combat.NextTurn();
+        playerOptions.SpawnPlayerInfoButton(Player);
     } 
     else if (enemiesRemaining && !alliesRemaining) 
     {

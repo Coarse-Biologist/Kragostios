@@ -27,4 +27,4 @@ MonoBehaviour:
   SyphonPercentage: 0
   AbilityLevel: 2
   BuffEffects: 
-  DebuffEffects: 07000000
+  DebuffEffects: 0a000000

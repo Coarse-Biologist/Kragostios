@@ -28,4 +28,22 @@ public class Ability_SO : ScriptableObject
         string abilityInfo = " ";
         return abilityInfo;
     }
+    public string GetBuffListString()
+    {
+        string buffListString = "";
+        foreach(Buffs buff in BuffEffects)
+        {
+            buffListString += $"{buff}, ";
+        }
+        return buffListString;
+    }
+    public string GetDebuffListString()
+    {
+        string debuffListString = "";
+        foreach(Debuffs debuff in DebuffEffects)
+        {
+            debuffListString += $"{debuff}, ";
+        }
+        return debuffListString;
+    }
 }

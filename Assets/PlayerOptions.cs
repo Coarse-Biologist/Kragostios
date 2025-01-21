@@ -69,12 +69,12 @@ public class PlayerOptions : MonoBehaviour
         MiddleCreationPanel = root.Q<VisualElement>("MiddleCreationPanel");
         RightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         charCreationText = RightCreationPanel.Q<Label>("CharCreationText");
-       
+        
     }
     // Combat functions
     public void SpawnDirectionOptions(List<Directions> directions)
     {
-        KDebug.SeekBug($"directions available to travel: {directions}");
+        //KDebug.SeekBug($"directions available to travel: {directions}");
 
         ClearAbilityContainer();
         ClearTargetContainer();
@@ -84,7 +84,7 @@ public class PlayerOptions : MonoBehaviour
         foreach (Directions direction in directions)
         {
 
-            KDebug.SeekBug($"spawning direction button: {directions}");
+            //KDebug.SeekBug($"spawning direction button: {directions}");
 
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
@@ -128,7 +128,7 @@ public class PlayerOptions : MonoBehaviour
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
-            KDebug.SeekBug($"new ability {ability} Button requested and being processed");
+            //KDebug.SeekBug($"new ability {ability} Button requested and being processed");
 
             newButton.text = ability.AbilityName;
             buttonContainer_AO.Add(newButtonContainer);
@@ -234,20 +234,20 @@ public class PlayerOptions : MonoBehaviour
             KDebug.SeekBug($"ability library script: {abilityLibrary}!");
         }
         
-        KDebug.SeekBug("Hovering over button!");
+        //KDebug.SeekBug("Hovering over button!");
 
     }
     private void HideAbilityInfo()
     {
         abilityInfoText.text = " ";
         abilityInfoPanel.style.display = DisplayStyle.None;
-        KDebug.SeekBug("Not hovering over button!");
+        //KDebug.SeekBug("Not hovering over button!");
     }
     private void HideCharInfo()
     {
         charInfoPanel.style.display = DisplayStyle.None;
         charInfoText.text = " ";
-        KDebug.SeekBug("Not hovering over button!");    
+        //KDebug.SeekBug("Not hovering over button!");    
     }
 
     public void HideCreationScreen()
@@ -308,7 +308,6 @@ public class PlayerOptions : MonoBehaviour
         {
         if (evt.keyCode == KeyCode.Return) // Check for Enter key
         {
-            KDebug.SeekBug("Sqreeeeeech");
             string playerMessage = myTextField.value;
             PlayertextInput?.Invoke(playerMessage);
             myTextField.style.display = DisplayStyle.None;

@@ -495,9 +495,15 @@ public class StatsHandler : MonoBehaviour
         currentHealth = currentHealth + healAmount;
         if (currentHealth > MaxHealth) currentHealth = MaxHealth;
     }
-    public void UpdateMana(int ManaChange)
+    public void LoseMana(int ManaCost)
     {
-        currentHealth = currentHealth + ManaChange;
+        currentMana = currentMana + ManaCost;
+        if (currentMana > MaxMana) currentMana = MaxMana;
+        else if (currentMana < 0 ) currentMana = 0;
+    }
+    public void GainMana(int ManaChange)
+    {
+        currentMana += ManaChange;
         if (currentMana > MaxMana) currentMana = MaxMana;
         else if (currentMana < 0 ) currentMana = 0;
     }
@@ -556,7 +562,7 @@ public class StatsHandler : MonoBehaviour
     rewards = new List<Rewards>();
     characterGold = 0;
     knownAbilities = new List<Ability_SO>{
-    abilityLibrary.Melee, abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch, abilityLibrary.ColdLight, abilityLibrary.BrainDamage, abilityLibrary.ColdLight
+    abilityLibrary.Melee, abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch, abilityLibrary.ColdLight, abilityLibrary.BrainDamage
     };
 
     return gameObject;
