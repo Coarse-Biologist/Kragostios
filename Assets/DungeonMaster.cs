@@ -134,11 +134,11 @@ public class DungeonMaster : MonoBehaviour
     {
         StatsHandler casterStats = combat.caster.GetComponent<StatsHandler>();
 
-        if (casterStats.currentMana >= ability.AbilityCost)
+        if (casterStats.GetResourceAmount(ability.Resource) >= ability.AbilityCost)
         {
             string resourceCostNarration = $"{casterStats.characterName} used {ability.AbilityCost} {ability.Resource} to cast {ability.AbilityName}";
             narrator.DisplayNarrationText(resourceCostNarration);
-
+            casterStats.ChangeResource(ResourceTypes.Mana, -ability.AbilityCost);
             combat.SetSelectedAbility(ability);
             int targetNum = ability.Targets;
             combat.SetExpectedTargets(targetNum);

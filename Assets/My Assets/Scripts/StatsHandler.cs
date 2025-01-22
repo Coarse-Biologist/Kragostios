@@ -23,7 +23,7 @@ public class StatsHandler : MonoBehaviour
     #endregion
 
     #region // char description
-    [SerializeField] public string characterName { private set; get; } = "Sqreegler";
+    public string characterName { private set; get; } = "Sqreegler";
     [SerializeField] public string description { private set; get; }
     [SerializeField] public Combatants charType { private set; get; }
     [SerializeField] public Difficulty difficulty { private set; get; }
@@ -43,6 +43,7 @@ public class StatsHandler : MonoBehaviour
     [SerializeField] public int currentHealth { private set; get; } = 100;
     [SerializeField] public int currentMana { private set; get; } = 100;
     [SerializeField] public int currentStamina { private set; get; } = 100;
+    [SerializeField] public int currentOverHealth { private set; get; } = 0;
     #endregion
 
     #region // Elemental Affinityences
@@ -161,7 +162,22 @@ public class StatsHandler : MonoBehaviour
         return AffinityDict;
 
     }
-
+    public int GetResourceAmount(ResourceTypes resourceType)
+    {
+        if (resourceType == ResourceTypes.Health)
+        {
+            return currentHealth;
+        }
+        if (resourceType == ResourceTypes.Mana)
+        {
+            return currentMana;
+        }
+        if (resourceType == ResourceTypes.Stamina)
+        {
+            return currentStamina;
+        }
+        else return 777;
+    }
 
 
     public string GetAffinityString()
@@ -493,33 +509,53 @@ public class StatsHandler : MonoBehaviour
         MaxXp = MaxXp * 2;
     }
 
-    public void TakeDamage(int damageValue)
-    {
-        currentHealth = currentHealth - damageValue;
+    //public void TakeDamage(int damageValue)
+    //{
+    //    currentHealth = currentHealth - damageValue;
+    //
+    //}
+    //public void Heal(int healAmount)
+    //{
+    //    currentHealth = currentHealth + healAmount;
+    //    if (currentHealth > MaxHealth) currentHealth = MaxHealth;
+    //}
+    //public void LoseMana(int ManaCost)
+    //{
+    //    currentMana = currentMana + ManaCost;
+    //    if (currentMana > MaxMana) currentMana = MaxMana;
+    //    else if (currentMana < 0) currentMana = 0;
+    //}
+    //public void GainMana(int ManaChange)
+    //{
+    //    currentMana += ManaChange;
+    //    if (currentMana > MaxMana) currentMana = MaxMana;
+    //    else if (currentMana < 0) currentMana = 0;
+    //}
 
-    }
-    public void Heal(int healAmount)
+    public void ChangeResource(ResourceTypes resource, int value)
     {
-        currentHealth = currentHealth + healAmount;
-        if (currentHealth > MaxHealth) currentHealth = MaxHealth;
-    }
-    public void LoseMana(int ManaCost)
-    {
-        currentMana = currentMana + ManaCost;
-        if (currentMana > MaxMana) currentMana = MaxMana;
-        else if (currentMana < 0) currentMana = 0;
-    }
-    public void GainMana(int ManaChange)
-    {
-        currentMana += ManaChange;
-        if (currentMana > MaxMana) currentMana = MaxMana;
-        else if (currentMana < 0) currentMana = 0;
+        switch (resource)
+        {
+            case ResourceTypes.Health:
+                currentHealth += value;
+                if (currentHealth > MaxHealth + currentOverHealth) currentHealth = MaxHealth;
+                break;
+            case ResourceTypes.Mana:
+                currentMana += value;
+                if (currentMana > MaxMana) currentMana = MaxMana;
+                break;
+            case ResourceTypes.Stamina:
+                currentStamina += value;
+                if (currentStamina > MaxStamina) currentStamina = MaxStamina;
+                break;
+        }
     }
 
     private void GiveOverHealth(int overHealthAmount)
     {
         MaxHealth += overHealthAmount;
         currentHealth += overHealthAmount;
+        currentOverHealth += overHealthAmount;
     }
     #endregion
 

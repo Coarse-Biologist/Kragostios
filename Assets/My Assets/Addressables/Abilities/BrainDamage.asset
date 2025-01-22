@@ -24,7 +24,8 @@ MonoBehaviour:
   TurnDuration: 10
   Targets: 1
   Summons: 0
+  DamageOverTime: 0
   SyphonPercentage: 0
   AbilityLevel: 2
   BuffEffects: 
-  DebuffEffects: 0a000000
+  DebuffEffects: 0b000000

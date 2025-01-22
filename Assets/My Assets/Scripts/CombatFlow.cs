@@ -48,7 +48,8 @@ public class CombatFlow : MonoBehaviour
     public Dictionary<GameObject, Dictionary<Buffs, int>> combatantBuffDurations = new Dictionary<GameObject, Dictionary<Buffs, int>>();
     public Dictionary<GameObject, Dictionary<Debuffs, int>> combatantDebuffDurations = new Dictionary<GameObject, Dictionary<Debuffs, int>>();
     public Dictionary<GameObject, Dictionary<Ability_SO, int>> combatantDOTDicts = new Dictionary<GameObject, Dictionary<Ability_SO, int>>();
-
+    public List<AbilityCategories> defensiveAbilities = new List<AbilityCategories> { AbilityCategories.Heal, AbilityCategories.Buff, AbilityCategories.BuffHeal };
+    public List<AbilityCategories> offensiveAbilities = new List<AbilityCategories> { AbilityCategories.Attack, AbilityCategories.Debuff, AbilityCategories.DebuffAttack };
     #endregion
 
     #endregion
@@ -66,6 +67,7 @@ public class CombatFlow : MonoBehaviour
 
         if (stats.currentHealth > 0) // hydn did this
         {
+            DecrementBuffsandDebuffs(combatant);
             KDebug.SeekBug($"{stats.characterName}, {stats.charType} started his turn");
             switch (stats.charType)
             {
@@ -88,7 +90,7 @@ public class CombatFlow : MonoBehaviour
 
                 default:
                     {
-                        KDebug.SeekBug($"{combatant} was none of the above character types");
+                        KDebug.SeekBug($"{stats.characterName} was none of the above character types");
                         break;
                     }
 
@@ -96,7 +98,7 @@ public class CombatFlow : MonoBehaviour
         }
         else
         {
-            KDebug.SeekBug($"{combatant} has less than or 0 health");
+            KDebug.SeekBug($"{stats.characterName} has less than or 0 health");
             HandleDeath(combatant);
         }
 
@@ -115,11 +117,11 @@ public class CombatFlow : MonoBehaviour
             RequestNarration($"{stats.characterName} has been stunlocked and can perform no actions for his turn");
             NextTurn();
         }
-        if (debuffs.Contains(Debuffs.Charmed) || debuffs.Contains(Debuffs.Retarted))
+        else if (debuffs.Contains(Debuffs.Charmed) || debuffs.Contains(Debuffs.Retarted))
         {
             ExecuteEnemyTurn(combatant);
         }
-        if (!debuffs.Contains(Debuffs.Stun) && !debuffs.Contains(Debuffs.Stun) && !debuffs.Contains(Debuffs.Stun))
+        else if (!debuffs.Contains(Debuffs.Stun) && !debuffs.Contains(Debuffs.Stun) && !debuffs.Contains(Debuffs.Stun))
         {
             string playerTurnIntro = $"{stats.characterName} Has big plans!... What are they?...";
             RequestNarration(playerTurnIntro);
@@ -131,14 +133,15 @@ public class CombatFlow : MonoBehaviour
 
     private void ExecuteEnemyTurn(GameObject combatant)
     {
+        StatsHandler stats = combatant.GetComponent<StatsHandler>();
         selectedAbility = GetAbility(combatant);
-        RequestNarration($"{combatant} decided to use {selectedAbility.AbilityName}");
+        RequestNarration($"{stats.characterName} decided to use {selectedAbility.AbilityName}");
 
         List<GameObject> targets = GetTargets(combatant);
 
         if (targets.Count == 0)
         {
-            KDebug.SeekBug($"No targets possible fopr {combatant} turn");
+            KDebug.SeekBug($"No targets possible fopr {stats.characterName} turn");
 
             ResetCombat();
             CombatEnded?.Invoke();
@@ -152,7 +155,7 @@ public class CombatFlow : MonoBehaviour
                 StatsHandler targetStats = target.GetComponent<StatsHandler>();
                 targetNames += $"{targetStats.characterName}, ";
             }
-            string EnemyTurnNarration = $"{combatant.name} used {selectedAbility.AbilityName} on {targetNames} for their turn.";
+            string EnemyTurnNarration = $"{stats.characterName} used {selectedAbility.AbilityName} on {targetNames} for their turn.";
             RequestNarration(EnemyTurnNarration);
         }
 
@@ -173,52 +176,7 @@ public class CombatFlow : MonoBehaviour
     #endregion
 
     #region // ability management
-    private List<GameObject> SelectRandomCharofType(Combatants charType, int targetNum, bool allAllies = false) //if true, will make a list of all combatants that are not of type chartype
-    {
-        List<GameObject> possibleTargets = new List<GameObject>();
-        foreach (GameObject combatant in combatants)
-        {
-            StatsHandler stats = combatant.GetComponent<StatsHandler>();
-            if (allAllies)
-            {
-                if (stats.charType == Combatants.Player ||
-                    stats.charType == Combatants.Companion ||
-                    stats.charType == Combatants.Summon)
-                {
-                    possibleTargets.Add(combatant);
-                }
-            }
-            else if (stats.charType == charType)
-            {
-                possibleTargets.Add(combatant);
-            }
-        }
-        List<GameObject> selectedTargets = new List<GameObject>();
 
-        //KDebug.SeekBug($"targets = {selectedAbility.Targets}");
-        int targets = targetNum;
-        int numberOfEnemies = possibleTargets.Count();
-        int targetsSelected = 0;
-        if (possibleTargets.Count == 0)
-        {
-            return possibleTargets;
-        }
-        else
-        {
-            while (targetsSelected < targets)
-            {
-                int randomTargetIndex = UnityEngine.Random.Range(0, numberOfEnemies - 1);
-                GameObject randomTarget = possibleTargets[randomTargetIndex];
-                selectedTargets.Add(randomTarget);
-                targetsSelected++;
-            }
-
-
-            return selectedTargets;
-        }
-
-
-    }
 
     private void HandleAbilityEffect(List<GameObject> targets, Ability_SO selectedAbility)
     {
@@ -228,9 +186,9 @@ public class CombatFlow : MonoBehaviour
         foreach (GameObject target in targets)
         {
             StatsHandler stats = target.GetComponent<StatsHandler>();
-            stats.TakeDamage(selectedAbility.DamageValue);
+            stats.ChangeResource(ResourceTypes.Health, -selectedAbility.DamageValue);
             StatsHandler casterStats = caster.GetComponent<StatsHandler>();
-            casterStats.LoseMana(selectedAbility.AbilityCost);
+            casterStats.ChangeResource(ResourceTypes.Mana, -selectedAbility.AbilityCost);
             string narrationText = "";
             switch (selectedAbility.Type)
             {
@@ -537,7 +495,7 @@ public class CombatFlow : MonoBehaviour
     {
         Dictionary<Debuffs, int> combatantDebuffs = GetCombatantsDebuffDict(combatant);
         Dictionary<Buffs, int> combatantBuffs = GetCombatantBuffDict(combatant);
-        foreach (KeyValuePair<Debuffs, int> kvp in combatantDebuffs)
+        foreach (KeyValuePair<Debuffs, int> kvp in combatantDebuffs.ToList())
         {
             Debuffs debuff = kvp.Key;
             int remainingDuration = kvp.Value;
@@ -550,8 +508,9 @@ public class CombatFlow : MonoBehaviour
             {
                 combatantDebuffs.Remove(debuff);     // else simply remove the debuff from active debuff list
             }
+            RequestNarration($"remaining duration on debuff {debuff}: {remainingDuration}");
         }
-        foreach (KeyValuePair<Buffs, int> kvp in combatantBuffs)
+        foreach (KeyValuePair<Buffs, int> kvp in combatantBuffs.ToList())
         {
             Buffs buff = kvp.Key;
             int remainingDuration = kvp.Value;
@@ -564,11 +523,13 @@ public class CombatFlow : MonoBehaviour
             {
                 combatantBuffs.Remove(buff);
             }
+            RequestNarration($"remaining duration on buff {buff}: {remainingDuration}");
+
         }
         foreach (KeyValuePair<GameObject, Dictionary<Ability_SO, int>> kvp in combatantDOTDicts)
         {
             Dictionary<Ability_SO, int> abilityDurationDict = kvp.Value;
-            foreach (KeyValuePair<Ability_SO, int> innerKvp in abilityDurationDict)
+            foreach (KeyValuePair<Ability_SO, int> innerKvp in abilityDurationDict.ToList())
             {
                 int remainingDuration = innerKvp.Value;
                 Ability_SO ability = innerKvp.Key;
@@ -581,7 +542,10 @@ public class CombatFlow : MonoBehaviour
                 {
                     abilityDurationDict.Remove(ability);     // else simply remove the debuff from active debuff list
                 }
+                RequestNarration($"remaining duration on ability {ability} over time effect: {remainingDuration}");
+
             }
+
 
         }
     }
@@ -593,26 +557,27 @@ public class CombatFlow : MonoBehaviour
         {
             foreach (GameObject combatant in combatants)
             {
+                StatsHandler stats = combatant.GetComponent<StatsHandler>();
                 if (!combatantDebuffDurations.TryGetValue(combatant, out Dictionary<Debuffs, int> debuffDict))
                 {
 
                     debuffDict = new Dictionary<Debuffs, int> { { debuff, duration } };
                     combatantDebuffDurations.Add(combatant, debuffDict);
 
-                    RequestNarration($"Option 0 {combatant} has recieved debuff {debuff}. debuff dict len= {debuffDict.Count}. big dict len: {combatantDebuffDurations.Count}");
+                    RequestNarration($"Option 0 {stats.characterName} has recieved debuff {debuff}. debuff dict len= {debuffDict.Count}. big dict len: {combatantDebuffDurations.Count}");
 
 
                 }
                 if (!debuffDict.TryGetValue(debuff, out duration))
                 {
-                    RequestNarration($"Option 1 {combatant} has recieved debuff {debuff}. debuff dict len= {debuffDict.Count}. big dict len: {combatantDebuffDurations.Count}");
+                    RequestNarration($"Option 1 {stats.characterName} has recieved debuff {debuff}. debuff dict len= {debuffDict.Count}. big dict len: {combatantDebuffDurations.Count}");
                     debuffDict.Add(debuff, duration);
                 }
                 else
                 {
                     debuffDict.Remove(debuff);
                     debuffDict.Add(debuff, duration);
-                    RequestNarration($"option 2 {combatant} has recieved debuff {debuff}. {duration} debuff dict len = {debuffDict.Count}. big dict len : {combatantDebuffDurations.Count}");
+                    RequestNarration($"option 2 {stats.characterName} has recieved debuff {debuff}. {duration} debuff dict len = {debuffDict.Count}. big dict len : {combatantDebuffDurations.Count}");
                 }
                 //RequestNarration($"{combatant} has recieved debuff {debuff}. debuff dict = {debuffDict.Values}. big dict : {combatantDebuffDurations.Values}");
             }
@@ -669,18 +634,14 @@ public class CombatFlow : MonoBehaviour
         {
             if (enemiesRemaining)
             {
-                if (ability.Type == AbilityCategories.Buff
-                || ability.Type == AbilityCategories.Heal
-                || ability.Type == AbilityCategories.BuffHeal)
+                if (defensiveAbilities.Contains(ability.Type))
                 {
                     usableAbilities.Add(ability);
                 }
             }
             if (alliesRemaining)
             {
-                if (ability.Type == AbilityCategories.Attack
-                || ability.Type == AbilityCategories.Debuff
-                || ability.Type == AbilityCategories.DebuffAttack)
+                if (offensiveAbilities.Contains(ability.Type))
                 {
                     {
                         usableAbilities.Add(ability);
@@ -700,26 +661,37 @@ public class CombatFlow : MonoBehaviour
 
     private List<GameObject> GetTargets(GameObject combatant)
     {
+        StatsHandler stats = combatant.GetComponent<StatsHandler>();
         List<GameObject> targets = new List<GameObject>();
         List<Debuffs> debuffs = GetCombatantDebuffs(combatant);
         //debuffs.Add(Debuffs.Charmed);
-        RequestNarration($"number of debuffs suffered by {combatant}: {debuffs.Count}");
+        RequestNarration($"number of debuffs suffered by {stats.characterName}: {debuffs.Count}");
 
         if (debuffs.Contains(Debuffs.Charmed))
         {
-            if (selectedAbility.Type == AbilityCategories.Buff
-            || selectedAbility.Type == AbilityCategories.Heal
-            || selectedAbility.Type == AbilityCategories.BuffHeal)
+            if (defensiveAbilities.Contains(selectedAbility.Type))
             {
-                RequestNarration($"combatant {combatant} was affected by charm and will therefore be buffing a good guy");
-                targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets, true);
+                if (stats.charType != Combatants.Enemy)
+                {
+                    targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
+                }
+                else
+                {
+                    targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
+                }
+                RequestNarration($"combatant {stats.characterName} was affected by charm and will therefore be buffing a good guy");
             }
-            if (selectedAbility.Type == AbilityCategories.Debuff
-            || selectedAbility.Type == AbilityCategories.Attack
-            || selectedAbility.Type == AbilityCategories.DebuffAttack)
+            if (offensiveAbilities.Contains(selectedAbility.Type))
             {
-                RequestNarration($"combatant {combatant} was affected by charm and will therefore be attacking a bad guy");
-                targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
+                if (stats.charType != Combatants.Enemy)
+                {
+                    targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
+                }
+                else
+                {
+                    targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
+                }
+                RequestNarration($"combatant {stats.characterName} was affected by charm and will therefore be attacking a bad guy");
             }
             return targets;
         }
@@ -727,17 +699,24 @@ public class CombatFlow : MonoBehaviour
         if (debuffs.Contains(Debuffs.Retarted))
 
         {
-            if (selectedAbility.Type == AbilityCategories.Buff
-            || selectedAbility.Type == AbilityCategories.Heal
-            || selectedAbility.Type == AbilityCategories.BuffHeal)
+            if (stats.charType != Combatants.Enemy)
+            {
+                if (defensiveAbilities.Contains(selectedAbility.Type))
+                {
+                    targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
+                }
+                if (offensiveAbilities.Contains(selectedAbility.Type))
+                {
+                    targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
+                }
+            }
+            else if (defensiveAbilities.Contains(selectedAbility.Type))
+            {
+                targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
+            }
+            else if (offensiveAbilities.Contains(selectedAbility.Type))
             {
                 targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
-            }
-            if (selectedAbility.Type == AbilityCategories.Debuff
-            || selectedAbility.Type == AbilityCategories.Attack
-            || selectedAbility.Type == AbilityCategories.DebuffAttack)
-            {
-                targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets, true);
             }
             return targets;
         }
@@ -755,8 +734,8 @@ public class CombatFlow : MonoBehaviour
             || selectedAbility.Type == AbilityCategories.Attack
             || selectedAbility.Type == AbilityCategories.DebuffAttack)
             {
-                RequestNarration($"combatant {combatant} was affected by neither retardation, nor charm and will therefore be attacking a good guy");
-                targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets, true);
+                RequestNarration($"combatant {stats.characterName} was affected by neither retardation, nor charm and will therefore be attacking a good guy");
+                targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
             }
             return targets;
         }
@@ -766,7 +745,7 @@ public class CombatFlow : MonoBehaviour
         }
     }
     #endregion
-    private List<GameObject> NewSelectRandomCharofType(Combatants charCategory, int targetNum)//, int targetNum, bool allAllies = false) //if true, will make a list of all combatants that are not of type chartype
+    private List<GameObject> SelectRandomCharofType(Combatants charCategory, int targetNum)//, int targetNum, bool allAllies = false) //if true, will make a list of all combatants that are not of type chartype
     {
         List<GameObject> possibleTargets = new List<GameObject>();
         foreach (GameObject combatant in combatants)
@@ -819,3 +798,49 @@ public class CombatFlow : MonoBehaviour
 }
 // || !debuffs.Contains(Debuffs.Charmed))
 
+//private List<GameObject> SelectRandomCharofType(Combatants charType, int targetNum, bool allAllies = false) //if true, will make a list of all combatants that are not of type chartype
+//{
+//    List<GameObject> possibleTargets = new List<GameObject>();
+//    foreach (GameObject combatant in combatants)
+//    {
+//        StatsHandler stats = combatant.GetComponent<StatsHandler>();
+//        if (allAllies)
+//        {
+//            if (stats.charType == Combatants.Player ||
+//                stats.charType == Combatants.Companion ||
+//                stats.charType == Combatants.Summon)
+//            {
+//                possibleTargets.Add(combatant);
+//            }
+//        }
+//        else if (stats.charType == charType)
+//        {
+//            possibleTargets.Add(combatant);
+//        }
+//    }
+//    List<GameObject> selectedTargets = new List<GameObject>();
+//
+//    //KDebug.SeekBug($"targets = {selectedAbility.Targets}");
+//    int targets = targetNum;
+//    int numberOfEnemies = possibleTargets.Count();
+//    int targetsSelected = 0;
+//    if (possibleTargets.Count == 0)
+//    {
+//        return possibleTargets;
+//    }
+//    else
+//    {
+//        while (targetsSelected < targets)
+//        {
+//            int randomTargetIndex = UnityEngine.Random.Range(0, numberOfEnemies - 1);
+//            GameObject randomTarget = possibleTargets[randomTargetIndex];
+//            selectedTargets.Add(randomTarget);
+//            targetsSelected++;
+//        }
+//
+//
+//        return selectedTargets;
+//    }
+//
+//
+//}
