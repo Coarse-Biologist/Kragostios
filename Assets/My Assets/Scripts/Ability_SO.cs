@@ -1,6 +1,7 @@
 using UnityEngine;
 using KragostiosAllEnums;
 using System.Collections.Generic;
+using UnityEngine.Animations;
 
 [CreateAssetMenu(fileName = "Abilities", menuName = "Crew's Abilities/ Ability")]
 public class Ability_SO : ScriptableObject
@@ -17,6 +18,7 @@ public class Ability_SO : ScriptableObject
     public int TurnDuration;
     public int Targets;
     public bool Summons;
+    public bool DamageOverTime = false;
     public float SyphonPercentage;
     public int AbilityLevel;
 
@@ -31,7 +33,7 @@ public class Ability_SO : ScriptableObject
     public string GetBuffListString()
     {
         string buffListString = "";
-        foreach(Buffs buff in BuffEffects)
+        foreach (Buffs buff in BuffEffects)
         {
             buffListString += $"{buff}, ";
         }
@@ -40,10 +42,12 @@ public class Ability_SO : ScriptableObject
     public string GetDebuffListString()
     {
         string debuffListString = "";
-        foreach(Debuffs debuff in DebuffEffects)
+        foreach (Debuffs debuff in DebuffEffects)
         {
             debuffListString += $"{debuff}, ";
         }
         return debuffListString;
     }
+
+
 }
