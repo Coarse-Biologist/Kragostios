@@ -673,11 +673,11 @@ public class CombatFlow : MonoBehaviour
             {
                 if (stats.charType != Combatants.Enemy)
                 {
-                    targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
+                    targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
                 }
                 else
                 {
-                    targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
+                    targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
                 }
                 RequestNarration($"combatant {stats.characterName} was affected by charm and will therefore be buffing a good guy");
             }
@@ -705,7 +705,7 @@ public class CombatFlow : MonoBehaviour
                 {
                     targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
                 }
-                if (offensiveAbilities.Contains(selectedAbility.Type))
+                else if (offensiveAbilities.Contains(selectedAbility.Type))
                 {
                     targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
                 }
