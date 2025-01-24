@@ -724,15 +724,11 @@ public class CombatFlow : MonoBehaviour
 
         if (!debuffs.Contains(Debuffs.Retarted) && !debuffs.Contains(Debuffs.Charmed))
         {
-            if (selectedAbility.Type == AbilityCategories.Buff
-            || selectedAbility.Type == AbilityCategories.Heal
-            || selectedAbility.Type == AbilityCategories.BuffHeal)
+            if (defensiveAbilities.Contains(selectedAbility.Type))
             {
                 targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
             }
-            if (selectedAbility.Type == AbilityCategories.Debuff
-            || selectedAbility.Type == AbilityCategories.Attack
-            || selectedAbility.Type == AbilityCategories.DebuffAttack)
+            if (offensiveAbilities.Contains(selectedAbility.Type))
             {
                 RequestNarration($"combatant {stats.characterName} was affected by neither retardation, nor charm and will therefore be attacking a good guy");
                 targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
