@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
-  m_Name: FireBall
+  m_Name: GlobalCooling
   m_EditorClassIdentifier: 
-  AbilityName: FireBall
-  Description: None
+  AbilityName: Global Cooling
+  Description: Freeze all susceptible surfaces and chill all targets
   Resource: 1
-  Type: 1
-  ElementType: 4
+  Type: 8
+  ElementType: 1
   PhysicalType: 0
-  AbilityCost: 5
+  AbilityCost: 10
   HealValue: 0
   DamageValue: 5
   TurnDuration: 0
-  Targets: 2
+  Targets: 5
   Summons: 0
   DamageOverTime: 0
   SyphonPercentage: 0
-  AbilityLevel: 0
+  AbilityLevel: 3
   BuffEffects: 
-  DebuffEffects: 
+  DebuffEffects: 0600000010000000

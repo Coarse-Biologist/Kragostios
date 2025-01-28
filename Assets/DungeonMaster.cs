@@ -346,10 +346,11 @@ public class DungeonMaster : MonoBehaviour
     #region // char creation
     private void CharacterCreation()
     {
-        playerOptions.DisplayCharacterCreationScreen();
+        playerOptions.DisplayCharacterCreationScreen(playerStats);
     }
     private void HandleStatIncremented(string stat)
     {
+
         if (playerStats.availableStatPoints > 0)
         {
             switch (stat)

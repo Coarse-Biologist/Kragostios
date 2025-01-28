@@ -186,9 +186,10 @@ public class CombatFlow : MonoBehaviour
         foreach (GameObject target in targets)
         {
             StatsHandler stats = target.GetComponent<StatsHandler>();
-            stats.ChangeResource(ResourceTypes.Health, -selectedAbility.DamageValue);
+            stats.ChangeResource(ResourceTypes.Health, -selectedAbility.DamageValue, selectedAbility.ElementType);
+            KDebug.SeekBug($"{selectedAbility.DamageValue} = damage value. damage type =  {selectedAbility.ElementType}");
             StatsHandler casterStats = caster.GetComponent<StatsHandler>();
-            casterStats.ChangeResource(ResourceTypes.Mana, -selectedAbility.AbilityCost);
+            casterStats.ChangeResource(selectedAbility.Resource, -selectedAbility.AbilityCost);
             string narrationText = "";
             switch (selectedAbility.Type)
             {

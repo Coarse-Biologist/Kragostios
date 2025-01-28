@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
-  m_Name: FireBall
+  m_Name: LavaPortal
   m_EditorClassIdentifier: 
-  AbilityName: FireBall
-  Description: None
+  AbilityName: Lava Portal
+  Description: Opens a portal to a Lava Plane
   Resource: 1
   Type: 1
   ElementType: 4
   PhysicalType: 0
-  AbilityCost: 5
+  AbilityCost: 30
   HealValue: 0
-  DamageValue: 5
-  TurnDuration: 0
+  DamageValue: 999
+  TurnDuration: 10
   Targets: 2
   Summons: 0
   DamageOverTime: 0
   SyphonPercentage: 0
-  AbilityLevel: 0
+  AbilityLevel: 3
   BuffEffects: 
-  DebuffEffects: 
+  DebuffEffects: 0700000008000000

@@ -10,7 +10,7 @@ using NUnit.Framework.Constraints;
 
 public class PlayerOptions : MonoBehaviour
 {
-    
+
     [SerializeField] UIDocument uiDocument;
     private VisualElement root;
     public VisualTreeAsset templateButton;
@@ -25,13 +25,14 @@ public class PlayerOptions : MonoBehaviour
     private VisualElement LeftCreationPanel;
     private VisualElement MiddleCreationPanel;
     private VisualElement RightCreationPanel;
-    
 
-    # endregion
+
+    #endregion
 
     private Label abilityInfoText;
     private Label charInfoText;
     private Label charCreationText;
+    private ScrollView scrollView;
 
     private TextField myTextField;
     public UnityEvent CharacterCreationConfirmed;
@@ -43,10 +44,10 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent<string> PlayertextInput;
     public UnityEvent<string> StatIncrented;
 
-    public bool awaitingAbilitySelection {private set; get;}
+    public bool awaitingAbilitySelection { private set; get; }
 
-    public Dictionary<string, List<string>> IntroOptionDict {private set; get;}
-    
+    public Dictionary<string, List<string>> IntroOptionDict { private set; get; }
+
 
     [SerializeField] public AbilityLibrary abilityLibrary;
 
@@ -69,7 +70,8 @@ public class PlayerOptions : MonoBehaviour
         MiddleCreationPanel = root.Q<VisualElement>("MiddleCreationPanel");
         RightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         charCreationText = RightCreationPanel.Q<Label>("CharCreationText");
-        
+
+
     }
     // Combat functions
     public void SpawnDirectionOptions(List<Directions> directions)
@@ -80,7 +82,7 @@ public class PlayerOptions : MonoBehaviour
         ClearTargetContainer();
         ShowCombatScreen();
         HideCreationScreen();
-   
+
         foreach (Directions direction in directions)
         {
 
@@ -99,7 +101,7 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_AO.MarkDirtyRepaint();
     }
     public void SpawnTargetButtons(List<GameObject> combatants) // make this list start with friendly options
-    {   
+    {
 
         ClearTargetContainer();
         foreach (GameObject combatant in combatants)
@@ -112,18 +114,18 @@ public class PlayerOptions : MonoBehaviour
             buttonContainer_CO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnTargetSelected(combatant));
-            newButton.RegisterCallback<PointerEnterEvent>(evt =>ShowCharInfo(combatant));
+            newButton.RegisterCallback<PointerEnterEvent>(evt => ShowCharInfo(combatant));
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideCharInfo());
         }
         buttonContainer_CO.MarkDirtyRepaint();
 
-        
+
     }
     public void SpawnAbilityButtons(List<Ability_SO> abilities)
-    {   
+    {
         ClearTargetContainer();
         awaitingAbilitySelection = true;
-        
+
         foreach (Ability_SO ability in abilities)
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
@@ -137,7 +139,7 @@ public class PlayerOptions : MonoBehaviour
             newButton.RegisterCallback<PointerEnterEvent>(evt => ShowAbilityInfo(ability));
             newButton.RegisterCallback<PointerEnterEvent>(evt => HideCharInfo());
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideAbilityInfo());
-                      
+
         }
         buttonContainer_AO.MarkDirtyRepaint();
         //root.MarkDirtyRepaint();  
@@ -162,7 +164,7 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_CO.MarkDirtyRepaint();
     }
     public void SpawnContinueButton()
-    {   
+    {
         ClearAbilityContainer();
         ClearTargetContainer();
         awaitingAbilitySelection = true;
@@ -180,17 +182,17 @@ public class PlayerOptions : MonoBehaviour
     {
         ClearAbilityContainer();
         JourneyDirectionSelected?.Invoke(direction);
-        
+
     }
     public void OnAbilitySelected(Ability_SO ability)
-    {   
+    {
         HideAbilityInfo();
         HideCharInfo();
         if (awaitingAbilitySelection)
         {
             awaitingAbilitySelection = false;
             AbilitySelected?.Invoke(ability);
-        } 
+        }
     }
     public void ShowPlayerInfo(GameObject player)
     {
@@ -222,18 +224,20 @@ public class PlayerOptions : MonoBehaviour
 
     private void ShowAbilityInfo(Ability_SO ability)
     {
-        try {string abilityInfo = abilityLibrary.GetAbilityInfo(ability);
-        abilityInfoPanel.style.display = DisplayStyle.Flex;
-        abilityInfoText.style.whiteSpace = WhiteSpace.Normal;
-        abilityInfoText.style.color = Color.white;
-        abilityInfoText.text = abilityInfo;
+        try
+        {
+            string abilityInfo = abilityLibrary.GetAbilityInfo(ability);
+            abilityInfoPanel.style.display = DisplayStyle.Flex;
+            abilityInfoText.style.whiteSpace = WhiteSpace.Normal;
+            abilityInfoText.style.color = Color.white;
+            abilityInfoText.text = abilityInfo;
         }
-        catch(NullReferenceException)
+        catch (NullReferenceException)
         {
             KDebug.SeekBug("Hovering over button! but something doesnt exist");
             KDebug.SeekBug($"ability library script: {abilityLibrary}!");
         }
-        
+
         //KDebug.SeekBug("Hovering over button!");
 
     }
@@ -254,7 +258,7 @@ public class PlayerOptions : MonoBehaviour
     {
         LeftCreationPanel.style.display = DisplayStyle.None;
         RightCreationPanel.style.display = DisplayStyle.None;
-        
+
     }
     private void OnContinueSelected()
     {
@@ -270,7 +274,7 @@ public class PlayerOptions : MonoBehaviour
             HideCharInfo();
             TargetSelected?.Invoke(target);
         }
-        
+
     }
 
     public void ClearAbilityContainer()
@@ -278,10 +282,10 @@ public class PlayerOptions : MonoBehaviour
 
         buttonContainer_AO.Clear();
     }
-    
+
     public void ClearTargetContainer()
     {
-  
+
         buttonContainer_CO.Clear();
     }
 
@@ -298,7 +302,7 @@ public class PlayerOptions : MonoBehaviour
     public void SetIntroDict(Dictionary<string, List<string>> introDict)
     {
         IntroOptionDict = introDict;
-    }  
+    }
 
     public void DisplayTextField(string message)
     {
@@ -306,26 +310,26 @@ public class PlayerOptions : MonoBehaviour
         myTextField.value = "Ecris";
         myTextField.RegisterCallback<KeyDownEvent>(evt =>
         {
-        if (evt.keyCode == KeyCode.Return) // Check for Enter key
-        {
-            string playerMessage = myTextField.value;
-            PlayertextInput?.Invoke(playerMessage);
-            myTextField.style.display = DisplayStyle.None;
-        }
+            if (evt.keyCode == KeyCode.Return) // Check for Enter key
+            {
+                string playerMessage = myTextField.value;
+                PlayertextInput?.Invoke(playerMessage);
+                myTextField.style.display = DisplayStyle.None;
+            }
         });
     }
     public void SpawnOptionButtons(List<string> playerOptions)
     {
         TemplateContainer newButtonContainer = templateButton.Instantiate();
         foreach (string option in playerOptions)
-        {        
+        {
             Button newButton = newButtonContainer.Q<Button>();
             newButton.text = option;
             buttonContainer_AO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OptionSelected(option));
             //newButton.RegisterCallback<PointerEnterEvent>(evt => ());
-            
+
         }
     }
 
@@ -334,17 +338,14 @@ public class PlayerOptions : MonoBehaviour
         IntroOptionSelected?.Invoke(playerChoice);
     }
 
-public void DisplayCharacterCreationScreen()
-{
-    buttonContainer_AO.style.display = DisplayStyle.None;
-    // Create containers
-    //TemplateContainer leftPanelButtonContainer = templateButton.Instantiate();
-    LeftCreationPanel.style.display = DisplayStyle.Flex;
-    //root.MarkDirtyRepaint();
-    //LeftCreationPanel.MarkDirtyRepaint();
+    public void DisplayCharacterCreationScreen(StatsHandler stats)
+    {
+        charCreationText.text = stats.getAvailableStatPoints() + "/n" + stats.GetStatCosts();
+        buttonContainer_AO.style.display = DisplayStyle.None;
 
-    // Define button configurations
-    var buttonConfigs = new Dictionary<string, string>
+        LeftCreationPanel.style.display = DisplayStyle.Flex;
+
+        var buttonConfigs = new Dictionary<string, string>
     {
         // Resource buttons
         { "healthButton", "Max Health" },
@@ -359,12 +360,11 @@ public void DisplayCharacterCreationScreen()
         { "actionRegenButton", "Action Point Regeneration" },
 
         // Elemental affinities
-        //{ "iceAffinityButton", "Ice Affinity" },
+        
         { "coldAffinityButton", "Cold Affinity" },
         { "waterAffinityButton", "Water Affinity" },
         { "earthAffinityButton", "Earth Affinity" },
         { "fireAffinityButton", "Fire Affinity" },
-        //{ "lavaAffinityButton", "Lava Affinity" },
         { "heatAffinityButton", "Heat Affinity" },
         { "airAffinityButton", "Air Affinity" },
         { "electricityAffinityButton", "Electricity Affinity" },
@@ -375,7 +375,6 @@ public void DisplayCharacterCreationScreen()
         { "virusAffinityButton", "Virus Affinity" },
         { "fungiAffinityButton", "Fungi Affinity" },
         { "plantAffinityButton", "Plant Affinity" },
-
         { "radiationAffinityButton", "Radiation Affinity" },
 
         // Physical resistance
@@ -384,48 +383,55 @@ public void DisplayCharacterCreationScreen()
         { "piercingResistanceButton", "Piercing Resistance" }
     };
 
-    // Create and configure buttons
-    foreach (var config in buttonConfigs)
-    {
-        Button button = new Button { text = config.Value };
-        button.style.position = Position.Relative;
-        button.RegisterCallback<ClickEvent>(e => StatIncrement(config.Value));
-        //leftPanelButtonContainer.Add(button);
-        LeftCreationPanel.Add(button);
-        button.MarkDirtyRepaint();
-    }
-    TemplateContainer newButtonContainer = templateButton.Instantiate();
-    Button confirmButton = newButtonContainer.Q<Button>();
-    LeftCreationPanel.Add(confirmButton);
-    confirmButton.text = "Confirm Character and Proceed";
-    confirmButton.RegisterCallback<ClickEvent>(e => CharStatsConfirmed());
+        // Create and configure buttons
+        foreach (var config in buttonConfigs)
+        {
+            Button button = new Button { text = config.Value };
+            button.style.position = Position.Relative;
+            button.RegisterCallback<ClickEvent>(e => StatIncrement(config.Value));
+            //leftPanelButtonContainer.Add(button);
+            LeftCreationPanel.Add(button);
+            button.MarkDirtyRepaint();
+        }
+        TemplateContainer newButtonContainer = templateButton.Instantiate();
+        Button confirmButton = newButtonContainer.Q<Button>();
+        LeftCreationPanel.Add(confirmButton);
+        confirmButton.text = "Confirm Character and Proceed";
+        confirmButton.RegisterCallback<ClickEvent>(e => CharStatsConfirmed());
 
-    TextField charNameField = LeftCreationPanel.Q<TextField>("CharName");
-    string charName = charNameField.text;
-    TextField charDescriptionField = LeftCreationPanel.Q<TextField>("CharDescription");
-    string charDescription = charDescriptionField.text;
+        TextField charNameField = LeftCreationPanel.Q<TextField>("CharName");
+        string charName = charNameField.text;
+        TextField charDescriptionField = LeftCreationPanel.Q<TextField>("CharDescription");
+        string charDescription = charDescriptionField.text;
+        RightCreationPanel.style.display = DisplayStyle.Flex;
+        charCreationText.style.whiteSpace = WhiteSpace.Normal;
+        charCreationText.style.color = Color.white;
+        charCreationText.text = stats.getAvailableStatPoints() + "\n" + stats.GetCharCreationStats();
 
-    LeftCreationPanel.MarkDirtyRepaint(); 
+        LeftCreationPanel.MarkDirtyRepaint();
 
-    charNameField.RegisterValueChangedCallback(evt =>
-    StatIncrement(charNameField.text +"charName"));
-    charDescriptionField.RegisterValueChangedCallback(evt =>
-    StatIncrement(charDescriptionField.text +"charDescription"));
+        charNameField.RegisterValueChangedCallback(evt =>
+        StatIncrement(charNameField.text + "charName"));
+        charDescriptionField.RegisterValueChangedCallback(evt =>
+        StatIncrement(charDescriptionField.text + "charDescription"));
     }
 
     private void CharStatsConfirmed()
     {
-        //TextField charNameField = LeftCreationPanel.Q<TextField>("CharName");
-        //string charName = charNameField.text;
-        //TextField charDescriptionField = LeftCreationPanel.Q<TextField>("CharDescription");
-        //string charDescription = charDescriptionField.text;
-        //
         CharacterCreationConfirmed?.Invoke();
     }
 
     private void StatIncrement(string stat)
     {
         StatIncrented?.Invoke(stat);
+    }
+    private void ConfigureAndAddScrollView(Label label, VisualElement container = null)
+    {
+        scrollView = new ScrollView();
+        scrollView.style.flexGrow = 1; // Allow it to expand to fill its container
+        scrollView.style.width = Length.Percent(100); // Make it take up the full width of its container
+        container.Add(scrollView);
+        scrollView.Add(label);
     }
 
     public void DisplayeIncrementEffect(string statIncremented, StatsHandler playerStats)
@@ -435,7 +441,9 @@ public void DisplayCharacterCreationScreen()
         charCreationText.style.color = Color.white;
         string playerAffinity = playerStats.GetAffinityString();
         string playerResist = playerStats.GetResistString();
-        charCreationText.text = $"{playerStats.availableStatPoints} remaining. \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity} \n {playerResist}";
+        charCreationText.text = $"{playerStats.GetStatCosts()} \n {playerStats.getAvailableStatPoints()} \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity} \n {playerResist}";
     }
-    
+
+
+
 }

@@ -68,6 +68,7 @@ public class StatsHandler : MonoBehaviour
 
     public List<int> affinityList;
     public Dictionary<string, int> AffinityDict;
+    public Dictionary<Elements, int> ElementAffinityDict;
 
     public void Awake()
     {
@@ -126,14 +127,34 @@ public class StatsHandler : MonoBehaviour
     public string GetCharInfo()
     {
         string knownAbilitiesString = GetKnownAbilitiesString();
-        string charInfo = $"Character Name: {characterName} || Description: {description} || Char Type: {charType} || Difficulty: {difficulty} Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+        string charInfo = "";
+        if (charType == Combatants.Player)
+        {
+            charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+            return charInfo;
+        }
+        else
+        {
+            charInfo = $"Character Name: {characterName} || Description: {description} || Char Type: {charType} || Difficulty: {difficulty} Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+        }
+
         return charInfo;
     }
     public string GetCharCreationStats()
     {
-        string charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Action Points: {ActionPoints} || Action Point Regen Rate: {ActionPointRegen}";
+        string charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Action Points: {ActionPoints} || Action Point Regen Rate: {ActionPointRegen}";
 
         return charInfo;
+    }
+    public string GetStatCosts()
+    {
+        string statCosts = $"Stat Point cost per stat increase: 5 Max Health Mana or Stamina: 1  || 1 Health, Mana or Stamina Regen: 3 || 1 Max Action Point or Action Point per turn regeneration: 20 || 5% Elemental Affinity: 1 || 5% Physical Resistance: 1 ||";
+        return statCosts;
+    }
+    public string getAvailableStatPoints()
+    {
+        string availableStatPointsString = $"Available Stat Points: {availableStatPoints}";
+        return availableStatPointsString;
     }
     public Dictionary<string, int> GetAffinityDict()
     {
@@ -161,6 +182,31 @@ public class StatsHandler : MonoBehaviour
         };
         return AffinityDict;
 
+    }
+
+    private Dictionary<Elements, int> GetElementAffinityDict()
+    {
+        ElementAffinityDict = new Dictionary<Elements, int>
+        {
+            { Elements.Cold, ColdAffinity },
+            { Elements.Water, WaterAffinity },
+            { Elements.Earth, EarthAffinity },
+            { Elements.Heat, HeatAffinity },
+            { Elements.Fire, FireAffinity },
+            { Elements.Air, AirAffinity },
+            { Elements.Electricty, ElectrictyAffinity },
+            { Elements.Light, LightAffinity },
+            { Elements.Psychic, PsychicAffinity },
+            { Elements.Fungi, FungiAffinity },
+            { Elements.Plant, PlantAffinity },
+            { Elements.Poison, PoisonAffinity },
+            { Elements.Acid, AcidAffinity },
+            { Elements.Radiation, RadiationAffinity },
+            { Elements.Bacteria, BacteriaAffinity },
+            { Elements.Virus, VirusAffinity }
+
+        };
+        return ElementAffinityDict;
     }
     public int GetResourceAmount(ResourceTypes resourceType)
     {
@@ -532,8 +578,23 @@ public class StatsHandler : MonoBehaviour
     //    else if (currentMana < 0) currentMana = 0;
     //}
 
-    public void ChangeResource(ResourceTypes resource, int value)
+    public void ChangeResource(ResourceTypes resource, int value, Elements element = Elements.None, PhysicalDamage physicalType = PhysicalDamage.None)
     {
+        if (element != Elements.None)
+        {
+            KDebug.SeekBug($"{value} = value. element type =  {element}");
+            Dictionary<Elements, int> ElementAffinityDict = GetElementAffinityDict();
+            int relevantAffinity = ElementAffinityDict[element];
+
+            if (relevantAffinity > 100) //if one should heal from an attack due to extreme resistence
+            {
+                value = (int)Math.Round((relevantAffinity - 100) / 100.0) * Math.Abs(value); //calculate how much resistance above 100% they have and multiply the percentage by the value of the attack
+            }
+            else if (relevantAffinity <= 100)
+            {
+                value = (int)Math.Round(Math.Abs(100 - relevantAffinity) / 100.0) * value;
+            }
+        }
         switch (resource)
         {
             case ResourceTypes.Health:

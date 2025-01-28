@@ -13,16 +13,19 @@ MonoBehaviour:
   m_Name: DivineSmite
   m_EditorClassIdentifier: 
   AbilityName: DivineSmite
-  Description: None
-  Resource: 1
+  Description: Brings a wweapon down with the light and anger of Heaven
+  Resource: 2
   Type: 1
-  ElementType: 16
+  ElementType: 15
   PhysicalType: 0
   AbilityCost: 10
   HealValue: 0
-  DamageValue: 100
+  DamageValue: 10
   TurnDuration: 0
   Targets: 1
   Summons: 0
+  DamageOverTime: 0
   SyphonPercentage: 0
   AbilityLevel: 0
+  BuffEffects: 
+  DebuffEffects: 
