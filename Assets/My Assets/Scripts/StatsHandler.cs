@@ -286,6 +286,15 @@ public class StatsHandler : MonoBehaviour
         ActionPoints += incrementValue;
         availableStatPoints -= cost;
     }
+    public void RegenActionPoints()
+    {
+        currentActionPoints += ActionPointRegen;
+        if (currentActionPoints > ActionPoints) currentActionPoints = ActionPoints;
+    }
+    public void SpendActionPoints()
+    {
+        currentActionPoints -= 1;
+    }
 
     public void AddActionPointRegen(int incrementValue, int cost)
     {
@@ -588,13 +597,16 @@ public class StatsHandler : MonoBehaviour
 
             if (relevantAffinity > 100) //if one should heal from an attack due to extreme resistence
             {
-                value = (int)Math.Round((relevantAffinity - 100) / 100.0) * Math.Abs(value); //calculate how much resistance above 100% they have and multiply the percentage by the value of the attack
+                value = (int)Math.Abs(Math.Round((value * ((relevantAffinity - 100) / 100.0)))); //calculate how much resistance above 100% they have and multiply the percentage by the value of the attack
             }
             else if (relevantAffinity <= 100)
             {
-                value = (int)Math.Round(Math.Abs(100 - relevantAffinity) / 100.0) * value;
+                value = (int)Math.Round(value * (relevantAffinity / 100.0));
             }
+            KDebug.SeekBug($"{value} = adjested value after resistance calculation. element type =  {element}");
         }
+
+
         switch (resource)
         {
             case ResourceTypes.Health:
@@ -663,7 +675,7 @@ public class StatsHandler : MonoBehaviour
         characterLevel = 0;
         availableStatPoints = 40;
         currentXp = 0;
-        MaxXp = 0;
+        MaxXp = 30;
         rewards = new List<Rewards>();
         characterGold = 0;
         knownAbilities = new List<Ability_SO>{

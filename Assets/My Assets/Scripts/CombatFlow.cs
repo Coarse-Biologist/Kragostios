@@ -69,10 +69,14 @@ public class CombatFlow : MonoBehaviour
         {
             DecrementBuffsandDebuffs(combatant);
             KDebug.SeekBug($"{stats.characterName}, {stats.charType} started his turn");
+
             switch (stats.charType)
             {
+
                 case (Combatants.Player):
-                    ExecutePlayerTurn(combatant);
+                    {
+                        ExecutePlayerTurn(combatant);
+                    }
                     break;
 
                 case (Combatants.Enemy):
@@ -110,7 +114,7 @@ public class CombatFlow : MonoBehaviour
         StatsHandler stats = combatant.GetComponent<StatsHandler>();
 
         List<Debuffs> debuffs = GetCombatantDebuffs(combatant);
-        RequestNarration($"{debuffs.Count}");
+        KDebug.SeekBug($"{debuffs.Count} number of suffered debuffs");
 
         if (debuffs.Contains(Debuffs.Stun))
         {
@@ -127,8 +131,6 @@ public class CombatFlow : MonoBehaviour
             RequestNarration(playerTurnIntro);
             RequestOptionButtons(stats.knownAbilities);
         }
-
-
     }
 
     private void ExecuteEnemyTurn(GameObject combatant)
@@ -216,6 +218,7 @@ public class CombatFlow : MonoBehaviour
         }
 
         //RequestNarration($"{selectedAbility.AbilityName} ability effects have been handled");
+        caster.GetComponent<StatsHandler>().SpendActionPoints();
         RequestContinueButton();
     }
 
@@ -231,9 +234,19 @@ public class CombatFlow : MonoBehaviour
 
     public void NextTurn()
     {
-        selectedTargets = new List<GameObject>();
-        currentTurnIndex++;
-        Invoke("CombatCycle", 1f);
+        if (caster.GetComponent<StatsHandler>().currentActionPoints > 0)
+        {
+            selectedTargets = new List<GameObject>();
+            Invoke("CombatCycle", 1f);
+        }
+        else
+        {
+            caster.GetComponent<StatsHandler>().RegenActionPoints();
+            selectedTargets = new List<GameObject>();
+            currentTurnIndex++;
+            Invoke("CombatCycle", 1f);
+        }
+
     }
 
     #endregion
@@ -509,7 +522,7 @@ public class CombatFlow : MonoBehaviour
             {
                 combatantDebuffs.Remove(debuff);     // else simply remove the debuff from active debuff list
             }
-            RequestNarration($"remaining duration on debuff {debuff}: {remainingDuration}");
+            KDebug.SeekBug($"remaining duration on debuff {debuff}: {remainingDuration}");
         }
         foreach (KeyValuePair<Buffs, int> kvp in combatantBuffs.ToList())
         {
@@ -524,7 +537,7 @@ public class CombatFlow : MonoBehaviour
             {
                 combatantBuffs.Remove(buff);
             }
-            RequestNarration($"remaining duration on buff {buff}: {remainingDuration}");
+            KDebug.SeekBug($"remaining duration on debuff {buff}: {remainingDuration}");
 
         }
         foreach (KeyValuePair<GameObject, Dictionary<Ability_SO, int>> kvp in combatantDOTDicts)
@@ -543,7 +556,7 @@ public class CombatFlow : MonoBehaviour
                 {
                     abilityDurationDict.Remove(ability);     // else simply remove the debuff from active debuff list
                 }
-                RequestNarration($"remaining duration on ability {ability} over time effect: {remainingDuration}");
+                KDebug.SeekBug($"remaining duration on ability {ability} over time effect: {remainingDuration}");
 
             }
 
@@ -565,20 +578,20 @@ public class CombatFlow : MonoBehaviour
                     debuffDict = new Dictionary<Debuffs, int> { { debuff, duration } };
                     combatantDebuffDurations.Add(combatant, debuffDict);
 
-                    RequestNarration($"Option 0 {stats.characterName} has recieved debuff {debuff}. debuff dict len= {debuffDict.Count}. big dict len: {combatantDebuffDurations.Count}");
+                    KDebug.SeekBug($"Option 0 {stats.characterName} has recieved debuff {debuff}. debuff dict len= {debuffDict.Count}. big dict len: {combatantDebuffDurations.Count}");
 
 
                 }
                 if (!debuffDict.TryGetValue(debuff, out duration))
                 {
-                    RequestNarration($"Option 1 {stats.characterName} has recieved debuff {debuff}. debuff dict len= {debuffDict.Count}. big dict len: {combatantDebuffDurations.Count}");
+                    KDebug.SeekBug($"Option 1 {stats.characterName} has recieved debuff {debuff}. debuff dict len= {debuffDict.Count}. big dict len: {combatantDebuffDurations.Count}");
                     debuffDict.Add(debuff, duration);
                 }
                 else
                 {
                     debuffDict.Remove(debuff);
                     debuffDict.Add(debuff, duration);
-                    RequestNarration($"option 2 {stats.characterName} has recieved debuff {debuff}. {duration} debuff dict len = {debuffDict.Count}. big dict len : {combatantDebuffDurations.Count}");
+                    KDebug.SeekBug($"option 2 {stats.characterName} has recieved debuff {debuff}. {duration} debuff dict len = {debuffDict.Count}. big dict len : {combatantDebuffDurations.Count}");
                 }
                 //RequestNarration($"{combatant} has recieved debuff {debuff}. debuff dict = {debuffDict.Values}. big dict : {combatantDebuffDurations.Values}");
             }
@@ -666,7 +679,7 @@ public class CombatFlow : MonoBehaviour
         List<GameObject> targets = new List<GameObject>();
         List<Debuffs> debuffs = GetCombatantDebuffs(combatant);
         //debuffs.Add(Debuffs.Charmed);
-        RequestNarration($"number of debuffs suffered by {stats.characterName}: {debuffs.Count}");
+        KDebug.SeekBug($"number of debuffs suffered by {stats.characterName}: {debuffs.Count}");
 
         if (debuffs.Contains(Debuffs.Charmed))
         {
@@ -680,7 +693,7 @@ public class CombatFlow : MonoBehaviour
                 {
                     targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
                 }
-                RequestNarration($"combatant {stats.characterName} was affected by charm and will therefore be buffing a good guy");
+                KDebug.SeekBug($"combatant {stats.characterName} was affected by charm and will therefore be buffing a good guy");
             }
             if (offensiveAbilities.Contains(selectedAbility.Type))
             {
@@ -692,7 +705,7 @@ public class CombatFlow : MonoBehaviour
                 {
                     targets = SelectRandomCharofType(Combatants.Enemy, selectedAbility.Targets);
                 }
-                RequestNarration($"combatant {stats.characterName} was affected by charm and will therefore be attacking a bad guy");
+                KDebug.SeekBug($"combatant {stats.characterName} was affected by charm and will therefore be attacking a bad guy");
             }
             return targets;
         }
@@ -731,7 +744,7 @@ public class CombatFlow : MonoBehaviour
             }
             if (offensiveAbilities.Contains(selectedAbility.Type))
             {
-                RequestNarration($"combatant {stats.characterName} was affected by neither retardation, nor charm and will therefore be attacking a good guy");
+                KDebug.SeekBug($"combatant {stats.characterName} was affected by neither retardation, nor charm and will therefore be attacking a good guy");
                 targets = SelectRandomCharofType(Combatants.Allies, selectedAbility.Targets);
             }
             return targets;
