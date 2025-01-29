@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEngine.Accessibility;
 using KragostiosAllEnums;
 using AbilityEnums;
 using System;
@@ -9,14 +8,10 @@ using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using Mono.Cecil.Cil;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-//using UnityEngine.UI;
-//using UnityEditor.SceneManagement;
-//using UnityEditor.Rendering;
 
 
 public class StatsHandler : MonoBehaviour
 {
-
     #region // class references
     private Ability_SO ability;
     [SerializeField] public AbilityLibrary abilityLibrary;
@@ -115,6 +110,9 @@ public class StatsHandler : MonoBehaviour
         if (currentHealth <= 0) return false;
         else return true;
     }
+    #endregion
+
+    #region //Get Strings
     public string GetKnownAbilitiesString()
     {
         string knownAbilitiesString = "";
@@ -151,11 +149,15 @@ public class StatsHandler : MonoBehaviour
         string statCosts = $"Stat Point cost per stat increase: 5 Max Health Mana or Stamina: 1  || 1 Health, Mana or Stamina Regen: 3 || 1 Max Action Point or Action Point per turn regeneration: 20 || 5% Elemental Affinity: 1 || 5% Physical Resistance: 1 ||";
         return statCosts;
     }
+
     public string getAvailableStatPoints()
     {
         string availableStatPointsString = $"Available Stat Points: {availableStatPoints}";
         return availableStatPointsString;
     }
+    #endregion
+
+    #region // GetDictionaries
     public Dictionary<string, int> GetAffinityDict()
     {
         // Create a new dictionary with string keys and int values
@@ -208,6 +210,17 @@ public class StatsHandler : MonoBehaviour
         };
         return ElementAffinityDict;
     }
+
+    private Dictionary<PhysicalDamage, int> GetPhysicalResistDict()
+    {
+        Dictionary<PhysicalDamage, int> PhysicalResistDict = new Dictionary<PhysicalDamage, int>
+        {
+            { PhysicalDamage.Bludgeoning, BludgeoningResist },
+            { PhysicalDamage.Slashing, SlashingResist },
+            { PhysicalDamage.Piercing, PiercingResist }
+        };
+        return PhysicalResistDict;
+    }
     public int GetResourceAmount(ResourceTypes resourceType)
     {
         if (resourceType == ResourceTypes.Health)
@@ -223,6 +236,33 @@ public class StatsHandler : MonoBehaviour
             return currentStamina;
         }
         else return 777;
+    }
+    private int AdjustValue(int value, Elements element = Elements.None, PhysicalDamage physicalType = PhysicalDamage.None)
+    {
+        //this method adjusts the value of an attack based on the affinity of the target
+        int relevantAffinity = 0;
+        if (element != Elements.None)
+        {
+            KDebug.SeekBug($"{value} = value. element type =  {element}");
+            Dictionary<Elements, int> ElementAffinityDict = GetElementAffinityDict();
+            relevantAffinity = ElementAffinityDict[element];
+        }
+        if (physicalType != PhysicalDamage.None)
+        {
+            Dictionary<PhysicalDamage, int> physicalResistDict = GetPhysicalResistDict();
+            relevantAffinity = physicalResistDict[physicalType];
+        }
+        if (relevantAffinity > 100) //if one should heal from an attack due to extreme resistence
+        {
+            value = (int)Math.Abs(Math.Round((value * ((relevantAffinity - 100) / 100.0)))); //calculate how much resistance above 100% they have and multiply the percentage by the value of the attack
+        }
+        if (relevantAffinity == 0) return value;
+        if (relevantAffinity <= 100 && relevantAffinity > 0)
+        {
+            value = (int)Math.Round(value * 1.0 - (value * (relevantAffinity / 100)));
+        }
+
+        return value;
     }
 
 
@@ -325,18 +365,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    //public void AddIceAffinity(int incrementValue, int cost)
-    //{
-    //    IceAffinity += incrementValue;
-    //
-    //    decimal splashIncrement = incrementValue/2;
-    //    ColdAffinity += (int)Math.Round(splashIncrement, 2);
-    //
-    //    decimal splashIncrement2 = incrementValue/2;
-    //    WaterAffinity += (int)Math.Round(splashIncrement, 2);
-    //
-    //    availableStatPoints -= cost;
-    //}
+
     public void AddWaterAffinity(int incrementValue, int cost)
     {
         WaterAffinity += incrementValue;
@@ -368,17 +397,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    //public void AddLavaAffinity(int incrementValue, int cost)
-    //{
-    //    LavaAffinity += incrementValue;
-    //
-    //    decimal splashIncrement = incrementValue/2;
-    //    HeatAffinity += (int)Math.Round(splashIncrement, 2);
-    //
-    //    EarthAffinity += (int)Math.Round(splashIncrement, 2);
-    //
-    //    availableStatPoints -= cost;
-    //}
+
     public void AddFireAffinity(int incrementValue, int cost)
     {
         FireAffinity += incrementValue;
@@ -564,49 +583,12 @@ public class StatsHandler : MonoBehaviour
         MaxXp = MaxXp * 2;
     }
 
-    //public void TakeDamage(int damageValue)
-    //{
-    //    currentHealth = currentHealth - damageValue;
-    //
-    //}
-    //public void Heal(int healAmount)
-    //{
-    //    currentHealth = currentHealth + healAmount;
-    //    if (currentHealth > MaxHealth) currentHealth = MaxHealth;
-    //}
-    //public void LoseMana(int ManaCost)
-    //{
-    //    currentMana = currentMana + ManaCost;
-    //    if (currentMana > MaxMana) currentMana = MaxMana;
-    //    else if (currentMana < 0) currentMana = 0;
-    //}
-    //public void GainMana(int ManaChange)
-    //{
-    //    currentMana += ManaChange;
-    //    if (currentMana > MaxMana) currentMana = MaxMana;
-    //    else if (currentMana < 0) currentMana = 0;
-    //}
 
     public void ChangeResource(ResourceTypes resource, int value, Elements element = Elements.None, PhysicalDamage physicalType = PhysicalDamage.None)
+    //                                        health    5       fire    
     {
-        if (element != Elements.None)
-        {
-            KDebug.SeekBug($"{value} = value. element type =  {element}");
-            Dictionary<Elements, int> ElementAffinityDict = GetElementAffinityDict();
-            int relevantAffinity = ElementAffinityDict[element];
-
-            if (relevantAffinity > 100) //if one should heal from an attack due to extreme resistence
-            {
-                value = (int)Math.Abs(Math.Round((value * ((relevantAffinity - 100) / 100.0)))); //calculate how much resistance above 100% they have and multiply the percentage by the value of the attack
-            }
-            else if (relevantAffinity <= 100)
-            {
-                value = (int)Math.Round(value * (relevantAffinity / 100.0));
-            }
-            KDebug.SeekBug($"{value} = adjested value after resistance calculation. element type =  {element}");
-        }
-
-
+        value = AdjustValue(value, element, physicalType); //adjusts damage based on resistances
+        KDebug.SeekBug($"value after adjustment = {value}");
         switch (resource)
         {
             case ResourceTypes.Health:
@@ -623,6 +605,7 @@ public class StatsHandler : MonoBehaviour
                 break;
         }
     }
+
 
     private void GiveOverHealth(int overHealthAmount)
     {
@@ -724,8 +707,6 @@ public class StatsHandler : MonoBehaviour
                 characterLevel = easyScaleFactor;
                 knownAbilities = abilityLibrary.GetAbilities(easyScaleFactor);
                 Debug.Log($"{knownAbilities}");
-
-
 
                 break;
 

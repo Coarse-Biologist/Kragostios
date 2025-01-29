@@ -12,7 +12,7 @@ public class AbilityLibrary : MonoBehaviour
     public Ability_SO ColdLight;
     public Ability_SO BrainDamage;
 
-    public Dictionary<Abilities, Ability_SO> abilityDict {private set; get;} = new Dictionary<Abilities, Ability_SO>();
+    public Dictionary<Abilities, Ability_SO> abilityDict { private set; get; } = new Dictionary<Abilities, Ability_SO>();
 
     public void Awake()
     {
@@ -25,14 +25,12 @@ public class AbilityLibrary : MonoBehaviour
         abilityDict.Add(Abilities.BrainDamage, BrainDamage);
 
         Debug.Log($"{GetAbilityInfo(BrainDamage)}");
-
     }
 
-
-    public List<Ability_SO> GetAbilities (int creatureDifficulty)
+    public List<Ability_SO> GetAbilities(int creatureDifficulty)
     {
         List<Ability_SO> abilities = new List<Ability_SO>();
-        foreach(KeyValuePair<Abilities, Ability_SO>  kvp in abilityDict)
+        foreach (KeyValuePair<Abilities, Ability_SO> kvp in abilityDict)
         {
             Ability_SO ability = kvp.Value;
             if (ability.AbilityLevel <= creatureDifficulty)
@@ -41,10 +39,10 @@ public class AbilityLibrary : MonoBehaviour
                 {
                     abilities.Add(kvp.Value);
                 }
-                
+
             }
         }
-        if(abilities.Count == 0)
+        if (abilities.Count == 0)
         {
             abilities.Add(Melee);
         }
@@ -53,8 +51,8 @@ public class AbilityLibrary : MonoBehaviour
 
     public string GetAbilityInfo(Ability_SO ability)
     {
-        string abilityInfo = 
-        
+        string abilityInfo =
+
         $"Ability Name: {ability.AbilityName}. Resource: {ability.Resource}. Resource: {ability.Resource}. Type: {ability.Type}. Cost: {ability.AbilityCost}.Heal Amount: {ability.HealValue}. Damage: {ability.DamageValue}.Effect duration: {ability.TurnDuration}. Number of targets: {ability.Targets}. Summons?: {ability.Summons}. Sypon percentage: {ability.SyphonPercentage}. Ability level: {ability.AbilityLevel}.";
 
 
