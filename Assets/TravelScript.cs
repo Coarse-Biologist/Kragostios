@@ -10,24 +10,24 @@ public class TravelScript : MonoBehaviour
     private void MoveNorth()
     {
         playerLocation += new Vector2(0, 1);
-        Debug.Log($"player location is now {playerLocation}");
+        Debug.Log($"Your location is now {playerLocation}");
     }
    
     private void MoveEast()
     {
         playerLocation += new Vector2(1, 0);
-        Debug.Log($"player location is now {playerLocation}");
+        Debug.Log($"Your location is now {playerLocation}");
     }
     private void MoveSouth()
     {
         playerLocation -= new Vector2(0, 1);
-        Debug.Log($"player location is now {playerLocation}");
+        Debug.Log($"Your location is now {playerLocation}");
 
     }
     private void MoveWest()
     {
         playerLocation -= new Vector2(1, 0);
-        Debug.Log($"player location is now {playerLocation}");
+        Debug.Log($"Your location is now {playerLocation}");
     }
     
     public void TravelInDirection(Directions direction)

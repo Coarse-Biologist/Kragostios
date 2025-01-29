@@ -19,6 +19,8 @@ public class NarrationScript : MonoBehaviour
     [SerializeField] 
     private Dictionary<string, string> responseDictionary;
 
+    private int linesOfNarration = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //private void Awake()
     //{
@@ -28,7 +30,7 @@ public class NarrationScript : MonoBehaviour
     //    narratorText = narratorWindow.Q<Label>("NarratorText");
     //}
     private void Awake()
-{
+    {
     root = UIDocument.rootVisualElement;
 
     if (root == null)
@@ -55,18 +57,28 @@ public class NarrationScript : MonoBehaviour
     root.style.backgroundColor = Color.black;
     narratorText.style.color = Color.white;
     root.MarkDirtyRepaint();
+    narratorWindow.style.display = DisplayStyle.None;
     }
 
-
-    public void PlayerTraveled(Directions direction, UnityEngine.Vector2 playerLocation, LocationType locationType)
-    {
-        narratorText.text = $"You journey {direction}. You are at the coordinates {playerLocation.ToString()}. The area is {locationType.ToString()}";
-    }
 
     
     public void DisplayNarrationText(string message)
     {   
-        narratorText.text += "\n" + message; // + message;
+        narratorWindow.style.display = DisplayStyle.Flex;
+        
+        linesOfNarration ++; 
+
+        if (linesOfNarration >= 6)
+        {
+            linesOfNarration = 0;
+            narratorText.text = message;
+        }
+        else 
+        {
+            narratorText.text += "\n" + message; // + message;
+        }
+        
+
     }
 
 

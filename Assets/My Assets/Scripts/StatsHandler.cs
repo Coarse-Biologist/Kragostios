@@ -2,6 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 //using UnityEngine.Accessibility;
 using KragostiosAllEnums;
+using AbilityEnums;
+using System;
+using System.Reflection;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using Mono.Cecil.Cil;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 //using UnityEngine.UI;
 //using UnityEditor.SceneManagement;
 //using UnityEditor.Rendering;
@@ -9,207 +16,785 @@ using KragostiosAllEnums;
 
 public class StatsHandler : MonoBehaviour
 {
-    private AbilityScrollStorage scrollStorage;
-    private AbilityScrollStorage.Abilities abilities;
-    [SerializeField] public string characterName {private set; get;} = "Sqreegler";
-    [SerializeField] public string description {private set; get;}
-    [SerializeField] public Combatants charType{private set; get;}
 
-    [SerializeField] public Difficulty difficulty{private set; get;}
-    [Header("Max Stats")]
+    #region // class references
+    private Ability_SO ability;
+    [SerializeField] public AbilityLibrary abilityLibrary;
+    #endregion
 
-    [SerializeField] public int maxHealth {private set; get;} = 100;
-    [SerializeField] public int maxMana {private set; get;} = 100;
-    [SerializeField] public int maxStamina {private set; get;} = 100;
-    [SerializeField] public int initiative {private set; get;} = 100;
+    #region // char description
+    public string characterName { private set; get; } = "Sqreegler";
+    [SerializeField] public string description { private set; get; }
+    [SerializeField] public Combatants charType { private set; get; }
+    [SerializeField] public Difficulty difficulty { private set; get; }
+    #endregion
 
-    [Header("Current Stats")]
+    #region //  resources
 
-    [SerializeField] public int currentHealth {private set; get;}= 100;
-    [SerializeField] public int currentMana {private set; get;}= 100;
-    [SerializeField] public int currentStamina  {private set; get;}= 100;
+    [SerializeField] public int MaxHealth { private set; get; } = 100;
+    [SerializeField] public int MaxMana { private set; get; } = 100;
+    [SerializeField] public int MaxStamina { private set; get; } = 100;
+    [SerializeField] public int initiative { private set; get; } = 100;
 
-    [Header("Regeneration")]
-    [SerializeField] public int healthRegen {private set; get;}= 1;
-    [SerializeField] public int manaregen {private set; get;}= 1;
-    [SerializeField] public int staminaRegen  {private set; get;}= 1;
+    public int ActionPoints { private set; get; } = 1;
+    public int currentActionPoints { private set; get; } = 1;
+    public int ActionPointRegen { private set; get; } = 1;
 
-    [Header("Level Stats")]
+    [SerializeField] public int currentHealth { private set; get; } = 100;
+    [SerializeField] public int currentMana { private set; get; } = 100;
+    [SerializeField] public int currentStamina { private set; get; } = 100;
+    [SerializeField] public int currentOverHealth { private set; get; } = 0;
+    #endregion
 
-    [SerializeField] public int characterLevel  {private set; get;}= 1;
-    [SerializeField] public int availableStatPoints {private set; get;}= 0;
-    [SerializeField] public int currentXp  {private set; get;}= 0;
-    [SerializeField] public int maxXp {private set; get;} = 100;
+    #region // Elemental Affinityences
+    public int ColdAffinity { private set; get; } = 0;
+    //public int IceAffinity {private set; get;} = 0;
+    public int WaterAffinity { private set; get; } = 0;
+    public int EarthAffinity { private set; get; } = 0;
+    public int HeatAffinity { private set; get; } = 0;
+    //public int LavaAffinity {private set; get;} = 0;
+    public int FireAffinity { private set; get; } = 0;
+    public int AirAffinity { private set; get; } = 0;
+    public int ElectrictyAffinity { private set; get; } = 0;
+    public int LightAffinity { private set; get; } = 0;
+    public int PsychicAffinity { private set; get; } = 0;
+    public int FungiAffinity { private set; get; } = 0;
+    public int PlantAffinity;// (private set; get;) = 0;
+    public int PoisonAffinity { private set; get; } = 0;
+    public int AcidAffinity { private set; get; } = 0;
+    public int RadiationAffinity { private set; get; } = 0;
+    public int BacteriaAffinity { private set; get; } = 0;
+    public int VirusAffinity { private set; get; } = 0;
 
-    [SerializeField] public List<AbilityScrollStorage.Abilities> knownAbilities {private set; get;}
+    public List<int> affinityList;
+    public Dictionary<string, int> AffinityDict;
+    public Dictionary<Elements, int> ElementAffinityDict;
 
-
-    [Header("Rewards")]
-    [SerializeField] public List<Rewards> rewards{private set; get;}
-
-    [Header("Inventory")]
-    [SerializeField] public int characterGold {private set; get;} = 0;
-    private void Awake()
+    public void Awake()
     {
-        scrollStorage = GetComponent<AbilityScrollStorage>();
+        AffinityDict = GetAffinityDict();
     }
 
-    
-    private void UpdateHealth(int healthChange)
-    {
-        
-        currentHealth = currentHealth + healthChange;
-        if (currentHealth > maxHealth) currentHealth = maxHealth;
-    }
-    
-    private void GiveOverHealth(int overhealthAmount)
-    {
-        maxHealth += overhealthAmount;
-        currentHealth += overhealthAmount;
-    }
 
+    #endregion
+
+    #region // Physical Affinityences 
+    public int BludgeoningResist { private set; get; } = 0;
+    public int SlashingResist { private set; get; } = 0;
+    public int PiercingResist { private set; get; } = 0;
+
+    #endregion
+
+    #region // resource regen
+    [SerializeField] public int HealthRegen { private set; get; } = 1;
+    [SerializeField] public int ManaRegen { private set; get; } = 1;
+    [SerializeField] public int StaminaRegen { private set; get; } = 1;
+
+    #endregion
+
+    #region // "Level Stats"
+
+    [SerializeField] public int characterLevel { private set; get; } = 1;
+    [SerializeField] public int availableStatPoints { private set; get; } = 40;
+    [SerializeField] public int currentXp { private set; get; } = 0;
+    [SerializeField] public int MaxXp { private set; get; } = 100;
+
+
+    #endregion
+
+    #region // inventory
+    [SerializeField] public List<Rewards> rewards { private set; get; } = new List<Rewards> { Rewards.Gold, Rewards.Xp };
+    [SerializeField] public int characterGold { private set; get; } = 0;
+    [SerializeField] public List<Ability_SO> knownAbilities { private set; get; } = new List<Ability_SO>();
+
+    #endregion
+
+    #region // getters
     private bool IsAlive()
     {
         if (currentHealth <= 0) return false;
         else return true;
-    }    
+    }
+    public string GetKnownAbilitiesString()
+    {
+        string knownAbilitiesString = "";
+        foreach (Ability_SO ability in knownAbilities)
+        {
+            knownAbilitiesString += ability.AbilityName + ", ";
+        }
+        return knownAbilitiesString;
+    }
+    public string GetCharInfo()
+    {
+        string knownAbilitiesString = GetKnownAbilitiesString();
+        string charInfo = "";
+        if (charType == Combatants.Player)
+        {
+            charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+            return charInfo;
+        }
+        else
+        {
+            charInfo = $"Character Name: {characterName} || Description: {description} || Char Type: {charType} || Difficulty: {difficulty} Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+        }
 
-    /////// XP RELATED
-    
+        return charInfo;
+    }
+    public string GetCharCreationStats()
+    {
+        string charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Action Points: {ActionPoints} || Action Point Regen Rate: {ActionPointRegen}";
+
+        return charInfo;
+    }
+    public string GetStatCosts()
+    {
+        string statCosts = $"Stat Point cost per stat increase: 5 Max Health Mana or Stamina: 1  || 1 Health, Mana or Stamina Regen: 3 || 1 Max Action Point or Action Point per turn regeneration: 20 || 5% Elemental Affinity: 1 || 5% Physical Resistance: 1 ||";
+        return statCosts;
+    }
+    public string getAvailableStatPoints()
+    {
+        string availableStatPointsString = $"Available Stat Points: {availableStatPoints}";
+        return availableStatPointsString;
+    }
+    public Dictionary<string, int> GetAffinityDict()
+    {
+        // Create a new dictionary with string keys and int values
+        AffinityDict = new Dictionary<string, int>
+        {
+            { "Cold Affinity", ColdAffinity },
+            //{ "Ice Affinity", IceAffinity },
+            { "Water Affinity", WaterAffinity },
+            { "Earth Affinity", EarthAffinity },
+            { "Heat Affinity", HeatAffinity },
+            //{ "Lava Affinity", LavaAffinity },
+            { "Fire Affinity", FireAffinity },
+            { "Air Affinity", AirAffinity },
+            { "Electricity Affinity", ElectrictyAffinity },
+            { "Light Affinity", LightAffinity },
+            { "Psychic Affinity", PsychicAffinity },
+            { "Fungi Affinity", FungiAffinity },
+            { "Plant Affinity", PlantAffinity },
+            { "Poison Affinity", PoisonAffinity },
+            { "Acid Affinity", AcidAffinity },
+            { "Radiation Affinity", RadiationAffinity },
+            { "Bacteria Affinity", BacteriaAffinity },
+            { "Virus Affinity", VirusAffinity }
+        };
+        return AffinityDict;
+
+    }
+
+    private Dictionary<Elements, int> GetElementAffinityDict()
+    {
+        ElementAffinityDict = new Dictionary<Elements, int>
+        {
+            { Elements.Cold, ColdAffinity },
+            { Elements.Water, WaterAffinity },
+            { Elements.Earth, EarthAffinity },
+            { Elements.Heat, HeatAffinity },
+            { Elements.Fire, FireAffinity },
+            { Elements.Air, AirAffinity },
+            { Elements.Electricty, ElectrictyAffinity },
+            { Elements.Light, LightAffinity },
+            { Elements.Psychic, PsychicAffinity },
+            { Elements.Fungi, FungiAffinity },
+            { Elements.Plant, PlantAffinity },
+            { Elements.Poison, PoisonAffinity },
+            { Elements.Acid, AcidAffinity },
+            { Elements.Radiation, RadiationAffinity },
+            { Elements.Bacteria, BacteriaAffinity },
+            { Elements.Virus, VirusAffinity }
+
+        };
+        return ElementAffinityDict;
+    }
+    public int GetResourceAmount(ResourceTypes resourceType)
+    {
+        if (resourceType == ResourceTypes.Health)
+        {
+            return currentHealth;
+        }
+        if (resourceType == ResourceTypes.Mana)
+        {
+            return currentMana;
+        }
+        if (resourceType == ResourceTypes.Stamina)
+        {
+            return currentStamina;
+        }
+        else return 777;
+    }
+
+
+    public string GetAffinityString()
+    {
+
+        string affinityString = "";
+        AffinityDict = GetAffinityDict();
+
+        foreach (KeyValuePair<string, int> kvp in AffinityDict)
+        {
+            affinityString += $"{kvp.Key}: {kvp.Value} \n";
+        }
+        return affinityString;
+    }
+    public string GetResistString()
+    {
+        string resistString = $"Bludgeoning resistance: {BludgeoningResist} \n Slashing resistance: {SlashingResist} \n Piercing resistance: {PiercingResist}";
+
+        return resistString;
+    }
+
+
+    #endregion
+
+    #region //Scaling factors
+    private int easyScaleFactor = 2;
+    private int mediumScaleFactor = 3;
+    private int hardScaleFactor = 4;
+    private int brutalScaleFactor = 5;
+    private int nightmareScaleFactor = 6;
+    #endregion
+
+    #region // Setters
+
+    public void RestoreResources()
+    {
+        currentHealth = MaxHealth;
+        currentMana = MaxMana;
+        currentStamina = MaxStamina;
+        currentActionPoints = ActionPoints;
+    }
+    public void AddMaxHealth(int incrementValue, int cost)
+    {
+        MaxHealth += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddMaxMana(int incrementValue, int cost)
+    {
+        MaxMana += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddMaxStamina(int incrementValue, int cost)
+    {
+        MaxStamina += incrementValue;
+        availableStatPoints -= cost;
+    }
+
+    public void AddActionPoint(int incrementValue, int cost)
+    {
+        ActionPoints += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void RegenActionPoints()
+    {
+        currentActionPoints += ActionPointRegen;
+        if (currentActionPoints > ActionPoints) currentActionPoints = ActionPoints;
+    }
+    public void SpendActionPoints()
+    {
+        currentActionPoints -= 1;
+    }
+
+    public void AddActionPointRegen(int incrementValue, int cost)
+    {
+        ActionPointRegen += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddHealthRegen(int incrementValue, int cost)
+    {
+        HealthRegen += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddManaRegen(int incrementValue, int cost)
+    {
+        ManaRegen += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddStaminaRegen(int incrementValue, int cost)
+    {
+        StaminaRegen += incrementValue;
+        availableStatPoints -= cost;
+    }
+
+    public void AddColdAffinity(int incrementValue, int cost)
+    {
+        ColdAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+
+        availableStatPoints -= cost;
+    }
+    //public void AddIceAffinity(int incrementValue, int cost)
+    //{
+    //    IceAffinity += incrementValue;
+    //
+    //    decimal splashIncrement = incrementValue/2;
+    //    ColdAffinity += (int)Math.Round(splashIncrement, 2);
+    //
+    //    decimal splashIncrement2 = incrementValue/2;
+    //    WaterAffinity += (int)Math.Round(splashIncrement, 2);
+    //
+    //    availableStatPoints -= cost;
+    //}
+    public void AddWaterAffinity(int incrementValue, int cost)
+    {
+        WaterAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+        ColdAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddEarthAffinity(int incrementValue, int cost)
+    {
+        EarthAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+        PlantAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddHeatAffinity(int incrementValue, int cost)
+    {
+        HeatAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+        FireAffinity += (int)Math.Round(splashIncrement, 2);
+
+        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+
+
+
+        availableStatPoints -= cost;
+    }
+    //public void AddLavaAffinity(int incrementValue, int cost)
+    //{
+    //    LavaAffinity += incrementValue;
+    //
+    //    decimal splashIncrement = incrementValue/2;
+    //    HeatAffinity += (int)Math.Round(splashIncrement, 2);
+    //
+    //    EarthAffinity += (int)Math.Round(splashIncrement, 2);
+    //
+    //    availableStatPoints -= cost;
+    //}
+    public void AddFireAffinity(int incrementValue, int cost)
+    {
+        FireAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+        HeatAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddAirAffinity(int incrementValue, int cost)
+    {
+        AirAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+        ElectrictyAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddElectricityAffinity(int incrementValue, int cost)
+    {
+        ElectrictyAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+        AirAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddLightAffinity(int incrementValue, int cost)
+    {
+        LightAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+
+        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+
+        HeatAffinity += (int)Math.Round(splashIncrement, 2);
+
+
+        availableStatPoints -= cost;
+    }
+
+    public void AddRadiationAffinity(int incrementValue, int cost)
+    {
+        RadiationAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+
+        AirAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+
+    public void AddPsychicAffinity(int incrementValue, int cost)
+    {
+        PsychicAffinity += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddFungiAffinity(int incrementValue, int cost)
+    {
+        FungiAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+
+        PlantAffinity += (int)Math.Round(splashIncrement, 2);
+
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
+
+        availableStatPoints -= cost;
+    }
+    public void AddPlantAffinity(int incrementValue, int cost)
+    {
+        PlantAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+
+        FungiAffinity += (int)Math.Round(splashIncrement, 2);
+
+        WaterAffinity += (int)Math.Round(splashIncrement, 2);
+
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddPoisonAffinity(int incrementValue, int cost)
+    {
+        PoisonAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
+
+        availableStatPoints -= cost;
+    }
+    public void AddAcidAffinity(int incrementValue, int cost)
+    {
+        AcidAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+
+        HeatAffinity += (int)Math.Round(splashIncrement, 2);
+
+        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+
+    public void AddBacteriaAffinity(int incrementValue, int cost)
+    {
+        BacteriaAffinity += incrementValue;
+
+        decimal splashIncrement = incrementValue / 2;
+
+        VirusAffinity += (int)Math.Round(splashIncrement, 2);
+
+        PoisonAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddVirusAffinity(int incrementValue, int cost)
+    {
+        VirusAffinity += incrementValue;
+        decimal splashIncrement = incrementValue / 2;
+
+        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+
+        PoisonAffinity += (int)Math.Round(splashIncrement, 2);
+
+        availableStatPoints -= cost;
+    }
+    public void AddBludgeoningResist(int incrementValue, int cost)
+    {
+        BludgeoningResist += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddSlashingResist(int incrementValue, int cost)
+    {
+        SlashingResist += incrementValue;
+        availableStatPoints -= cost;
+    }
+    public void AddPiercingResist(int incrementValue, int cost)
+    {
+        PiercingResist += incrementValue;
+        availableStatPoints -= cost;
+    }
+
+    public void SetName(string name)
+    {
+        characterName = name;
+    }
+    public void SetDescription(string newDesciption)
+    {
+        description = newDesciption;
+    }
+
     public void GainXp(int XpGain)
     {
         currentXp = currentXp + XpGain;
-        if (currentXp > maxXp)
+        if (currentXp > MaxXp)
         {
-            currentXp -= maxXp;
+            currentXp -= MaxXp;
             GainLevel();
-        } 
+        }
+        KDebug.SeekBug($"{characterName} gained {XpGain}");
+    }
+    public void LearnAbility(Abilities newAbility)
+    {
+        knownAbilities.Add(abilityLibrary.abilityDict[newAbility]);
     }
 
     public void GainGold(int GoldAmount)
     {
+        KDebug.SeekBug($"{characterName} gained {GoldAmount}");
         characterGold += GoldAmount;
     }
 
     private void GainLevel()
     {
-        characterLevel ++;
-        maxXp = maxXp * 2;
+        characterLevel++;
+        MaxXp = MaxXp * 2;
     }
-    
-        
-        private int easyScaleFactor = 2;
-        private int mediumScaleFactor = 3;
-        private int hardScaleFactor = 4;
-        private int brutalScaleFactor = 5;
-        private int nightmareScaleFactor = 6;
 
+    //public void TakeDamage(int damageValue)
+    //{
+    //    currentHealth = currentHealth - damageValue;
+    //
+    //}
+    //public void Heal(int healAmount)
+    //{
+    //    currentHealth = currentHealth + healAmount;
+    //    if (currentHealth > MaxHealth) currentHealth = MaxHealth;
+    //}
+    //public void LoseMana(int ManaCost)
+    //{
+    //    currentMana = currentMana + ManaCost;
+    //    if (currentMana > MaxMana) currentMana = MaxMana;
+    //    else if (currentMana < 0) currentMana = 0;
+    //}
+    //public void GainMana(int ManaChange)
+    //{
+    //    currentMana += ManaChange;
+    //    if (currentMana > MaxMana) currentMana = MaxMana;
+    //    else if (currentMana < 0) currentMana = 0;
+    //}
 
-    public GameObject MakeCreature(Difficulty difficulty, Combatants combatantType)
+    public void ChangeResource(ResourceTypes resource, int value, Elements element = Elements.None, PhysicalDamage physicalType = PhysicalDamage.None)
     {
-        
-        StatsHandler stats = GetComponent<StatsHandler>();
-        //Abilities abilities = GetComponent<Abilities>();
-        //Abilities.AbilityScrollStorage scrolls = GetComponent<Abilities.AbilityScrollStorage>(); 
-        List<AbilityScrollStorage.Abilities> creatureAbilities = new List<AbilityScrollStorage.Abilities>();
+        if (element != Elements.None)
+        {
+            KDebug.SeekBug($"{value} = value. element type =  {element}");
+            Dictionary<Elements, int> ElementAffinityDict = GetElementAffinityDict();
+            int relevantAffinity = ElementAffinityDict[element];
+
+            if (relevantAffinity > 100) //if one should heal from an attack due to extreme resistence
+            {
+                value = (int)Math.Abs(Math.Round((value * ((relevantAffinity - 100) / 100.0)))); //calculate how much resistance above 100% they have and multiply the percentage by the value of the attack
+            }
+            else if (relevantAffinity <= 100)
+            {
+                value = (int)Math.Round(value * (relevantAffinity / 100.0));
+            }
+            KDebug.SeekBug($"{value} = adjested value after resistance calculation. element type =  {element}");
+        }
+
+
+        switch (resource)
+        {
+            case ResourceTypes.Health:
+                currentHealth += value;
+                if (currentHealth > MaxHealth + currentOverHealth) currentHealth = MaxHealth;
+                break;
+            case ResourceTypes.Mana:
+                currentMana += value;
+                if (currentMana > MaxMana) currentMana = MaxMana;
+                break;
+            case ResourceTypes.Stamina:
+                currentStamina += value;
+                if (currentStamina > MaxStamina) currentStamina = MaxStamina;
+                break;
+        }
+    }
+
+    private void GiveOverHealth(int overHealthAmount)
+    {
+        MaxHealth += overHealthAmount;
+        currentHealth += overHealthAmount;
+        currentOverHealth += overHealthAmount;
+    }
+    #endregion
+
+    #region // make player and creatures;
+    public GameObject MakePlayer()
+    {
+        characterName = "Borgauss";
+        description = "World dominator currently in fetus-form";
+        charType = Combatants.Player;
+        difficulty = Difficulty.Easy;
+        MaxHealth = 10;
+        MaxMana = 10;
+        MaxStamina = 10;
+        initiative = 100;
+        ActionPoints = 1;
+        ActionPointRegen = 1;
+        currentHealth = 10;
+        currentMana = 10;
+        currentStamina = 10;
+        ColdAffinity = 0;
+        //IceAffinity = 0;
+        WaterAffinity = 0;
+        EarthAffinity = 0;
+        HeatAffinity = 0;
+        //LavaAffinity = 0;
+        FireAffinity = 0;
+        AirAffinity = 0;
+        ElectrictyAffinity = 0;
+        LightAffinity = 0;
+        PsychicAffinity = 0;
+        FungiAffinity = 0;
+        PlantAffinity = 0;
+        PoisonAffinity = 0;
+        AcidAffinity = 0;
+        RadiationAffinity = 0;
+        BacteriaAffinity = 0;
+        VirusAffinity = 0;
+        BludgeoningResist = 0;
+        SlashingResist = 0;
+        PiercingResist = 0;
+        HealthRegen = 0;
+        ManaRegen = 0;
+        StaminaRegen = 0;
+        characterLevel = 0;
+        availableStatPoints = 40;
+        currentXp = 0;
+        MaxXp = 30;
+        rewards = new List<Rewards>();
+        characterGold = 0;
+        knownAbilities = new List<Ability_SO>{
+    abilityLibrary.Melee, abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch, abilityLibrary.ColdLight, abilityLibrary.BrainDamage
+    };
+
+        return gameObject;
+
+    }
+    public GameObject MakeCreature(Difficulty difficultyLevel, Combatants combatantType)
+    {
+        Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel}");
+
         switch (combatantType)
         {
-            case (Combatants.Player):
-            charType = Combatants.Player;
-            creatureAbilities = scrollStorage.GetWeakAbilities();
-            stats.knownAbilities = creatureAbilities;
-            return gameObject;
-
-            case(Combatants.Enemy):
-            charType = Combatants.Enemy;
-            break;
-            case(Combatants.Companion):
-            charType = Combatants.Companion;
-            break;
-            case(Combatants.Summon):
-            charType = Combatants.Summon;
-            break;
+            case (Combatants.Enemy):
+                charType = Combatants.Enemy;
+                int RandomNumber = UnityEngine.Random.Range(300, 1000);
+                characterName = "Enemy" + $"{RandomNumber}";
+                break;
+            case (Combatants.Companion):
+                charType = Combatants.Companion;
+                characterName = "Companion";
+                break;
+            case (Combatants.Summon):
+                charType = Combatants.Summon;
+                characterName = "Summon";
+                break;
         }
-        
 
-        switch(difficulty)
+
+        switch (difficultyLevel)
         {
             case Difficulty.Easy:
-            difficulty = Difficulty.Easy;
-            maxHealth = Random.Range(1, 10) * easyScaleFactor;
-            maxMana = Random.Range(1, 10) * easyScaleFactor;
-            maxStamina = Random.Range(1, 10) * easyScaleFactor;
-            initiative = easyScaleFactor;
-            healthRegen = easyScaleFactor;
-            manaregen = easyScaleFactor;
-            staminaRegen = easyScaleFactor;
-            characterLevel = easyScaleFactor;
-            //creatureAbilities = abilities.GetWeakAbilities();
-            knownAbilities = creatureAbilities;
-            break;
+
+                difficulty = Difficulty.Easy;
+                Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficult {difficulty}");
+
+                MaxHealth = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
+                MaxMana = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
+                MaxStamina = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
+                initiative = easyScaleFactor;
+                HealthRegen = easyScaleFactor;
+                ManaRegen = easyScaleFactor;
+                StaminaRegen = easyScaleFactor;
+                characterLevel = easyScaleFactor;
+                knownAbilities = abilityLibrary.GetAbilities(easyScaleFactor);
+                Debug.Log($"{knownAbilities}");
+
+
+
+                break;
 
             case Difficulty.Medium:
-            stats.difficulty = Difficulty.Medium;
-            stats.maxHealth = Random.Range(1, 10) * mediumScaleFactor;
-            stats.maxMana = Random.Range(1, 10) * mediumScaleFactor;
-            stats.maxStamina = Random.Range(1, 10) * mediumScaleFactor;
-            stats.initiative = mediumScaleFactor;
-            stats.healthRegen = mediumScaleFactor;
-            stats.manaregen = mediumScaleFactor;
-            stats.staminaRegen = mediumScaleFactor;
-            stats.characterLevel = mediumScaleFactor;
-            //creatureAbilities = abilities.GetWeakAbilities();
-            stats.knownAbilities = creatureAbilities;
-            break;
-            case Difficulty.Hard:
-            stats.difficulty = Difficulty.Hard;
-            stats.maxHealth = Random.Range(1, 10) * hardScaleFactor;
-            stats.maxMana = Random.Range(1, 10) * hardScaleFactor;
-            stats.maxStamina = Random.Range(1, 10) * hardScaleFactor;
-            stats.initiative = hardScaleFactor;
-            stats.healthRegen = hardScaleFactor;
-            stats.manaregen = hardScaleFactor;
-            stats.staminaRegen = hardScaleFactor;
-            stats.characterLevel = hardScaleFactor;
-            //creatureAbilities = abilities.GetWeakAbilities();
-            stats.knownAbilities = creatureAbilities;
-            break;
-            case Difficulty.Brutal:
-            stats.difficulty = Difficulty.Brutal;
-            stats.maxHealth = Random.Range(1, 10) * brutalScaleFactor;
-            stats.maxMana = Random.Range(1, 10) * brutalScaleFactor;
-            stats.maxStamina = Random.Range(1, 10) * brutalScaleFactor;
-            stats.initiative = brutalScaleFactor;
-            stats.healthRegen = brutalScaleFactor;
-            stats.manaregen = brutalScaleFactor;
-            stats.staminaRegen = brutalScaleFactor;
-            stats.characterLevel = brutalScaleFactor;
-            //creatureAbilities = abilities.GetWeakAbilities();
-            stats.knownAbilities = creatureAbilities;
-            break;
-            case Difficulty.Nightmare:
-            stats.difficulty = Difficulty.Nightmare;
-            stats.maxHealth = Random.Range(1, 10) * nightmareScaleFactor;
-            stats.maxMana = Random.Range(1, 10) * nightmareScaleFactor;
-            stats.maxStamina = Random.Range(1, 10) * nightmareScaleFactor;
-            stats.initiative = nightmareScaleFactor;
-            stats.healthRegen = nightmareScaleFactor;
-            stats.manaregen = nightmareScaleFactor;
-            stats.staminaRegen = nightmareScaleFactor;
-            stats.characterLevel = nightmareScaleFactor;
-            //creatureAbilities = abilities.GetWeakAbilities();
-            stats.knownAbilities = creatureAbilities;
-            break;
-            
-        }
-        return gameObject;
-        }
+                difficulty = Difficulty.Medium;
+                MaxHealth = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
+                MaxMana = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
+                MaxStamina = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
+                initiative = mediumScaleFactor;
+                HealthRegen = mediumScaleFactor;
+                ManaRegen = mediumScaleFactor;
+                StaminaRegen = mediumScaleFactor;
+                characterLevel = mediumScaleFactor;
+                knownAbilities = abilityLibrary.GetAbilities(mediumScaleFactor);
 
-        public void LearnAbility(AbilityScrollStorage.Abilities newAbility)
-        {
-            knownAbilities.Add(newAbility);
+                break;
+            case Difficulty.Hard:
+                difficulty = Difficulty.Hard;
+                MaxHealth = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
+                MaxMana = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
+                MaxStamina = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
+                initiative = hardScaleFactor;
+                HealthRegen = hardScaleFactor;
+                ManaRegen = hardScaleFactor;
+                StaminaRegen = hardScaleFactor;
+                characterLevel = hardScaleFactor;
+                knownAbilities = abilityLibrary.GetAbilities(hardScaleFactor);
+                Debug.Log($"{knownAbilities.ToString()}");
+                break;
+
+            case Difficulty.Brutal:
+                difficulty = Difficulty.Brutal;
+                MaxHealth = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
+                MaxMana = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
+                MaxStamina = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
+                initiative = brutalScaleFactor;
+                HealthRegen = brutalScaleFactor;
+                ManaRegen = brutalScaleFactor;
+                StaminaRegen = brutalScaleFactor;
+                characterLevel = brutalScaleFactor;
+                knownAbilities = abilityLibrary.GetAbilities(brutalScaleFactor);
+                break;
+
+            case Difficulty.Nightmare:
+                difficulty = Difficulty.Nightmare;
+                Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficulty {difficulty}");
+
+                MaxHealth = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
+                MaxMana = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
+                MaxStamina = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
+                initiative = nightmareScaleFactor;
+                HealthRegen = nightmareScaleFactor;
+                ManaRegen = nightmareScaleFactor;
+                StaminaRegen = nightmareScaleFactor;
+                characterLevel = nightmareScaleFactor;
+                knownAbilities = abilityLibrary.GetAbilities(nightmareScaleFactor);
+                break;
+
         }
+        currentHealth = MaxHealth;
+        currentStamina = MaxStamina;
+        currentMana = MaxMana;
+        Debug.Log($"Current Health at time of creation = {currentHealth}");
+        return gameObject;
+    }
+    #endregion
+    private void Summon(GameObject summon)
+    {
+
     }
 
-
-
+}
