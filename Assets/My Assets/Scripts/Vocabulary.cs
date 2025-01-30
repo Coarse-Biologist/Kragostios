@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using KragostiosAllEnums;
+using UnityEditor.Build.Pipeline;
 
 public class Vocabulary
 {
-    Dictionary<Elements, string[]> elementAdjectivesDict;
     public static string GetRandomVillainousAdjective()
     {
         string[] villainousAdjectives = {
@@ -65,9 +65,9 @@ public class Vocabulary
 
     }
 
-    public void MakeElementAdjectiveDict()
+    public static Dictionary<Elements, string[]> MakeElementAdjectiveDict()
     {
-        elementAdjectivesDict = new Dictionary<Elements, string[]>
+        Dictionary<Elements, string[]> elementAdjectivesDict = new Dictionary<Elements, string[]>
 {
     { Elements.None, new string[] { "Unaligned", "Void", "Neutral", "Shapeless", "Formless", "Hollow", "Absent", "Undefined", "Fading", "Nameless" } },
 
@@ -103,6 +103,8 @@ public class Vocabulary
 
     { Elements.Psychic, new string[] { "Mind-warping", "Hypnotic", "Eldritch", "Telepathic", "Distorting", "Unfathomable", "Dreamborne", "Echoing", "Illusive", "Reverberating" } }
 };
+        return elementAdjectivesDict;
     }
+
 
 }

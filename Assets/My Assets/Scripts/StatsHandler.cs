@@ -312,23 +312,23 @@ public class StatsHandler : MonoBehaviour
         currentStamina = MaxStamina;
         currentActionPoints = ActionPoints;
     }
-    public void AddMaxHealth(int incrementValue, int cost)
+    public void AddMaxHealth(int incrementValue, int cost = 0)
     {
         MaxHealth += incrementValue;
         availableStatPoints -= cost;
     }
-    public void AddMaxMana(int incrementValue, int cost)
+    public void AddMaxMana(int incrementValue, int cost = 0)
     {
         MaxMana += incrementValue;
         availableStatPoints -= cost;
     }
-    public void AddMaxStamina(int incrementValue, int cost)
+    public void AddMaxStamina(int incrementValue, int cost = 0)
     {
         MaxStamina += incrementValue;
         availableStatPoints -= cost;
     }
 
-    public void AddActionPoint(int incrementValue, int cost)
+    public void AddActionPoint(int incrementValue, int cost = 0)
     {
         ActionPoints += incrementValue;
         availableStatPoints -= cost;
@@ -343,28 +343,28 @@ public class StatsHandler : MonoBehaviour
         currentActionPoints -= 1;
     }
 
-    public void AddActionPointRegen(int incrementValue, int cost)
+    public void AddActionPointRegen(int incrementValue, int cost = 0)
     {
         ActionPointRegen += incrementValue;
         availableStatPoints -= cost;
     }
-    public void AddHealthRegen(int incrementValue, int cost)
+    public void AddHealthRegen(int incrementValue, int cost = 0)
     {
         HealthRegen += incrementValue;
         availableStatPoints -= cost;
     }
-    public void AddManaRegen(int incrementValue, int cost)
+    public void AddManaRegen(int incrementValue, int cost = 0)
     {
         ManaRegen += incrementValue;
         availableStatPoints -= cost;
     }
-    public void AddStaminaRegen(int incrementValue, int cost)
+    public void AddStaminaRegen(int incrementValue, int cost = 0)
     {
         StaminaRegen += incrementValue;
         availableStatPoints -= cost;
     }
 
-    public void AddColdAffinity(int incrementValue, int cost)
+    public void AddColdAffinity(int incrementValue, int cost = 0)
     {
         ColdAffinity += incrementValue;
 
@@ -373,7 +373,7 @@ public class StatsHandler : MonoBehaviour
         availableStatPoints -= cost;
     }
 
-    public void AddWaterAffinity(int incrementValue, int cost)
+    public void AddWaterAffinity(int incrementValue, int cost = 0)
     {
         WaterAffinity += incrementValue;
 
@@ -382,7 +382,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddEarthAffinity(int incrementValue, int cost)
+    public void AddEarthAffinity(int incrementValue, int cost = 0)
     {
         EarthAffinity += incrementValue;
 
@@ -391,7 +391,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddHeatAffinity(int incrementValue, int cost)
+    public void AddHeatAffinity(int incrementValue, int cost = 0)
     {
         HeatAffinity += incrementValue;
 
@@ -405,7 +405,7 @@ public class StatsHandler : MonoBehaviour
         availableStatPoints -= cost;
     }
 
-    public void AddFireAffinity(int incrementValue, int cost)
+    public void AddFireAffinity(int incrementValue, int cost = 0)
     {
         FireAffinity += incrementValue;
 
@@ -414,7 +414,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddAirAffinity(int incrementValue, int cost)
+    public void AddAirAffinity(int incrementValue, int cost = 0)
     {
         AirAffinity += incrementValue;
 
@@ -423,7 +423,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddElectricityAffinity(int incrementValue, int cost)
+    public void AddElectricityAffinity(int incrementValue, int cost = 0)
     {
         ElectricityAffinity += incrementValue;
 
@@ -432,7 +432,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddLightAffinity(int incrementValue, int cost)
+    public void AddLightAffinity(int incrementValue, int cost = 0)
     {
         LightAffinity += incrementValue;
 
@@ -446,7 +446,7 @@ public class StatsHandler : MonoBehaviour
         availableStatPoints -= cost;
     }
 
-    public void AddRadiationAffinity(int incrementValue, int cost)
+    public void AddRadiationAffinity(int incrementValue, int cost = 0)
     {
         RadiationAffinity += incrementValue;
 
@@ -457,12 +457,12 @@ public class StatsHandler : MonoBehaviour
         availableStatPoints -= cost;
     }
 
-    public void AddPsychicAffinity(int incrementValue, int cost)
+    public void AddPsychicAffinity(int incrementValue, int cost = 0)
     {
         PsychicAffinity += incrementValue;
         availableStatPoints -= cost;
     }
-    public void AddFungiAffinity(int incrementValue, int cost)
+    public void AddFungiAffinity(int incrementValue, int cost = 0)
     {
         FungiAffinity += incrementValue;
 
@@ -475,7 +475,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddPlantAffinity(int incrementValue, int cost)
+    public void AddPlantAffinity(int incrementValue, int cost = 0)
     {
         PlantAffinity += incrementValue;
 
@@ -489,7 +489,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddPoisonAffinity(int incrementValue, int cost)
+    public void AddPoisonAffinity(int incrementValue, int cost = 0)
     {
         PoisonAffinity += incrementValue;
 
@@ -502,7 +502,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddAcidAffinity(int incrementValue, int cost)
+    public void AddAcidAffinity(int incrementValue, int cost = 0)
     {
         AcidAffinity += incrementValue;
 
@@ -515,7 +515,7 @@ public class StatsHandler : MonoBehaviour
         availableStatPoints -= cost;
     }
 
-    public void AddBacteriaAffinity(int incrementValue, int cost)
+    public void AddBacteriaAffinity(int incrementValue, int cost = 0)
     {
         BacteriaAffinity += incrementValue;
 
@@ -527,7 +527,7 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddVirusAffinity(int incrementValue, int cost)
+    public void AddVirusAffinity(int incrementValue, int cost = 0)
     {
         VirusAffinity += incrementValue;
         decimal splashIncrement = incrementValue / 2;
@@ -538,17 +538,17 @@ public class StatsHandler : MonoBehaviour
 
         availableStatPoints -= cost;
     }
-    public void AddBludgeoningResist(int incrementValue, int cost)
+    public void AddBludgeoningResist(int incrementValue, int cost = 0)
     {
         BludgeoningResist += incrementValue;
         availableStatPoints -= cost;
     }
-    public void AddSlashingResist(int incrementValue, int cost)
+    public void AddSlashingResist(int incrementValue, int cost = 0)
     {
         SlashingResist += incrementValue;
         availableStatPoints -= cost;
     }
-    public void AddPiercingResist(int incrementValue, int cost)
+    public void AddPiercingResist(int incrementValue, int cost = 0)
     {
         PiercingResist += incrementValue;
         availableStatPoints -= cost;
@@ -673,107 +673,175 @@ public class StatsHandler : MonoBehaviour
         return gameObject;
 
     }
+    private void AlterStats(int scaleFactor, Combatants combatantType, Difficulty difficultyLevel)
+    {
+        MaxHealth = UnityEngine.Random.Range(1, 10) * scaleFactor;
+        MaxMana = UnityEngine.Random.Range(1, 10) * scaleFactor;
+        MaxStamina = UnityEngine.Random.Range(1, 10) * scaleFactor;
+        initiative = scaleFactor;
+        HealthRegen = scaleFactor;
+        ManaRegen = scaleFactor;
+        StaminaRegen = scaleFactor;
+        characterLevel = scaleFactor;
+        knownAbilities = abilityLibrary.GetAbilities(scaleFactor);
+    }
+
+    private Elements GetRandomCreatureElement()
+    {
+        Array elements = Enum.GetValues(typeof(Elements));
+        System.Random random = new System.Random();
+        Elements randomElement = (Elements)elements.GetValue(random.Next(elements.Length));
+        return randomElement;
+    }
+    private string GetElementRelatedName(Elements element, Difficulty difficultyLevel)
+    {
+        //returns a random adjective concatenated to a random name
+        Dictionary<Elements, string[]> elementDict = Vocabulary.MakeElementAdjectiveDict();
+        string elementAdjective = elementDict[element][UnityEngine.Random.Range(0, elementDict[element].Length)];
+        string elementName = "";
+        switch (difficultyLevel)
+        {
+            case Difficulty.Easy:
+                elementName = Vocabulary.GetRandomlowLevelVillainousCreatures();
+                break;
+            case Difficulty.Medium:
+                elementName = Vocabulary.GetRandomlowLevelVillainousCreatures();
+                break;
+            case Difficulty.Hard:
+                elementName = Vocabulary.GetRandomMidLevelVillainousCreatures();
+                break;
+            case Difficulty.Brutal:
+                elementName = Vocabulary.GetRandomHighLevelVillainousCreatures();
+                break;
+            case Difficulty.Nightmare:
+                elementName = Vocabulary.GetRandomHighLevelVillainousCreatures();
+                break;
+            default:
+                elementName = Vocabulary.GetRandomlowLevelVillainousCreatures();
+                break;
+        }
+
+        string creatureName = $"{elementAdjective} {elementName}";
+        return creatureName;
+    }
+    private void SetCreatureAffinities(Elements element, Difficulty difficultyLevel)
+    {
+        KDebug.SeekBug($"setting creature affinities for {element}");
+        int added = 0;
+        switch (element)
+        {
+            case Elements.None:
+                BludgeoningResist = 5 * (int)difficultyLevel;
+                PiercingResist = 5 * (int)difficultyLevel;
+                SlashingResist = 5 * (int)difficultyLevel;
+                KDebug.SeekBug($"setting creature affinities for {element}. BludgeoningResist = {BludgeoningResist} PiercingResist = {PiercingResist} SlashingResist = {SlashingResist}");
+                break;
+            case Elements.Cold:
+                while (added < (int)difficultyLevel)
+                {
+                    AddColdAffinity(5);
+                }
+                ColdAffinity = 10 * (int)difficultyLevel;
+                KDebug.SeekBug($"setting creature affinities for {element}. ColdResist = {ColdAffinity}");
+
+                break;
+            case Elements.Water:
+                WaterAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Earth:
+                EarthAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Heat:
+                HeatAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Fire:
+                FireAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Air:
+                AirAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Electricity:
+                ElectricityAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Light:
+                LightAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Psychic:
+                PsychicAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Fungi:
+                FungiAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Plant:
+                PlantAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Poison:
+                PoisonAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Acid:
+                AcidAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Radiation:
+                RadiationAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Bacteria:
+                BacteriaAffinity = 10 * (int)difficultyLevel;
+                break;
+            case Elements.Virus:
+                VirusAffinity = 10 * (int)difficultyLevel;
+                break;
+        }
+    }
+
+
     public GameObject MakeCreature(Difficulty difficultyLevel, Combatants combatantType)
     {
         Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel}");
-
+        difficulty = difficultyLevel;
         switch (combatantType)
         {
-            case (Combatants.Enemy):
+            case Combatants.Enemy:
                 charType = Combatants.Enemy;
-                characterName = Vocabulary.GetRandomlowLevelVillainousCreatures();
+                Elements element = GetRandomCreatureElement();
+                characterName = GetElementRelatedName(element, difficultyLevel);
+                SetCreatureAffinities(Elements.Cold, difficultyLevel);
                 break;
-            case (Combatants.Companion):
+            case Combatants.Companion:
                 charType = Combatants.Companion;
                 characterName = "Companion";
                 break;
-            case (Combatants.Summon):
+            case Combatants.Summon:
                 charType = Combatants.Summon;
                 characterName = "Summon";
                 break;
         }
 
-
         switch (difficultyLevel)
         {
             case Difficulty.Easy:
 
-                difficulty = Difficulty.Easy;
-                Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficult {difficulty}");
-
-                MaxHealth = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
-                MaxMana = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
-                MaxStamina = UnityEngine.Random.Range(1, 10) * easyScaleFactor;
-                initiative = easyScaleFactor;
-                HealthRegen = easyScaleFactor;
-                ManaRegen = easyScaleFactor;
-                StaminaRegen = easyScaleFactor;
-                characterLevel = easyScaleFactor;
-                knownAbilities = abilityLibrary.GetAbilities(easyScaleFactor);
-                Debug.Log($"{knownAbilities}");
-
+                AlterStats(easyScaleFactor, combatantType, difficultyLevel);
                 break;
 
             case Difficulty.Medium:
-                difficulty = Difficulty.Medium;
-                MaxHealth = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
-                MaxMana = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
-                MaxStamina = UnityEngine.Random.Range(1, 10) * mediumScaleFactor;
-                initiative = mediumScaleFactor;
-                HealthRegen = mediumScaleFactor;
-                ManaRegen = mediumScaleFactor;
-                StaminaRegen = mediumScaleFactor;
-                characterLevel = mediumScaleFactor;
-                knownAbilities = abilityLibrary.GetAbilities(mediumScaleFactor);
+                AlterStats(mediumScaleFactor, combatantType, difficultyLevel);
+
 
                 break;
             case Difficulty.Hard:
-                difficulty = Difficulty.Hard;
-                MaxHealth = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
-                MaxMana = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
-                MaxStamina = UnityEngine.Random.Range(1, 10) * hardScaleFactor;
-                initiative = hardScaleFactor;
-                HealthRegen = hardScaleFactor;
-                ManaRegen = hardScaleFactor;
-                StaminaRegen = hardScaleFactor;
-                characterLevel = hardScaleFactor;
-                knownAbilities = abilityLibrary.GetAbilities(hardScaleFactor);
-                Debug.Log($"{knownAbilities.ToString()}");
+                AlterStats(hardScaleFactor, combatantType, difficultyLevel);
                 break;
 
             case Difficulty.Brutal:
-                difficulty = Difficulty.Brutal;
-                MaxHealth = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
-                MaxMana = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
-                MaxStamina = UnityEngine.Random.Range(1, 10) * brutalScaleFactor;
-                initiative = brutalScaleFactor;
-                HealthRegen = brutalScaleFactor;
-                ManaRegen = brutalScaleFactor;
-                StaminaRegen = brutalScaleFactor;
-                characterLevel = brutalScaleFactor;
-                knownAbilities = abilityLibrary.GetAbilities(brutalScaleFactor);
+                AlterStats(brutalScaleFactor, combatantType, difficultyLevel);
                 break;
 
             case Difficulty.Nightmare:
-                difficulty = Difficulty.Nightmare;
-                Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel} into difficulty {difficulty}");
-
-                MaxHealth = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
-                MaxMana = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
-                MaxStamina = UnityEngine.Random.Range(1, 10) * nightmareScaleFactor;
-                initiative = nightmareScaleFactor;
-                HealthRegen = nightmareScaleFactor;
-                ManaRegen = nightmareScaleFactor;
-                StaminaRegen = nightmareScaleFactor;
-                characterLevel = nightmareScaleFactor;
-                knownAbilities = abilityLibrary.GetAbilities(nightmareScaleFactor);
+                AlterStats(nightmareScaleFactor, combatantType, difficultyLevel);
                 break;
 
         }
-        currentHealth = MaxHealth;
-        currentStamina = MaxStamina;
-        currentMana = MaxMana;
-        Debug.Log($"Current Health at time of creation = {currentHealth}");
+        RestoreResources();
         return gameObject;
     }
     #endregion
