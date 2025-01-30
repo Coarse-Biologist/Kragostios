@@ -25,11 +25,6 @@ public class Ability_SO : ScriptableObject
     public List<Buffs> BuffEffects;
     public List<Debuffs> DebuffEffects;
 
-    public string GetAbilityInfo()
-    {
-        string abilityInfo = " ";
-        return abilityInfo;
-    }
     public string GetBuffListString()
     {
         string buffListString = "";

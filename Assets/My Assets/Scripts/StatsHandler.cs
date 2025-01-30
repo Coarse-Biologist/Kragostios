@@ -247,19 +247,26 @@ public class StatsHandler : MonoBehaviour
             Dictionary<Elements, int> ElementAffinityDict = GetElementAffinityDict();
             relevantAffinity = ElementAffinityDict[element];
         }
+
         if (physicalType != PhysicalDamage.None)
         {
+            KDebug.SeekBug($"{value} = value. element type =  {physicalType}");
             Dictionary<PhysicalDamage, int> physicalResistDict = GetPhysicalResistDict();
             relevantAffinity = physicalResistDict[physicalType];
         }
+
         if (relevantAffinity > 100) //if one should heal from an attack due to extreme resistence
         {
             value = (int)Math.Abs(Math.Round((value * ((relevantAffinity - 100) / 100.0)))); //calculate how much resistance above 100% they have and multiply the percentage by the value of the attack
         }
+
         if (relevantAffinity == 0) return value;
+
         if (relevantAffinity <= 100 && relevantAffinity > 0)
         {
+            KDebug.SeekBug($"value prior to adjustment = {value}");
             value = (int)Math.Round(value * 1.0 - (value * (relevantAffinity / 100)));
+            KDebug.SeekBug($"value after adjustment = {value}");
         }
 
         return value;
@@ -585,10 +592,10 @@ public class StatsHandler : MonoBehaviour
 
 
     public void ChangeResource(ResourceTypes resource, int value, Elements element = Elements.None, PhysicalDamage physicalType = PhysicalDamage.None)
-    //                                        health    5       fire    
+
     {
         value = AdjustValue(value, element, physicalType); //adjusts damage based on resistances
-        KDebug.SeekBug($"value after adjustment = {value}");
+
         switch (resource)
         {
             case ResourceTypes.Health:
@@ -605,8 +612,6 @@ public class StatsHandler : MonoBehaviour
                 break;
         }
     }
-
-
     private void GiveOverHealth(int overHealthAmount)
     {
         MaxHealth += overHealthAmount;
@@ -676,8 +681,7 @@ public class StatsHandler : MonoBehaviour
         {
             case (Combatants.Enemy):
                 charType = Combatants.Enemy;
-                int RandomNumber = UnityEngine.Random.Range(300, 1000);
-                characterName = "Enemy" + $"{RandomNumber}";
+                characterName = Vocabulary.GetRandomlowLevelVillainousCreatures();
                 break;
             case (Combatants.Companion):
                 charType = Combatants.Companion;

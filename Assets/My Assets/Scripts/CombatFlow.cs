@@ -188,11 +188,25 @@ public class CombatFlow : MonoBehaviour
         foreach (GameObject target in targets)
         {
             StatsHandler stats = target.GetComponent<StatsHandler>();
-            stats.ChangeResource(ResourceTypes.Health, -selectedAbility.DamageValue, selectedAbility.ElementType, selectedAbility.PhysicalType);
-            KDebug.SeekBug($"{selectedAbility.DamageValue} = damage value. damage type =  {selectedAbility.ElementType}");
             StatsHandler casterStats = caster.GetComponent<StatsHandler>();
-            casterStats.ChangeResource(selectedAbility.Resource, -selectedAbility.AbilityCost);
             string narrationText = "";
+
+            // change  resource costs based on ability type
+            if (selectedAbility.Type == AbilityCategories.Heal || selectedAbility.Type == AbilityCategories.BuffHeal)
+            {
+                stats.ChangeResource(ResourceTypes.Health, selectedAbility.HealValue, selectedAbility.ElementType, selectedAbility.PhysicalType);
+            }
+            if (selectedAbility.Type == AbilityCategories.Attack || selectedAbility.Type == AbilityCategories.DebuffAttack)
+            {
+                stats.ChangeResource(ResourceTypes.Health, -selectedAbility.DamageValue, selectedAbility.ElementType, selectedAbility.PhysicalType);
+            }
+            KDebug.SeekBug($"{selectedAbility.DamageValue} = damage value. damage type =  {selectedAbility.ElementType}");
+
+            //caster uses the cost of the ability casted
+            casterStats.ChangeResource(selectedAbility.Resource, -selectedAbility.AbilityCost);
+            casterStats.SpendActionPoints();
+
+            //decide narration type based on ability type
             switch (selectedAbility.Type)
             {
                 case (AbilityCategories.Heal):
@@ -207,25 +221,21 @@ public class CombatFlow : MonoBehaviour
                     break;
             }
 
-            //string narrationText = $"{stats.characterName} recieved {selectedAbility.DamageValue} damage from {selectedAbility.AbilityName}"; 
             RequestNarration(narrationText);
-            if (stats.currentHealth <= 0) // From Hydn!!!
+            if (stats.currentHealth <= 0) // if target dies
             {
                 KDebug.SeekBug($"{target} died");
                 HandleDeath(target);
             }
             else KDebug.SeekBug($"{stats.currentHealth} = targets current health");
         }
-
-        //RequestNarration($"{selectedAbility.AbilityName} ability effects have been handled");
-        caster.GetComponent<StatsHandler>().SpendActionPoints();
         RequestContinueButton();
     }
 
     public void AddSelectedTarget(GameObject target)
     {
         selectedTargets.Add(target);
-        if (selectedTargets.Count == targetsExpected)
+        if (selectedTargets.Count == targetsExpected) // if all targets have been selected
         {
             HandleAbilityEffect(selectedTargets, selectedAbility);
         }
@@ -234,12 +244,13 @@ public class CombatFlow : MonoBehaviour
 
     public void NextTurn()
     {
+        // if the caster has action points left, they can take another turn
         if (caster.GetComponent<StatsHandler>().currentActionPoints > 0)
         {
             selectedTargets = new List<GameObject>();
             Invoke("CombatCycle", 1f);
         }
-        else
+        else // if the caster has no action points left, the next combatant takes their turn
         {
             caster.GetComponent<StatsHandler>().RegenActionPoints();
             selectedTargets = new List<GameObject>();
@@ -254,7 +265,6 @@ public class CombatFlow : MonoBehaviour
     #region // Event functions
     private void RequestNarration(string message)
     {
-        //KDebug.SeekBug("Narration request sent?");
         NarrationRequest?.Invoke(message);
     }
 
@@ -265,8 +275,6 @@ public class CombatFlow : MonoBehaviour
 
     private void RequestOptionButtons(List<Ability_SO> abilities)
     {
-        //KDebug.SeekBug("Ability Button request sent?");
-
         OptionButtonRequest?.Invoke(abilities);
     }
 
@@ -293,12 +301,12 @@ public class CombatFlow : MonoBehaviour
 
         foreach (GameObject combatant in combatants)
         {
+            //all combatants roll initiative
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
             int initiativeRoll = UnityEngine.Random.Range(0, 20) + stats.initiative;
-            //KDebug.SeekBug($"{uncookedList} = uncooked list");
             uncookedList.Add(combatant, initiativeRoll);
         }
-
+        //sorts the list of combatants by initiative roll
         sortedturnOrder = uncookedList.OrderByDescending(kvp => kvp.Value).ToList();
         return sortedturnOrder;
     }
@@ -310,8 +318,8 @@ public class CombatFlow : MonoBehaviour
     private void HandleDeath(GameObject deadCombatant)
     {
         KDebug.SeekBug($"{deadCombatant} will be removed from combat list, glaub");
-
         StatsHandler stats = deadCombatant.GetComponent<StatsHandler>();
+
         if (stats.charType == Combatants.Enemy)
         {
             CalculateXpandGold(deadCombatant);
@@ -336,13 +344,11 @@ public class CombatFlow : MonoBehaviour
                     int goldGained = ((int)stats.difficulty + 1) * UnityEngine.Random.Range(1, 10);   //multiply difficulty level x random value
                     rewardDict.TryAdd(Rewards.Gold, goldGained);
                     break;
-
                 case Rewards.Xp:
                     int XpGained = ((int)stats.difficulty + 1) * 10 * UnityEngine.Random.Range(1, 10);    //multiply difficulty level x random value
                     rewardDict.TryAdd(Rewards.Xp, XpGained);
                     break;
             }
-
         }
         //reward gold and Xp
         foreach (var kvp in sortedturnOrder)
@@ -362,13 +368,13 @@ public class CombatFlow : MonoBehaviour
 
     private void RemoveFromCombat(GameObject deadCombatant)
     {
-        KDebug.SeekBug($"{deadCombatant.GetComponent<StatsHandler>().characterName} will be removed from combat list. HP: {deadCombatant.GetComponent<StatsHandler>().currentHealth}");
         combatants.Remove(deadCombatant);
+        sortedturnOrder.RemoveAll(kvp => kvp.Key == deadCombatant);    // removes combatant from list 
         KDebug.SeekBug($"{combatants} = combatants list");
-        //var list = sortedturnOrder.ToList();                // converts IEnumerator to list
-        sortedturnOrder.RemoveAll(kvp => kvp.Key == deadCombatant);    // removes combatant from list  
-        //sortedturnOrder = list.AsEnumerable();     
+
         KDebug.SeekBug($"{sortedturnOrder} = sorted turnOrder.");
+        KDebug.SeekBug($"{deadCombatant.GetComponent<StatsHandler>().characterName} will be removed from combat list. HP: {deadCombatant.GetComponent<StatsHandler>().currentHealth}");
+
         // sets the list to be the new value of the sortedTurnOrder ienumerator
     }
 

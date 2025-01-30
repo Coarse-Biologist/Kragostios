@@ -108,9 +108,8 @@ public class PlayerOptions : MonoBehaviour
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
-            //KDebug.SeekBug($"{newButton} = new Button. button container = {buttonContainer}///");
             StatsHandler stats = combatant.GetComponent<StatsHandler>();
-            newButton.text = stats.characterName + stats.charType;
+            newButton.text = stats.characterName;
             buttonContainer_CO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OnTargetSelected(combatant));

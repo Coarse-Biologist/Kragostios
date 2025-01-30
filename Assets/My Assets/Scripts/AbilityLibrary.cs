@@ -11,6 +11,8 @@ public class AbilityLibrary : MonoBehaviour
     public Ability_SO Push;
     public Ability_SO ColdLight;
     public Ability_SO BrainDamage;
+    public Ability_SO LavaPortal;
+    public Ability_SO GlobalCooling;
 
     public Dictionary<Abilities, Ability_SO> abilityDict { private set; get; } = new Dictionary<Abilities, Ability_SO>();
 
@@ -23,10 +25,11 @@ public class AbilityLibrary : MonoBehaviour
         abilityDict.Add(Abilities.Push, Push);
         abilityDict.Add(Abilities.ColdLight, ColdLight);
         abilityDict.Add(Abilities.BrainDamage, BrainDamage);
-
-        Debug.Log($"{GetAbilityInfo(BrainDamage)}");
+        abilityDict.Add(Abilities.LavaPortal, LavaPortal);
+        abilityDict.Add(Abilities.GlobalCooling, GlobalCooling);
     }
 
+    // returns a list of abilities based on the creature difficulty
     public List<Ability_SO> GetAbilities(int creatureDifficulty)
     {
         List<Ability_SO> abilities = new List<Ability_SO>();
@@ -42,6 +45,8 @@ public class AbilityLibrary : MonoBehaviour
 
             }
         }
+
+        //adds melee by default if empty
         if (abilities.Count == 0)
         {
             abilities.Add(Melee);
@@ -53,8 +58,7 @@ public class AbilityLibrary : MonoBehaviour
     {
         string abilityInfo =
 
-        $"Ability Name: {ability.AbilityName}. Resource: {ability.Resource}. Resource: {ability.Resource}. Type: {ability.Type}. Cost: {ability.AbilityCost}.Heal Amount: {ability.HealValue}. Damage: {ability.DamageValue}.Effect duration: {ability.TurnDuration}. Number of targets: {ability.Targets}. Summons?: {ability.Summons}. Sypon percentage: {ability.SyphonPercentage}. Ability level: {ability.AbilityLevel}.";
-
+        $"Ability Name: {ability.AbilityName}. Resource: {ability.Resource}. Type: {ability.Type}. Cost: {ability.AbilityCost}.Heal Amount: {ability.HealValue}. Damage: {ability.DamageValue}.Effect duration: {ability.TurnDuration}. Number of targets: {ability.Targets}. Summons?: {ability.Summons}. Sypon percentage: {ability.SyphonPercentage}. Ability level: {ability.AbilityLevel}.";
 
         return abilityInfo;
     }

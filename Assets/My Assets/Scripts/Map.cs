@@ -7,8 +7,10 @@ using UnityEditor.Rendering;
 
 public class Map : MonoBehaviour
 {
+    #region // all map variables
+    #region // map density variables
     [SerializeField] private int mapSize = 4;
-    [SerializeField] private int hostileDensity; 
+    [SerializeField] private int hostileDensity;
     [SerializeField] private int traderDensity;
     [SerializeField] private int cityDensity;
     [SerializeField] private int villageDensity;
@@ -17,22 +19,29 @@ public class Map : MonoBehaviour
     [SerializeField] private int impassableTerrainDensity;
     [SerializeField] private int healerDensity;
     [SerializeField] private int barrenDensity;
+
+    #endregion
+
+    #region // other map variables
     private Vector2 mapDimensions;
+    public Dictionary<LocationType, int> LocationDensityDict = new Dictionary<LocationType, int>();
+
     public Dictionary<Directions, Directions> oppositeDirections = new Dictionary<Directions, Directions>
     {
         {Directions.North, Directions.South},
         {Directions.East, Directions.West},
-        {Directions.South,Directions.North}, 
+        {Directions.South,Directions.North},
         {Directions.West, Directions.East}
     };
+    #endregion
 
     [SerializeField] private Dictionary<Vector2, LocationType> mapDict;
     private Dictionary<Vector2, Tuple<Kingdoms, Biomes>> map;
-    public List<Directions> directions {private set; get;} = new List<Directions>
+    public List<Directions> directions { private set; get; } = new List<Directions>
     {
         Directions.North,
-        Directions.East, 
-        Directions.South, 
+        Directions.East,
+        Directions.South,
         Directions.West
     };
 
@@ -43,11 +52,14 @@ public class Map : MonoBehaviour
         new Vector2(1, 0),  // Right
         new Vector2(-1, 0)  // Left
     };
+    #endregion
 
     private void Awake()
     {
         mapDict = MakeMapDict();
     }
+
+    // makes map of size mapSize squared and assigns random location types to each integer vector location
     private Dictionary<Vector2, LocationType> MakeMapDict()
     {
         mapDict = new Dictionary<Vector2, LocationType>();
@@ -55,86 +67,60 @@ public class Map : MonoBehaviour
         for (int x = -mapSize * mapSize; x < mapSize; x++)
         {
             for (int y = -mapSize * mapSize; y < mapSize; y++)
-            { 
+            {
                 LocationType locationType = GetRandomLocation();
-                mapDict.Add(new Vector2(x , y), locationType);
+                mapDict.Add(new Vector2(x, y), locationType);
             }
         }
-        mapDimensions = new Vector2 (mapSize, mapSize);
+        mapDimensions = new Vector2(mapSize, mapSize);
         return mapDict;
     }
-
-    
-    
+    private Dictionary<LocationType, int> MakeLocationDensityDict()
+    {
+        LocationDensityDict = new Dictionary<LocationType, int>
+        {
+        {LocationType.Hostile, hostileDensity},
+        {LocationType.Trader, traderDensity},
+        {LocationType.City, cityDensity},
+        {LocationType.Village, villageDensity},
+        {LocationType.HiddenTreasure, treasureDensity},
+        {LocationType.Campsite, campsiteDensity},
+        {LocationType.ImpassableTerrain, impassableTerrainDensity},
+        {LocationType.Healer, healerDensity},
+        {LocationType.Barren, barrenDensity}
+    };
+        return LocationDensityDict;
+    }
+    // returns a random location based from possible list of locations
     private LocationType GetRandomLocation()
-    {   
+    {
         List<LocationType> locationChanceList = GetChanceList();
         System.Random random = new System.Random();
         int randomIndex = random.Next(locationChanceList.Count);
         LocationType randomLocationType = locationChanceList[randomIndex];
         return randomLocationType;
-        
+
     }
 
     private List<LocationType> GetChanceList()
     {
         List<LocationType> locationChanceList = new List<LocationType>();
 
-        int numberAdded = 0;
-        while(numberAdded < hostileDensity)
+        LocationDensityDict = MakeLocationDensityDict();
+        foreach (KeyValuePair<LocationType, int> kvp in LocationDensityDict)
         {
-            locationChanceList.Add(LocationType.Hostile);
-            numberAdded ++;
-        }
-        numberAdded = 0;
-        while(numberAdded < traderDensity)
-        {
-            locationChanceList.Add(LocationType.Trader);
-            numberAdded ++;
-        }
-        numberAdded = 0;
-        while(numberAdded < cityDensity)
-        {
-            locationChanceList.Add(LocationType.City);
-            numberAdded ++;
-        }
-        numberAdded = 0;
-        while(numberAdded < villageDensity)
-        {
-            locationChanceList.Add(LocationType.Village);
-            numberAdded ++;
-        }
-        numberAdded = 0;
-        while(numberAdded < campsiteDensity)
-        {
-            locationChanceList.Add(LocationType.Campsite);
-            numberAdded ++;
-        }
-        numberAdded = 0;
-        while(numberAdded < impassableTerrainDensity)
-        {
-            locationChanceList.Add(LocationType.ImpassableTerrain);
-            numberAdded ++;
-        }
-        numberAdded = 0;
-        while(numberAdded < healerDensity)
-        {
-            locationChanceList.Add(LocationType.Healer);
-            numberAdded ++;
-        }
-        numberAdded = 0;
-        while(numberAdded < barrenDensity)
-        {
-            locationChanceList.Add(LocationType.Barren);
-            numberAdded ++;
-        }
-        numberAdded = 0;
-        while(numberAdded < treasureDensity)
-        {
-            locationChanceList.Add(LocationType.HiddenTreasure);
-            numberAdded ++;
+            int numberAdded = 0;
+            while (numberAdded < LocationDensityDict[kvp.Key])
+            {
+                LocationType locationType = kvp.Key;
+                int density = kvp.Value;
+                locationChanceList.Add(locationType);
+                numberAdded++;
+            }
+
         }
         return locationChanceList;
+
     }
 
     public LocationType GetLocationType(Vector2 playerlocation)
@@ -156,7 +142,7 @@ public class Map : MonoBehaviour
     private Biomes GetRandomBiome()
     {
         List<Biomes> biomeList = new List<Biomes>{Biomes.Jungle, Biomes.Swamp, Biomes.RollingHills,
-         Biomes.GrassyFields, Biomes.Mountains, Biomes.Tundra, 
+         Biomes.GrassyFields, Biomes.Mountains, Biomes.Tundra,
          Biomes.Glaciers, Biomes.EverGreenForest, Biomes.PerenialForest, Biomes.Desert};
 
         int biomeNum = biomeList.Count;
@@ -167,11 +153,11 @@ public class Map : MonoBehaviour
 
     private Kingdoms GetRandomKingdom()
     {
-      List<Kingdoms> kingdomList = new List<Kingdoms>{Kingdoms.Celestia, Kingdoms.Grovchii, Kingdoms.Oshiania, Kingdoms.Bioleb, Kingdoms.SessPool};
+        List<Kingdoms> kingdomList = new List<Kingdoms> { Kingdoms.Celestia, Kingdoms.Grovchii, Kingdoms.Oshiania, Kingdoms.Bioleb, Kingdoms.SessPool };
         System.Random random = new System.Random();
         int randomKingdomIndex = random.Next(kingdomList.Count);
         Kingdoms randomKingdom = kingdomList[randomKingdomIndex];
-        return randomKingdom;  
+        return randomKingdom;
     }
 
     private void GiveMapDomaines(Dictionary<Vector2, LocationType> mapDict, int domainNum)
@@ -187,10 +173,10 @@ public class Map : MonoBehaviour
             Biomes randomBiome = GetRandomBiome();
             Kingdoms randomKingdom = GetRandomKingdom();
             startCoordsDict.Add(startPoint, new Tuple<Kingdoms, Biomes>(randomKingdom, randomBiome));
-            startPointsSet ++;
+            startPointsSet++;
         }
 
-        foreach(KeyValuePair<Vector2, Tuple<Kingdoms, Biomes>> startPointTuple in startCoordsDict)
+        foreach (KeyValuePair<Vector2, Tuple<Kingdoms, Biomes>> startPointTuple in startCoordsDict)
         {
             //BranchInAllDirections(startPoint, domainType, domainNum);
         }
@@ -234,8 +220,8 @@ public class Map : MonoBehaviour
     //    {
     //        Vector2 nextSpot = new Vector2(startingPoint.x +1, startingPoint.y);
     //    }
-//
-   //
+    //
+    //
 
 
 }
