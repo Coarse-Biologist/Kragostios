@@ -1,4 +1,4 @@
-I am writing logic and making simple UI with unity tool kit for a turn based text adventure. I have been writing in / learning C# for three or so months and my weaknessses will be clear to others.
+I am writing logic and making simple UI with unity tool kit for a turn based text adventure. I have been writing in / learning C# for three or so months.
 
 The game so far has logic for character creation, choosing directions to travel, deciding the result of arriving at different locations and a combat loop which is triggered if a destination is marked "hostile."
 //Scripts + description//
