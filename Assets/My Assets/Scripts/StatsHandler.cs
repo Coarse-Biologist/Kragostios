@@ -50,7 +50,7 @@ public class StatsHandler : MonoBehaviour
     //public int LavaAffinity {private set; get;} = 0;
     public int FireAffinity { private set; get; } = 0;
     public int AirAffinity { private set; get; } = 0;
-    public int ElectrictyAffinity { private set; get; } = 0;
+    public int ElectricityAffinity { private set; get; } = 0;
     public int LightAffinity { private set; get; } = 0;
     public int PsychicAffinity { private set; get; } = 0;
     public int FungiAffinity { private set; get; } = 0;
@@ -171,7 +171,7 @@ public class StatsHandler : MonoBehaviour
             //{ "Lava Affinity", LavaAffinity },
             { "Fire Affinity", FireAffinity },
             { "Air Affinity", AirAffinity },
-            { "Electricity Affinity", ElectrictyAffinity },
+            { "Electricity Affinity", ElectricityAffinity },
             { "Light Affinity", LightAffinity },
             { "Psychic Affinity", PsychicAffinity },
             { "Fungi Affinity", FungiAffinity },
@@ -196,7 +196,7 @@ public class StatsHandler : MonoBehaviour
             { Elements.Heat, HeatAffinity },
             { Elements.Fire, FireAffinity },
             { Elements.Air, AirAffinity },
-            { Elements.Electricty, ElectrictyAffinity },
+            { Elements.Electricity, ElectricityAffinity },
             { Elements.Light, LightAffinity },
             { Elements.Psychic, PsychicAffinity },
             { Elements.Fungi, FungiAffinity },
@@ -419,13 +419,13 @@ public class StatsHandler : MonoBehaviour
         AirAffinity += incrementValue;
 
         decimal splashIncrement = incrementValue / 2;
-        ElectrictyAffinity += (int)Math.Round(splashIncrement, 2);
+        ElectricityAffinity += (int)Math.Round(splashIncrement, 2);
 
         availableStatPoints -= cost;
     }
     public void AddElectricityAffinity(int incrementValue, int cost)
     {
-        ElectrictyAffinity += incrementValue;
+        ElectricityAffinity += incrementValue;
 
         decimal splashIncrement = incrementValue / 2;
         AirAffinity += (int)Math.Round(splashIncrement, 2);
@@ -644,7 +644,7 @@ public class StatsHandler : MonoBehaviour
         //LavaAffinity = 0;
         FireAffinity = 0;
         AirAffinity = 0;
-        ElectrictyAffinity = 0;
+        ElectricityAffinity = 0;
         LightAffinity = 0;
         PsychicAffinity = 0;
         FungiAffinity = 0;

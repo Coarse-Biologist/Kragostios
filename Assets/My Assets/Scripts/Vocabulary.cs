@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 
 using UnityEngine;
+using KragostiosAllEnums;
 
 public class Vocabulary
 {
+    Dictionary<Elements, string[]> elementAdjectivesDict;
     public static string GetRandomVillainousAdjective()
     {
         string[] villainousAdjectives = {
@@ -62,4 +64,45 @@ public class Vocabulary
         return strangeCreatures[Random.Range(0, strangeCreatures.Length)];
 
     }
+
+    public void MakeElementAdjectiveDict()
+    {
+        elementAdjectivesDict = new Dictionary<Elements, string[]>
+{
+    { Elements.None, new string[] { "Unaligned", "Void", "Neutral", "Shapeless", "Formless", "Hollow", "Absent", "Undefined", "Fading", "Nameless" } },
+
+    { Elements.Cold, new string[] { "Frigid", "Glacial", "Icy", "Brittle", "Frozen", "Chilling", "Frostbitten", "Numbing", "Hoarfrosted", "Bleak" } },
+
+    { Elements.Water, new string[] { "Fluid", "Turbulent", "Tidal", "Abyssal", "Drenched", "Briny", "Dewy", "Surging", "Flowing", "Undulating" } },
+
+    { Elements.Earth, new string[] { "Stony", "Gravelly", "Earthen", "Gritty", "Unyielding", "Rooted", "Sedimentary", "Craggy", "Tremorous", "Basaltic" } },
+
+    { Elements.Fire, new string[] { "Blazing", "Scorching", "Searing", "Charred", "Fiery", "Infernal", "Smoldering", "Combustive", "Ashen", "Embered" } },
+
+    { Elements.Heat, new string[] { "Sweltering", "Scalding", "Suffocating", "Broiling", "Torrid", "Sizzling", "Oppressive", "Radiant", "Fiery", "Stifling" } },
+
+    { Elements.Air, new string[] { "Ethereal", "Whispering", "Gusting", "Gale-born", "Cyclonic", "Vaporous", "Unbound", "Breathless", "Soaring", "Aerial" } },
+
+    { Elements.Electricity, new string[] { "Crackling", "Arcing", "Jolting", "Static", "Charged", "Voltaic", "Sparking", "Electrified", "Shocking", "Luminous" } },
+
+    { Elements.Poison, new string[] { "Venomous", "Toxic", "Noxious", "Lethal", "Corrupting", "Foul", "Pestilent", "Viral", "Insidious", "Paralyzing" } },
+
+    { Elements.Acid, new string[] { "Caustic", "Corrosive", "Concentrated", "Erosive", "Acrid", "Searing", "Pungent", "Oozing", "Dissolving", "Scalding" } },
+
+    { Elements.Bacteria, new string[] { "Infested", "Septic", "Contagious", "Microbial", "Pernicious", "Pathogenic", "Fetid", "Swarming", "Invasive", "Putrid" } },
+
+    { Elements.Fungi, new string[] { "Moldering", "Spore-laden", "Mycelial", "Creeping", "Gnarled", "Pustular", "Blooming", "Infesting", "Lurking", "Decomposing" } },
+
+    { Elements.Plant, new string[] { "Verdant", "Overgrown", "Rooted", "Thorned", "Vine-twined", "Briary", "Fungal", "Blooming", "Leafy", "Entangling" } },
+
+    { Elements.Virus, new string[] { "Mutating", "Infectious", "Degrading", "Insidious", "Replicating", "Writhing", "Diseased", "Corruptive", "Malevolent", "Unseen" } },
+
+    { Elements.Radiation, new string[] { "Irradiated", "Glowing", "Lethal", "Corrupting", "Mutagenic", "Pulsing", "Invisible", "Entropic", "Atomic", "Unstable" } },
+
+    { Elements.Light, new string[] { "Luminous", "Dazzling", "Blinding", "Radiant", "Hallowed", "Piercing", "Resplendent", "Burning", "Brilliant", "Eclipsing" } },
+
+    { Elements.Psychic, new string[] { "Mind-warping", "Hypnotic", "Eldritch", "Telepathic", "Distorting", "Unfathomable", "Dreamborne", "Echoing", "Illusive", "Reverberating" } }
+};
+    }
+
 }

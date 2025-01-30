@@ -49,7 +49,7 @@ namespace KragostiosAllEnums
         //Lava,
         Heat,
         Air,
-        Electricty,
+        Electricity,
         Poison,
         Acid,
         Bacteria,
