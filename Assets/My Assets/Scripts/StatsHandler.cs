@@ -8,6 +8,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using Mono.Cecil.Cil;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Unity.VisualScripting;
 
 
 public class StatsHandler : MonoBehaviour
@@ -731,64 +732,128 @@ public class StatsHandler : MonoBehaviour
         switch (element)
         {
             case Elements.None:
-                BludgeoningResist = 5 * (int)difficultyLevel;
-                PiercingResist = 5 * (int)difficultyLevel;
-                SlashingResist = 5 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 3))
+                {
+                    AddBludgeoningResist(5);
+                    AddPiercingResist(5);
+                    AddSlashingResist(5);
+                    added++;
+                }
                 KDebug.SeekBug($"setting creature affinities for {element}. BludgeoningResist = {BludgeoningResist} PiercingResist = {PiercingResist} SlashingResist = {SlashingResist}");
                 break;
             case Elements.Cold:
-                while (added < (int)difficultyLevel)
+                while (added < (((int)difficultyLevel + 1) * 6))
                 {
                     AddColdAffinity(5);
+                    added++;
                 }
-                ColdAffinity = 10 * (int)difficultyLevel;
                 KDebug.SeekBug($"setting creature affinities for {element}. ColdResist = {ColdAffinity}");
 
                 break;
             case Elements.Water:
-                WaterAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddWaterAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Earth:
-                EarthAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddEarthAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Heat:
-                HeatAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddHeatAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Fire:
-                FireAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddFireAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Air:
-                AirAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddAirAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Electricity:
-                ElectricityAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddElectricityAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Light:
-                LightAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddLightAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Psychic:
-                PsychicAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddPsychicAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Fungi:
-                FungiAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddFungiAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Plant:
-                PlantAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddPlantAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Poison:
-                PoisonAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddPoisonAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Acid:
-                AcidAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddAcidAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Radiation:
-                RadiationAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddRadiationAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Bacteria:
-                BacteriaAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddBacteriaAffinity(5);
+                    added++;
+                }
                 break;
             case Elements.Virus:
-                VirusAffinity = 10 * (int)difficultyLevel;
+                while (added < (((int)difficultyLevel + 1) * 6))
+                {
+                    AddVirusAffinity(5);
+                    added++;
+                }
                 break;
         }
     }
@@ -804,7 +869,7 @@ public class StatsHandler : MonoBehaviour
                 charType = Combatants.Enemy;
                 Elements element = GetRandomCreatureElement();
                 characterName = GetElementRelatedName(element, difficultyLevel);
-                SetCreatureAffinities(Elements.Cold, difficultyLevel);
+                SetCreatureAffinities(element, difficultyLevel);
                 break;
             case Combatants.Companion:
                 charType = Combatants.Companion;
