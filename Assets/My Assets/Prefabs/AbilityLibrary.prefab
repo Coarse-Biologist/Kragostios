@@ -51,3 +51,5 @@ MonoBehaviour:
   Push: {fileID: 11400000, guid: 4760590002f89ff499ee971313f0ebb0, type: 2}
   ColdLight: {fileID: 11400000, guid: 66cda9e7a8e4c294484bdf68918006ce, type: 2}
   BrainDamage: {fileID: 11400000, guid: ae6b590521127bb4e869e30f3ae6c4ca, type: 2}
+  LavaPortal: {fileID: 11400000, guid: 46165bd79c3d1ee4ba7da6854f2e041a, type: 2}
+  GlobalCooling: {fileID: 11400000, guid: ce04edea0488e7c4bbc191eded33daa8, type: 2}

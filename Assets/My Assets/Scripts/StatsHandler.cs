@@ -668,7 +668,7 @@ public class StatsHandler : MonoBehaviour
         rewards = new List<Rewards>();
         characterGold = 0;
         knownAbilities = new List<Ability_SO>{
-    abilityLibrary.Melee, abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch, abilityLibrary.ColdLight, abilityLibrary.BrainDamage
+    abilityLibrary.Melee, abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch, abilityLibrary.ColdLight, abilityLibrary.BrainDamage, abilityLibrary.LavaPortal, abilityLibrary.GlobalCooling
     };
 
         return gameObject;

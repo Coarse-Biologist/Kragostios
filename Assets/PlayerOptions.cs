@@ -129,8 +129,6 @@ public class PlayerOptions : MonoBehaviour
         {
             TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
-            //KDebug.SeekBug($"new ability {ability} Button requested and being processed");
-
             newButton.text = ability.AbilityName;
             buttonContainer_AO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
@@ -208,9 +206,9 @@ public class PlayerOptions : MonoBehaviour
         string charInfo = stats.GetCharInfo();
         string charAffinities = stats.GetAffinityString();
         charInfoPanel.style.display = DisplayStyle.Flex;
-        charInfoText.style.whiteSpace = WhiteSpace.Normal;
+        //charInfoText.style.whiteSpace = WhiteSpace.Normal;
         charInfoText.style.color = Color.white;
-        charInfoText.text = charInfo + charAffinities;
+        charInfoText.text = charInfo + "\n" + charAffinities;
         //KDebug.SeekBug("Hovering over button!");
     }
     public void ShowCombatScreen()
@@ -395,7 +393,7 @@ public class PlayerOptions : MonoBehaviour
         TemplateContainer newButtonContainer = templateButton.Instantiate();
         Button confirmButton = newButtonContainer.Q<Button>();
         LeftCreationPanel.Add(confirmButton);
-        confirmButton.text = "Confirm Character and Proceed";
+        confirmButton.text = "Confirm Character";
         confirmButton.RegisterCallback<ClickEvent>(e => CharStatsConfirmed());
 
         TextField charNameField = LeftCreationPanel.Q<TextField>("CharName");
