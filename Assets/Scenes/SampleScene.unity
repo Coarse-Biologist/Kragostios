@@ -496,6 +496,7 @@ GameObject:
   - component: {fileID: 1889742910}
   - component: {fileID: 1889742909}
   - component: {fileID: 1889742908}
+  - component: {fileID: 1889742914}
   m_Layer: 0
   m_Name: DungeonMaster
   m_TagString: Untagged
@@ -648,6 +649,23 @@ MonoBehaviour:
   impassableTerrainDensity: 1
   healerDensity: 1
   barrenDensity: 1
+--- !u!114 &1889742914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1889742905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed1ca9849731f034081c4a2602d8db98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIDocument: {fileID: 47796375}
+  templateButton: {fileID: 9197481963319205126, guid: 55a0ab44992e2e3468c011bd83565567, type: 3}
+  playerInventory:
+  - {fileID: 11400000, guid: b7eb3b5d6f4d4394fa3d4aa847d71614, type: 2}
+  - {fileID: 11400000, guid: abd9a0771e9169141a337f348cc404bd, type: 2}
 --- !u!1001 &8866020246099511803
 PrefabInstance:
   m_ObjectHideFlags: 0

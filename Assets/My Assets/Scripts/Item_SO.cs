@@ -5,7 +5,8 @@ using System.Collections;
 [CreateAssetMenu(fileName = "Item", menuName = "CrewObject/ Item")]
 public class Item_SO : ScriptableObject
 {
-    public string menuName;
-    public Sprite sprite;
+    public string itemName;
+    public int itemValue;
+    public string itemDescription;
 
 }

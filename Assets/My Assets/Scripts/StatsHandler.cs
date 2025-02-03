@@ -101,6 +101,7 @@ public class StatsHandler : MonoBehaviour
     #region // inventory
     [SerializeField] public List<Rewards> rewards { private set; get; } = new List<Rewards> { Rewards.Gold, Rewards.Xp };
     [SerializeField] public int characterGold { private set; get; } = 0;
+    public List<Item_SO> Inventory { private set; get; } = new List<Item_SO>();
     [SerializeField] public List<Ability_SO> knownAbilities { private set; get; } = new List<Ability_SO>();
 
     #endregion
@@ -305,7 +306,7 @@ public class StatsHandler : MonoBehaviour
     #endregion
 
     #region // Setters
-
+    #region // stat point usage
     public void RestoreResources()
     {
         currentHealth = MaxHealth;
@@ -555,6 +556,8 @@ public class StatsHandler : MonoBehaviour
         availableStatPoints -= cost;
     }
 
+    #endregion
+
     public void SetName(string name)
     {
         characterName = name;
@@ -578,13 +581,25 @@ public class StatsHandler : MonoBehaviour
     {
         knownAbilities.Add(abilityLibrary.abilityDict[newAbility]);
     }
-
+    #region // inventory
     public void GainGold(int GoldAmount)
     {
         KDebug.SeekBug($"{characterName} gained {GoldAmount}");
         characterGold += GoldAmount;
     }
-
+    public List<Item_SO> GetInventory()
+    {
+        return Inventory;
+    }
+    public void AddToInventory(Item_SO item)
+    {
+        Inventory.Add(item);
+    }
+    public void RemoveFromInventory(Item_SO item)
+    {
+        Inventory.Remove(item);
+    }
+    #endregion
     private void GainLevel()
     {
         characterLevel++;

@@ -14,17 +14,18 @@ public class PlayerOptions : MonoBehaviour
     [SerializeField] UIDocument uiDocument;
     private VisualElement root;
     public VisualTreeAsset templateButton;
-    private VisualElement buttonContainer_CO;
-    private VisualElement buttonContainer_AO;
-    private VisualElement charInfoPanel;
-    private VisualElement abilityInfoPanel;
-    private VisualElement narratorWindow;
+    public VisualElement buttonContainer_CO;
+    public VisualElement buttonContainer_AO;
+    public VisualElement charInfoPanel;
+    public VisualElement abilityInfoPanel;
+    public VisualElement narratorWindow;
+    public VisualElement background;
 
 
     #region // Character creation screen
-    private VisualElement LeftCreationPanel;
-    private VisualElement MiddleCreationPanel;
-    private VisualElement RightCreationPanel;
+    public VisualElement LeftCreationPanel;
+    public VisualElement MiddleCreationPanel;
+    public VisualElement RightCreationPanel;
 
 
     #endregion
@@ -61,27 +62,43 @@ public class PlayerOptions : MonoBehaviour
         abilityInfoPanel = root.Q<VisualElement>("AbilityInfoPanel");
         abilityInfoText = abilityInfoPanel.Q<Label>("AbilityInfo");
         narratorWindow = root.Q<VisualElement>("NarratorWindow");
-
-        //myTextField = root.Q<TextField>("TextField");
-        //myTextField.style.display = DisplayStyle.None;
-
-        // char creation panels
         LeftCreationPanel = root.Q<VisualElement>("LeftCreationPanel");
         MiddleCreationPanel = root.Q<VisualElement>("MiddleCreationPanel");
         RightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         charCreationText = RightCreationPanel.Q<Label>("CharCreationText");
+        background = root.Q<VisualElement>("Background");
 
 
     }
+    public void ChangeScreen(List<VisualElement> desiredPanels)
+    {
+        background.style.display = DisplayStyle.Flex;
+        buttonContainer_CO.style.display = DisplayStyle.None;
+        charInfoPanel.style.display = DisplayStyle.None;
+        buttonContainer_AO.style.display = DisplayStyle.None;
+        abilityInfoPanel.style.display = DisplayStyle.None;
+        narratorWindow.style.display = DisplayStyle.None;
+        LeftCreationPanel.style.display = DisplayStyle.None;
+        RightCreationPanel.style.display = DisplayStyle.None;
+        charCreationText.text = " ";
+
+        foreach (VisualElement panel in desiredPanels)
+        {
+            panel.style.display = DisplayStyle.Flex;
+        }
+    }
+
+    //public void PrepareMenuScreen()
+    //{
+    //    //ClearAbilityContainer();
+    //    ClearTargetContainer();
+    //    ShowCombatScreen();
+    //    HideCreationScreen();
+    //}
     // Combat functions
     public void SpawnDirectionOptions(List<Directions> directions)
     {
-        //KDebug.SeekBug($"directions available to travel: {directions}");
-
-        ClearAbilityContainer();
-        ClearTargetContainer();
-        ShowCombatScreen();
-        HideCreationScreen();
+        //PrepareMenuScreen();
 
         foreach (Directions direction in directions)
         {

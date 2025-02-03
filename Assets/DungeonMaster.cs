@@ -24,8 +24,8 @@ public class DungeonMaster : MonoBehaviour
     private NarrationScript narrator;
     private TravelScript travel;
     private CombatFlow combat;
-
     [SerializeField] AbilityLibrary abilityLibrary;
+    private Inventory inventory;
 
     [Header("player")]
 
@@ -52,6 +52,7 @@ public class DungeonMaster : MonoBehaviour
         narrator = GetComponent<NarrationScript>();
         travel = GetComponent<TravelScript>();
         combat = GetComponent<CombatFlow>();
+        inventory = GetComponent<Inventory>();
     }
     private void Start()
     {
@@ -80,6 +81,9 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.StatIncrented.AddListener(HandleStatIncremented);
         playerOptions.CharacterCreationConfirmed.AddListener(CharacterCreationComplete);
 
+        inventory.requestInventoryScreen.AddListener(ShowInventoryScreen);
+        inventory.exitInventoryScreen.AddListener(ExitInventoryScreen);
+
     }
 
     private void OnDisable()
@@ -99,6 +103,10 @@ public class DungeonMaster : MonoBehaviour
 
         playerOptions.StatIncrented.RemoveListener(HandleStatIncremented);
         playerOptions.CharacterCreationConfirmed.RemoveListener(CharacterCreationComplete);
+
+        inventory.requestInventoryScreen.RemoveListener(ShowInventoryScreen);
+        inventory.exitInventoryScreen.RemoveListener(ExitInventoryScreen);
+
 
     }
     #endregion
@@ -120,7 +128,15 @@ public class DungeonMaster : MonoBehaviour
     {
         playerOptions.SpawnContinueButton();
     }
+    private void ShowInventoryScreen()
+    {
+        playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.LeftCreationPanel, playerOptions.RightCreationPanel });
+    }
 
+    private void ExitInventoryScreen()
+    {
+        playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO, playerOptions.buttonContainer_CO });
+    }
     #endregion
 
     #region /// Handle Player Input 
@@ -218,7 +234,7 @@ public class DungeonMaster : MonoBehaviour
     private void HandleCombatEnd()
     {
         List<Directions> directions = map.directions;
-        playerOptions.SpawnDirectionOptions(directions);
+        ShowMainMenu();
     }
     private void InitiateCombat()
     {
@@ -246,7 +262,6 @@ public class DungeonMaster : MonoBehaviour
     #region // Travel
     public void HandlePlayerTraveled(Directions direction)
     {
-        List<Directions> directions = map.directions;
         travel.TravelInDirection(direction);
         Vector2 playerLocation = travel.playerLocation;
         LocationType locationType = map.GetLocationType(playerLocation);
@@ -266,38 +281,38 @@ public class DungeonMaster : MonoBehaviour
 
             case LocationType.City:
                 narrator.DisplayNarrationText("You found a city. Would you like to stay and have a look around, or journey on?");
-                playerOptions.SpawnDirectionOptions(directions);
+                ShowMainMenu();
                 break;
 
             case LocationType.Village:
                 narrator.DisplayNarrationText("You found a village. Would you like to stay and have a look around, or journey on?");
-                playerOptions.SpawnDirectionOptions(directions);
+                ShowMainMenu();
                 break;
 
             case LocationType.Healer:
                 narrator.DisplayNarrationText("You found a healer. Would you like to look at their services, or journey on?");
-                playerOptions.SpawnDirectionOptions(directions);
+                ShowMainMenu();
                 break;
 
             case LocationType.Trader:
                 narrator.DisplayNarrationText("You found a trader. Would you like to look at their services, or journey on?");
-                playerOptions.SpawnDirectionOptions(directions);
+                ShowMainMenu();
                 break;
 
 
             case LocationType.HiddenTreasure:
                 narrator.DisplayNarrationText("You found a chest! See what's inside!");
-                playerOptions.SpawnDirectionOptions(directions);
+                ShowMainMenu();
                 break;
 
             case LocationType.Barren:
                 narrator.DisplayNarrationText("You find yourself in a rather barren wasteland. Nothing but dry futility for you here. It is likely time to journey on.");
-                playerOptions.SpawnDirectionOptions(directions);
+                ShowMainMenu();
                 break;
 
             case LocationType.Campsite:
                 narrator.DisplayNarrationText("You found an excellent spot for a campsite. Would you like to stay and camp for the night, or journey on?");
-                playerOptions.SpawnDirectionOptions(directions);
+                ShowMainMenu();
                 break;
 
             case LocationType.EdgeOfTheWorld:
@@ -307,10 +322,21 @@ public class DungeonMaster : MonoBehaviour
 
             default:
                 KDebug.SeekBug($"location is a {locationType}");
-                playerOptions.SpawnDirectionOptions(directions);
+                ShowMainMenu();
                 break;
 
         }
+    }
+
+    private void ShowMainMenu()
+    {
+        root = UIDocument.rootVisualElement;
+        VisualElement buttonContainer_AO = root.Q<VisualElement>("PlayerOptions");
+        playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
+        inventory.SpawnInventoryButton(buttonContainer_AO, playerStats);
+        List<Directions> directions = map.directions;
+        playerOptions.SpawnDirectionOptions(directions);
+
     }
 
     #endregion
@@ -455,7 +481,8 @@ public class DungeonMaster : MonoBehaviour
         }
 
     }
-
+    #endregion
+    #region // Character Creation Complete
     private void CharacterCreationComplete()
     {
         playerStats.RestoreResources();
@@ -464,7 +491,8 @@ public class DungeonMaster : MonoBehaviour
         List<Directions> directions = map.directions;
         playerOptions.ClearCharCreation();
         playerOptions.ShowCombatScreen();
-        playerOptions.SpawnDirectionOptions(directions);
+        ShowMainMenu();
+
     }
     #endregion
 }
