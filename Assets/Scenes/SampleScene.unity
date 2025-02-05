@@ -515,7 +515,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.06527581, y: -1.0314003, z: 302.50507}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -663,9 +663,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIDocument: {fileID: 47796375}
   templateButton: {fileID: 9197481963319205126, guid: 55a0ab44992e2e3468c011bd83565567, type: 3}
-  playerInventory:
-  - {fileID: 11400000, guid: b7eb3b5d6f4d4394fa3d4aa847d71614, type: 2}
-  - {fileID: 11400000, guid: abd9a0771e9169141a337f348cc404bd, type: 2}
+  allItems: []
+  worldChest: {fileID: 2016637002}
+  requestInventoryScreen:
+    m_PersistentCalls:
+      m_Calls: []
+  exitInventoryScreen:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &2016637001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2016637003}
+  - component: {fileID: 2016637002}
+  m_Layer: 0
+  m_Name: WorldChest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2016637002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016637001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b29ed813e91b8447b17a665f2f64dee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allAddresses:
+  - Sword
+  - Sword 1
+  - Sword 2
+--- !u!4 &2016637003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016637001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.7672446, y: -1.054581, z: 316.813}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8866020246099511803
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -753,3 +806,4 @@ SceneRoots:
   - {fileID: 1889742907}
   - {fileID: 47796376}
   - {fileID: 8866020246099511803}
+  - {fileID: 2016637003}

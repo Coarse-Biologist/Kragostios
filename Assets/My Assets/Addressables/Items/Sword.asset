@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8c3f92ddc8369543ae4f65e72e16733, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
+  rarity: 0
+  itemType: 3
   itemName: Iron Sword
   itemValue: 5
   itemDescription: A simple iron sword used by adventerers.

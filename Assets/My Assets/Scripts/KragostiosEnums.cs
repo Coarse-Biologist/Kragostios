@@ -68,6 +68,22 @@ namespace KragostiosAllEnums
         Slashing,
         Piercing
     }
+    public enum Rarity
+    {
+        Common,
+        Rare,
+        Epic,
+        Grand,
+        Legndary,
+    }
+    public enum ItemType
+    {
+        Quest,
+        Potion,
+        Scroll,
+        Weapon,
+        Armor,
+    }
 
     public enum Combatants
     {

@@ -3,6 +3,8 @@ using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Events;
+using UnityEditor.Search;
+using KragostiosAllEnums;
 
 public class Inventory : MonoBehaviour
 {
@@ -12,7 +14,9 @@ public class Inventory : MonoBehaviour
     private VisualElement rightCreationPanel;
     [SerializeField] UIDocument UIDocument;
     [SerializeField] VisualTreeAsset templateButton;
-    [SerializeField] List<Item_SO> playerInventory;
+    [SerializeField] Dictionary<Item_SO, int> playerInventory;
+    [SerializeField] List<Item_SO> allItems;
+    [SerializeField] public WorldChest worldChest;
 
     public UnityEvent requestInventoryScreen;
     public UnityEvent exitInventoryScreen;
@@ -23,25 +27,32 @@ public class Inventory : MonoBehaviour
         leftCreationPanel = root.Q<VisualElement>("LeftCreationPanel");
         rightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         itemText = rightCreationPanel.Q<Label>("CharCreationText");
+
     }
-    public void SpawnInventoryButton(VisualElement panel, StatsHandler playerStats)
+    public void SpawnInventoryButton(VisualElement panel, StatsHandler stats)
     {
         TemplateContainer container = templateButton.Instantiate();
         Button button = container.Query<Button>();
         button.text = "Inventory";
-        button.RegisterCallback<ClickEvent>(evt => DisplayInventoryItems(playerStats));
+        button.RegisterCallback<ClickEvent>(evt => DisplayInventoryItems(stats, leftCreationPanel));
         panel.Add(button);
     }
-    public void DisplayInventoryItems(StatsHandler playerStats)
+    public void DisplayInventoryItems(StatsHandler stats, VisualElement panel)
     {
+        panel.Clear();
         RequestInventoryScreen();
-        //List<Item_SO> playerInventory = playerStats.GetInventory();
-        foreach (Item_SO item in playerInventory)
+        allItems = worldChest.GetItemsOfType(ItemType.Weapon);
+        //List<Item_SO> playerInventory = stats.GetInventory();
+        //foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
+        foreach (Item_SO item in allItems)
         {
+            //Item_SO item = kvp.Key;
             TemplateContainer container = templateButton.Instantiate();
             Button button = container.Q<Button>();
-            button.text = item.itemName + " || Value:" + item.itemValue + " Gold";
-            leftCreationPanel.Add(container);
+            //button.text = item.itemName + $" || Value: {item.itemValue} Gold || Number in Inventory: {kvp.Value}";
+            button.text = item.itemName + $" || Value: {item.itemValue} Gold || Number in Inventory:";// {Value}";
+
+            panel.Add(container);
             container.Add(button);
             button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item));
             button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
@@ -49,7 +60,7 @@ public class Inventory : MonoBehaviour
         TemplateContainer otherContainer = templateButton.Instantiate();
         Button exitInventoryButton = otherContainer.Q<Button>();
         otherContainer.Add(exitInventoryButton);
-        leftCreationPanel.Add(otherContainer);
+        panel.Add(otherContainer);
         exitInventoryButton.text = "Exit Inventory";
         exitInventoryButton.RegisterCallback<ClickEvent>(evt => ExitInventory());
     }
@@ -79,5 +90,7 @@ public class Inventory : MonoBehaviour
     {
         exitInventoryScreen?.Invoke();
     }
+
+
 
 }

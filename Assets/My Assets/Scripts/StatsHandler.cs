@@ -9,6 +9,7 @@ using Mono.Cecil.Cil;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Unity.VisualScripting;
+using System.Linq;
 
 
 public class StatsHandler : MonoBehaviour
@@ -101,7 +102,7 @@ public class StatsHandler : MonoBehaviour
     #region // inventory
     [SerializeField] public List<Rewards> rewards { private set; get; } = new List<Rewards> { Rewards.Gold, Rewards.Xp };
     [SerializeField] public int characterGold { private set; get; } = 0;
-    public List<Item_SO> Inventory { private set; get; } = new List<Item_SO>();
+    public Dictionary<Item_SO, int> Inventory { private set; get; } = new Dictionary<Item_SO, int>();
     [SerializeField] public List<Ability_SO> knownAbilities { private set; get; } = new List<Ability_SO>();
 
     #endregion
@@ -587,17 +588,33 @@ public class StatsHandler : MonoBehaviour
         KDebug.SeekBug($"{characterName} gained {GoldAmount}");
         characterGold += GoldAmount;
     }
-    public List<Item_SO> GetInventory()
+    public Dictionary<Item_SO, int> GetInventory()
     {
         return Inventory;
     }
-    public void AddToInventory(Item_SO item)
+    public void AddToInventory(Item_SO item, int amount = 1)
     {
-        Inventory.Add(item);
+        List<Item_SO> invItems = Inventory.Keys.ToList();
+        if (invItems.Contains(item))
+        {
+            Inventory[item] += amount;
+        }
+        else
+        {
+            Inventory.Add(item, amount);
+        }
     }
-    public void RemoveFromInventory(Item_SO item)
+    public void RemoveFromInventory(Item_SO item, int amount = 1)
     {
-        Inventory.Remove(item);
+        List<Item_SO> invItems = Inventory.Keys.ToList();
+        if (invItems.Contains(item))
+        {
+            Inventory[item] -= amount;
+        }
+        else
+        {
+            Inventory.Remove(item);
+        }
     }
     #endregion
     private void GainLevel()

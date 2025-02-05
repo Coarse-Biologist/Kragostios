@@ -15,8 +15,23 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 9f3c07b48ce465247994188a6deabb96
   m_SerializeEntries:
+  - m_GUID: 56d1b22e67f7f0040887ef997c5ec5cf
+    m_Address: Assets/My Assets/Addressables/Items/Sword 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9218559d6049c9542a2b75e209b5ddde
     m_Address: Assets/My Assets/Addressables/Abilities/FireBall.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abd9a0771e9169141a337f348cc404bd
+    m_Address: Assets/My Assets/Addressables/Items/Sword 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7eb3b5d6f4d4394fa3d4aa847d71614
+    m_Address: Assets/My Assets/Addressables/Items/Sword.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

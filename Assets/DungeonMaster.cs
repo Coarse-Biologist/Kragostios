@@ -233,8 +233,11 @@ public class DungeonMaster : MonoBehaviour
     }
     private void HandleCombatEnd()
     {
+        List<Item_SO> items = inventory.worldChest.GetItemsOfType(ItemType.Weapon);
+        playerStats.AddToInventory(items[0]);
+        narrator.DisplayNarrationText($"You have won the battle! and have been rewarded with a {items[0].itemName}!");
         List<Directions> directions = map.directions;
-        ShowMainMenu();
+        Invoke("ShowMainMenu", 5);
     }
     private void InitiateCombat()
     {
