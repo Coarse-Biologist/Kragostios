@@ -41,16 +41,16 @@ public class Inventory : MonoBehaviour
     {
         panel.Clear();
         RequestInventoryScreen();
-        allItems = worldChest.GetItemsOfType(ItemType.Weapon);
+        //allItems = worldChest.GetItemsOfType(ItemType.Weapon);
         //List<Item_SO> playerInventory = stats.GetInventory();
-        //foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
-        foreach (Item_SO item in allItems)
+        foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
+        //foreach (Item_SO item in charItems)
         {
-            //Item_SO item = kvp.Key;
+            Item_SO item = kvp.Key;
             TemplateContainer container = templateButton.Instantiate();
             Button button = container.Q<Button>();
-            //button.text = item.itemName + $" || Value: {item.itemValue} Gold || Number in Inventory: {kvp.Value}";
-            button.text = item.itemName + $" || Value: {item.itemValue} Gold || Number in Inventory:";// {Value}";
+            button.text = item.itemName + $" || Value: {item.itemValue} Gold || Number in Inventory: {kvp.Value}";
+            //button.text = item.itemName + $" || Value: {item.itemValue} Gold || Number in Inventory:";// {Value}";
 
             panel.Add(container);
             container.Add(button);

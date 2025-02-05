@@ -79,7 +79,7 @@ public class StatsHandler : MonoBehaviour
     public int BludgeoningResist { private set; get; } = 0;
     public int SlashingResist { private set; get; } = 0;
     public int PiercingResist { private set; get; } = 0;
-
+    public Elements Element { private set; get; } = Elements.None;
     #endregion
 
     #region // resource regen
@@ -724,6 +724,7 @@ public class StatsHandler : MonoBehaviour
         Array elements = Enum.GetValues(typeof(Elements));
         System.Random random = new System.Random();
         Elements randomElement = (Elements)elements.GetValue(random.Next(elements.Length));
+        Element = randomElement;
         return randomElement;
     }
     private string GetElementRelatedName(Elements element, Difficulty difficultyLevel)

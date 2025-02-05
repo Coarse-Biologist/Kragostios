@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.VersionControl;
 using UnityEngine.UI;
+using System;
 
 
 public class DungeonMaster : MonoBehaviour
@@ -24,6 +25,7 @@ public class DungeonMaster : MonoBehaviour
     private NarrationScript narrator;
     private TravelScript travel;
     private CombatFlow combat;
+    private List<Tuple<Difficulty, Elements>> enemyCombatantTuple;
     [SerializeField] AbilityLibrary abilityLibrary;
     private Inventory inventory;
 
@@ -233,9 +235,7 @@ public class DungeonMaster : MonoBehaviour
     }
     private void HandleCombatEnd()
     {
-        List<Item_SO> items = inventory.worldChest.GetItemsOfType(ItemType.Weapon);
-        playerStats.AddToInventory(items[0]);
-        narrator.DisplayNarrationText($"You have won the battle! and have been rewarded with a {items[0].itemName}!");
+        HandleLoot();
         List<Directions> directions = map.directions;
         Invoke("ShowMainMenu", 5);
     }
@@ -243,12 +243,15 @@ public class DungeonMaster : MonoBehaviour
     {
 
         List<GameObject> combatants = new List<GameObject>();
-        int numberofEnemies = Random.Range(1, 3);
+        enemyCombatantTuple = new List<Tuple<Difficulty, Elements>>();
+        int numberofEnemies = UnityEngine.Random.Range(1, 3);
         while (numberofEnemies > 0)
         {
             GameObject enemy = MakeEnemy(Difficulty.Easy);
+            StatsHandler stats = enemy.GetComponent<StatsHandler>();
             numberofEnemies--;
             combatants.Add(enemy);
+            enemyCombatantTuple.Add(new Tuple<Difficulty, Elements>(stats.difficulty, stats.Element));
         }
         //Debug.Log($"{playerStats.GetKnownAbilitiesString()} = player known abilities");
         playerOptions.HideCreationScreen();
@@ -258,6 +261,51 @@ public class DungeonMaster : MonoBehaviour
         combat.DecideTurnOrder();
         combat.CombatCycle();//combatants);
 
+
+    }
+    private void HandleLoot()
+    {
+        KDebug.SeekBug($"HandleLoot function: {enemyCombatantTuple.Count}");
+        foreach (Tuple<Difficulty, Elements> tuple in enemyCombatantTuple)
+        {
+            Difficulty difficulty = tuple.Item1;
+            Elements element = tuple.Item2;
+            List<Item_SO> items = new List<Item_SO>();
+
+            switch (difficulty)
+            {
+                case Difficulty.Easy:
+                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Common);
+                    playerStats.AddToInventory(items[0]);
+                    break;
+                case Difficulty.Medium:
+                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Rare);
+                    playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
+                    break;
+                case Difficulty.Hard:
+                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Epic);
+                    playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
+                    break;
+                case Difficulty.Brutal:
+                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Grand);
+                    playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
+                    break;
+                case Difficulty.Nightmare:
+                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Legndary);
+                    playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
+                    break;
+                default:
+                    break;
+            }
+            KDebug.SeekBug($"HandleLoot function: {items.Count}");
+            foreach (Item_SO item in items)
+            {
+                narrator.DisplayNarrationText($"{playerStats.characterName} looted {item.itemName}!");
+                playerStats.AddToInventory(item);
+            }
+
+
+        }
     }
 
     #endregion

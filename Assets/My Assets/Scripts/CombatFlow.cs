@@ -322,7 +322,7 @@ public class CombatFlow : MonoBehaviour
 
         if (stats.charType == Combatants.Enemy)
         {
-            CalculateXpandGold(deadCombatant);
+            HandleRewards(deadCombatant);
         }
         if (stats.charType == Combatants.Companion)
         {
@@ -331,7 +331,7 @@ public class CombatFlow : MonoBehaviour
         RemoveFromCombat(deadCombatant);
     }
 
-    private void CalculateXpandGold(GameObject deadCombatant)
+    private void HandleRewards(GameObject deadCombatant)
     {
         //calculate gold and xp
         StatsHandler stats = deadCombatant.GetComponent<StatsHandler>();
@@ -365,6 +365,7 @@ public class CombatFlow : MonoBehaviour
             }
         }
     }
+
 
     private void RemoveFromCombat(GameObject deadCombatant)
     {
