@@ -14,6 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rarity: 1
   itemType: 3
-  itemName: Steel Sword
   itemValue: 8
+  itemName: Steel Sword
   itemDescription: A steel sword used by adventerers.
+  element: 0
+  damage: 4
+  heal: 0
+  debuffs: 
+  Buffs: 
+  armorBuffs: 
+  damageReduction: 0

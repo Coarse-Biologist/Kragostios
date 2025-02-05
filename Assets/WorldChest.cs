@@ -57,7 +57,7 @@ public class WorldChest : MonoBehaviour
         List<Item_SO> items = new List<Item_SO>();
         foreach (Item_SO item in allItems.Values)
         {
-            if (item.rarity == desiredRarity)
+            if (item.itemRarity == desiredRarity)
             {
                 items.Add(item);
             }

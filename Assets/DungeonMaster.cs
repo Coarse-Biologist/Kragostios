@@ -241,7 +241,6 @@ public class DungeonMaster : MonoBehaviour
     }
     private void InitiateCombat()
     {
-
         List<GameObject> combatants = new List<GameObject>();
         enemyCombatantTuple = new List<Tuple<Difficulty, Elements>>();
         int numberofEnemies = UnityEngine.Random.Range(1, 3);
@@ -260,9 +259,8 @@ public class DungeonMaster : MonoBehaviour
         combat.SetCombatants(combatants);
         combat.DecideTurnOrder();
         combat.CombatCycle();//combatants);
-
-
     }
+
     private void HandleLoot()
     {
         KDebug.SeekBug($"HandleLoot function: {enemyCombatantTuple.Count}");

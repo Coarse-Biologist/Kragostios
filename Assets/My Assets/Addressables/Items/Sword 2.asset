@@ -14,6 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rarity: 2
   itemType: 3
-  itemName: Platinum Sword
   itemValue: 15
+  itemName: Platinum Sword
   itemDescription: A platinum sword used by successfuladventerers.
+  element: 0
+  damage: 6
+  heal: 0
+  debuffs: 
+  Buffs: 
+  armorBuffs: 
+  damageReduction: 0

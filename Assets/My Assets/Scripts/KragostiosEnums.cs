@@ -146,6 +146,22 @@ namespace KragostiosAllEnums
         Invisibility,
         Shield,
         Strengthen,
+        ColdResistance,
+        WaterResistance,
+        EarthResistance,
+        FireResistance,
+        HeatResistance,
+        AirResistance,
+        ElectrictyResistance,
+        PoisonResistance,
+        AcidResistance,
+        BacteriaResistance,
+        FungiResistance,
+        PlantResistance,
+        VirusResistance,
+        RadiationResistance,
+        LightResistance,
+        PsychiResistance,
     }
 
     public enum Debuffs

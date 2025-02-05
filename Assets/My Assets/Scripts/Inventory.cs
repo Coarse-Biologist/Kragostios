@@ -79,7 +79,7 @@ public class Inventory : MonoBehaviour
         //HideItemInfo();
         itemText.style.whiteSpace = WhiteSpace.Normal;
         itemText.style.color = Color.white;
-        itemText.text = item.itemDescription;
+        itemText.text = item.GetItemInfo();
     }
 
     private void HideItemInfo()
