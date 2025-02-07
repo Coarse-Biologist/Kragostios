@@ -12,17 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
   m_Name: Melee
   m_EditorClassIdentifier: 
-  AbilityName: Melee
-  Description: None
-  Resource: 2
-  Type: 1
-  ElementType: 0
-  PhysicalType: 1
-  AbilityCost: 1
-  HealValue: 0
-  DamageValue: 1
-  TurnDuration: 0
-  Targets: 1
-  Summons: 0
-  SyphonPercentage: 0
-  AbilityLevel: 0
+  abilityName: 
+  description: None
+  resource: 0
+  type: 0
+  elementType: 0
+  physicalType: 0
+  abilityCost: 0
+  healValue: 0
+  damageValue: 0
+  turnDuration: 0
+  targets: 0
+  summons: 0
+  damageOverTime: 0
+  syphonPercentage: 0
+  abilityLevel: 0
+  buffEffects: 
+  debuffEffects: 

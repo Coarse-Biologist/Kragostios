@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8c3f92ddc8369543ae4f65e72e16733, type: 3}
   m_Name: Sword 1
   m_EditorClassIdentifier: 
-  rarity: 1
+  itemRarity: 0
   itemType: 3
   itemValue: 8
   itemName: Steel Sword

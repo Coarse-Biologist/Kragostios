@@ -19,6 +19,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] public WorldChest worldChest;
 
     public UnityEvent requestInventoryScreen;
+    public UnityEvent requestTraderScreen;
     public UnityEvent exitInventoryScreen;
 
     private void Awake()
@@ -28,6 +29,14 @@ public class Inventory : MonoBehaviour
         rightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         itemText = rightCreationPanel.Q<Label>("CharCreationText");
 
+    }
+    public void SpawnTraderButton(VisualElement panel, StatsHandler stats)
+    {
+        TemplateContainer container = templateButton.Instantiate();
+        Button button = container.Query<Button>();
+        button.text = "Trader";
+        button.RegisterCallback<ClickEvent>(evt => DisplayTraderScreen(stats, leftCreationPanel));
+        panel.Add(button);
     }
     public void SpawnInventoryButton(VisualElement panel, StatsHandler stats)
     {
@@ -41,17 +50,13 @@ public class Inventory : MonoBehaviour
     {
         panel.Clear();
         RequestInventoryScreen();
-        //allItems = worldChest.GetItemsOfType(ItemType.Weapon);
-        //List<Item_SO> playerInventory = stats.GetInventory();
+
         foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
-        //foreach (Item_SO item in charItems)
         {
             Item_SO item = kvp.Key;
             TemplateContainer container = templateButton.Instantiate();
             Button button = container.Q<Button>();
-            button.text = item.itemName + $" || Value: {item.itemValue} Gold || Number in Inventory: {kvp.Value}";
-            //button.text = item.itemName + $" || Value: {item.itemValue} Gold || Number in Inventory:";// {Value}";
-
+            button.text = item.ItemName + $" || Value: {item.ItemValue} Gold || Number in Inventory: {kvp.Value}";
             panel.Add(container);
             container.Add(button);
             button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item));
@@ -64,14 +69,57 @@ public class Inventory : MonoBehaviour
         exitInventoryButton.text = "Exit Inventory";
         exitInventoryButton.RegisterCallback<ClickEvent>(evt => ExitInventory());
     }
+    public void DisplayTraderScreen(StatsHandler stats, VisualElement panel)
+    {
+        panel.Clear();
+        RequestInventoryScreen();
+
+        foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
+        {
+            Item_SO item = kvp.Key;
+            TemplateContainer container = templateButton.Instantiate();
+            Button button = container.Q<Button>();
+            button.text = item.ItemName + $" || Value: {item.ItemValue} Gold || Number in Inventory: {kvp.Value}";
+            panel.Add(container);
+            container.Add(button);
+            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item));
+            button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
+        }
+        TemplateContainer otherContainer = templateButton.Instantiate();
+        Button exitInventoryButton = otherContainer.Q<Button>();
+        otherContainer.Add(exitInventoryButton);
+        panel.Add(otherContainer);
+        //// trader side (right panel)
+        foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
+        {
+            Item_SO item = kvp.Key;
+            TemplateContainer container = templateButton.Instantiate();
+            Button button = container.Q<Button>();
+            button.text = item.ItemName + $" || Value: {item.ItemValue} Gold || Number in Inventory: {kvp.Value}";
+            panel.Add(container);
+            container.Add(button);
+            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item));
+            button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
+        }
+        TemplateContainer rightContainer = templateButton.Instantiate();
+        panel.Add(rightContainer);
+
+
+        exitInventoryButton.text = "Exit Inventory";
+        exitInventoryButton.RegisterCallback<ClickEvent>(evt => ExitInventory());
+    }
 
     public void RequestInventoryScreen()
     {
-        //leftCreationPanel.Clear();
-        //rightCreationPanel.Clear();
         leftCreationPanel.style.display = DisplayStyle.Flex;
         rightCreationPanel.style.display = DisplayStyle.Flex;
         requestInventoryScreen?.Invoke();
+    }
+    public void RequestTraderScreen()
+    {
+        leftCreationPanel.style.display = DisplayStyle.Flex;
+        rightCreationPanel.style.display = DisplayStyle.Flex;
+        requestTraderScreen?.Invoke();
     }
 
     private void ShowItemInfo(Item_SO item)
@@ -90,7 +138,4 @@ public class Inventory : MonoBehaviour
     {
         exitInventoryScreen?.Invoke();
     }
-
-
-
 }

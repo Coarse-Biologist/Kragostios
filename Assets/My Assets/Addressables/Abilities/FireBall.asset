@@ -12,20 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
   m_Name: FireBall
   m_EditorClassIdentifier: 
-  AbilityName: FireBall
-  Description: None
-  Resource: 1
-  Type: 1
-  ElementType: 4
-  PhysicalType: 0
-  AbilityCost: 5
-  HealValue: 0
-  DamageValue: 5
-  TurnDuration: 0
-  Targets: 2
-  Summons: 0
-  DamageOverTime: 0
-  SyphonPercentage: 0
-  AbilityLevel: 0
-  BuffEffects: 
-  DebuffEffects: 
+  abilityName: Fireaball
+  description: Throws a ball of intense fire
+  resource: 1
+  type: 1
+  elementType: 4
+  physicalType: 0
+  abilityCost: 5
+  healValue: 0
+  damageValue: 10
+  turnDuration: 0
+  targets: 1
+  summons: 0
+  damageOverTime: 0
+  syphonPercentage: 0
+  abilityLevel: 0
+  buffEffects: 
+  debuffEffects: 

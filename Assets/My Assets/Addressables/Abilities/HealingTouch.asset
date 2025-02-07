@@ -12,17 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
   m_Name: HealingTouch
   m_EditorClassIdentifier: 
-  AbilityName: HealingTouch
-  Description: None
-  Resource: 1
-  Type: 0
-  ElementType: 16
-  PhysicalType: 0
-  AbilityCost: 5
-  HealValue: 10
-  DamageValue: 0
-  TurnDuration: 0
-  Targets: 1
-  Summons: 0
-  SyphonPercentage: 0
-  AbilityLevel: 0
+  abilityName: Healing Touch
+  description: Heals target
+  resource: 1
+  type: 0
+  elementType: 0
+  physicalType: 0
+  abilityCost: 10
+  healValue: 10
+  damageValue: 0
+  turnDuration: 0
+  targets: 1
+  summons: 0
+  damageOverTime: 0
+  syphonPercentage: 0
+  abilityLevel: 2
+  buffEffects: 
+  debuffEffects: 

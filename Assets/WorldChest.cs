@@ -50,31 +50,31 @@ public class WorldChest : MonoBehaviour
     }
     public List<Item_SO> GetAllItems()
     {
-        return allItems.Values.ToList();
+        return new List<Item_SO>(allItems.Values.ToList());
     }
     public List<Item_SO> GetAllItemsofRarity(Rarity desiredRarity)
     {
         List<Item_SO> items = new List<Item_SO>();
         foreach (Item_SO item in allItems.Values)
         {
-            if (item.itemRarity == desiredRarity)
+            if (item.ItemRarity == desiredRarity)
             {
                 items.Add(item);
             }
         }
-        return items;
+        return new List<Item_SO>(items);
     }
     public List<Item_SO> GetItemsOfType(ItemType desiredItemType)
     {
         List<Item_SO> items = new List<Item_SO>();
         foreach (Item_SO item in allItems.Values)
         {
-            if (item.itemType == desiredItemType)
+            if (item.ItemType == desiredItemType)
             {
                 items.Add(item);
             }
         }
-        return items;
+        return new List<Item_SO>(items);
     }
 }
 

@@ -12,17 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
   m_Name: Push
   m_EditorClassIdentifier: 
-  AbilityName: Push
-  Description: Pushes opponent into  a chasm
-  Resource: 2
-  Type: 1
-  ElementType: 0
-  PhysicalType: 1
-  AbilityCost: 4
-  HealValue: 0
-  DamageValue: 2
-  TurnDuration: 0
-  Targets: 0
-  Summons: 0
-  SyphonPercentage: 0
-  AbilityLevel: 1
+  abilityName: Push
+  description: None
+  resource: 0
+  type: 0
+  elementType: 0
+  physicalType: 0
+  abilityCost: 10
+  healValue: 0
+  damageValue: 5
+  turnDuration: 0
+  targets: 1
+  summons: 0
+  damageOverTime: 0
+  syphonPercentage: 0
+  abilityLevel: 0
+  buffEffects: 
+  debuffEffects: 09000000

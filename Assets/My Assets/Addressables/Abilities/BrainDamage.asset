@@ -12,20 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
   m_Name: BrainDamage
   m_EditorClassIdentifier: 
-  AbilityName: BrainDamage
-  Description: Smashes the enemies head, possibly causing brain damage and retardation.
-  Resource: 2
-  Type: 8
-  ElementType: 0
-  PhysicalType: 1
-  AbilityCost: 4
-  HealValue: 0
-  DamageValue: 2
-  TurnDuration: 10
-  Targets: 1
-  Summons: 0
-  DamageOverTime: 0
-  SyphonPercentage: 0
-  AbilityLevel: 2
-  BuffEffects: 
-  DebuffEffects: 0b000000
+  abilityName: Skull Smash
+  description: Focus extreme violence on the head of a target
+  resource: 2
+  type: 8
+  elementType: 0
+  physicalType: 1
+  abilityCost: 20
+  healValue: 0
+  damageValue: 12
+  turnDuration: 0
+  targets: 0
+  summons: 0
+  damageOverTime: 0
+  syphonPercentage: 0
+  abilityLevel: 2
+  buffEffects: 
+  debuffEffects: 0b000000

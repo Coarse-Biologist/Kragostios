@@ -6,26 +6,34 @@ using KragostiosAllEnums;
 [CreateAssetMenu(fileName = "Item", menuName = "CrewObject/ Item")]
 public class Item_SO : ScriptableObject
 {
-    public Rarity itemRarity = Rarity.Common;
-    public ItemType itemType = ItemType.Weapon;
-    public int itemValue = 0;
-    public string itemName = "Item Name";
-    public string itemDescription = "Item Description";
-
+    [SerializeField] private Rarity itemRarity = Rarity.Common;
+    public Rarity ItemRarity => itemRarity;
+    [SerializeField] private ItemType itemType = ItemType.Weapon;
+    public ItemType ItemType => itemType;
+    [SerializeField] private int itemValue = 0;
+    public int ItemValue => itemValue;
+    [SerializeField] private string itemName = "Item Name";
+    public string ItemName => itemName;
+    [SerializeField] private string itemDescription = "Item Description";
+    public string ItemDescription => itemDescription;
     #region // weapon stats
-
     [Header("Weapon Stats")]
-    public Elements element = Elements.None;
-    public int damage = 0;
-    public int heal = 0;
-    public List<Debuffs> debuffs = new List<Debuffs>();
-    public List<Buffs> Buffs = new List<Buffs>();
-
+    [SerializeField] private Elements element = Elements.None;
+    public Elements Element => element;
+    [SerializeField] private int damage = 0;
+    public int Damage => damage;
+    [SerializeField] private int heal = 0;
+    public int Heal => heal;
+    [SerializeField] private List<Debuffs> debuffs = new List<Debuffs>();
+    public List<Debuffs> Debuffs => debuffs;
+    [SerializeField] private List<Buffs> Buffs = new List<Buffs>();
+    public List<Buffs> buffs => Buffs;
     #endregion
-
     [Header("Armor Stats")]
-    public List<Buffs> armorBuffs = new List<Buffs>();
-    public int damageReduction = 0;
+    [SerializeField] private List<Buffs> armorBuffs = new List<Buffs>();
+    public List<Buffs> ArmorBuffs => armorBuffs;
+    [SerializeField] private int damageReduction = 0;
+    public int DamageReduction => damageReduction;
 
     public string GetItemInfo()
     {

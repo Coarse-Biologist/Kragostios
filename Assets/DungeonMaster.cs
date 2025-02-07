@@ -298,11 +298,9 @@ public class DungeonMaster : MonoBehaviour
             KDebug.SeekBug($"HandleLoot function: {items.Count}");
             foreach (Item_SO item in items)
             {
-                narrator.DisplayNarrationText($"{playerStats.characterName} looted {item.itemName}!");
+                narrator.DisplayNarrationText($"{playerStats.characterName} looted {item.ItemName}!");
                 playerStats.AddToInventory(item);
             }
-
-
         }
     }
 
@@ -314,7 +312,7 @@ public class DungeonMaster : MonoBehaviour
         travel.TravelInDirection(direction);
         Vector2 playerLocation = travel.playerLocation;
         LocationType locationType = map.GetLocationType(playerLocation);
-        locationType = LocationType.Hostile;
+        locationType = LocationType.Trader;
         switch (locationType)
         {
             case LocationType.Hostile:

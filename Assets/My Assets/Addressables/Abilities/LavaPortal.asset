@@ -12,20 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
   m_Name: LavaPortal
   m_EditorClassIdentifier: 
-  AbilityName: Lava Portal
-  Description: Opens a portal to a Lava Plane
-  Resource: 1
-  Type: 1
-  ElementType: 4
-  PhysicalType: 0
-  AbilityCost: 30
-  HealValue: 0
-  DamageValue: 999
-  TurnDuration: 10
-  Targets: 2
-  Summons: 0
-  DamageOverTime: 0
-  SyphonPercentage: 0
-  AbilityLevel: 3
-  BuffEffects: 
-  DebuffEffects: 0700000008000000
+  abilityName: Lava portal
+  description: Opens a portal to a the Lava Plane
+  resource: 1
+  type: 8
+  elementType: 4
+  physicalType: 0
+  abilityCost: 100
+  healValue: 0
+  damageValue: 999
+  turnDuration: 2
+  targets: 2
+  summons: 0
+  damageOverTime: 0
+  syphonPercentage: 0
+  abilityLevel: 6
+  buffEffects: 
+  debuffEffects: 08000000
