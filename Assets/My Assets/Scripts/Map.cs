@@ -2,6 +2,7 @@ using UnityEngine;
 using KragostiosAllEnums;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEditor.Rendering;
 //using System.Numerics;
 
@@ -52,6 +53,12 @@ public class Map : MonoBehaviour
         new Vector2(1, 0),  // Right
         new Vector2(-1, 0)  // Left
     };
+    #endregion
+    #region // domaine and biome variables
+
+    List<Biomes> biomesList;
+    List<Kingdoms> kingdomsList;
+
     #endregion
 
     private void Awake()
@@ -141,87 +148,24 @@ public class Map : MonoBehaviour
 
     private Biomes GetRandomBiome()
     {
-        List<Biomes> biomeList = new List<Biomes>{Biomes.Jungle, Biomes.Swamp, Biomes.RollingHills,
-         Biomes.GrassyFields, Biomes.Mountains, Biomes.Tundra,
-         Biomes.Glaciers, Biomes.EverGreenForest, Biomes.PerenialForest, Biomes.Desert};
-
-        int biomeNum = biomeList.Count;
+        biomesList = GetAllBiomes<Biomes>();
+        int biomeNum = biomesList.Count;
         int randomBiomeIndex = UnityEngine.Random.Range(0, biomeNum - 1);
-        Biomes randomBiome = biomeList[randomBiomeIndex];
+        Biomes randomBiome = biomesList[randomBiomeIndex];
         return randomBiome;
     }
-
-    private Kingdoms GetRandomKingdom()
+    public static List<Biomes> GetAllBiomes<Biomes>()// where T : Enum
     {
-        List<Kingdoms> kingdomList = new List<Kingdoms> { Kingdoms.Celestia, Kingdoms.Grovchii, Kingdoms.Oshiania, Kingdoms.Bioleb, Kingdoms.SessPool };
-        System.Random random = new System.Random();
-        int randomKingdomIndex = random.Next(kingdomList.Count);
-        Kingdoms randomKingdom = kingdomList[randomKingdomIndex];
-        return randomKingdom;
+        return Enum.GetValues(typeof(Biomes)).Cast<Biomes>().ToList();
+    }
+    public static List<Kingdoms> GetAllKingdom<Kingdoms>()// where T : Enum
+    {
+        return Enum.GetValues(typeof(Kingdoms)).Cast<Kingdoms>().ToList();
     }
 
-    private void GiveMapDomaines(Dictionary<Vector2, LocationType> mapDict, int domainNum)
+    private void SetDomainSizes()
     {
-        //set starting points in range MAP SIZE
-        float mapWidth = mapDimensions.x;
-        float mapHeight = mapDimensions.y;
-        int startPointsSet = 0;
-        Dictionary<Vector2, Tuple<Kingdoms, Biomes>> startCoordsDict = new Dictionary<Vector2, Tuple<Kingdoms, Biomes>>();
-        while (startPointsSet < domainNum)
-        {
-            Vector2 startPoint = new Vector2(UnityEngine.Random.Range(0, mapWidth), UnityEngine.Random.Range(0, mapHeight));
-            Biomes randomBiome = GetRandomBiome();
-            Kingdoms randomKingdom = GetRandomKingdom();
-            startCoordsDict.Add(startPoint, new Tuple<Kingdoms, Biomes>(randomKingdom, randomBiome));
-            startPointsSet++;
-        }
 
-        foreach (KeyValuePair<Vector2, Tuple<Kingdoms, Biomes>> startPointTuple in startCoordsDict)
-        {
-            //BranchInAllDirections(startPoint, domainType, domainNum);
-        }
-        //from starting points move one in each direction, check if domain is set or if out of boundary,
-        // if not assign domain. 
     }
-
-    private void BranchInAllDirections(Vector2 startingPoint, Tuple<Kingdoms, Biomes> tuple, int domainNum)
-    {
-        bool expansionMade;
-        do
-        {
-            expansionMade = false;
-            var currentMap = new Dictionary<Vector2, Tuple<Kingdoms, Biomes>>(map);
-
-            foreach (var kvp in currentMap)
-            {
-                if (kvp.Value == null) continue; // Skip unassigned coordinates
-
-                Vector2 coord = kvp.Key;
-                Tuple<Kingdoms, Biomes> domain = kvp.Value;
-
-                foreach (var dir in vectorDirections)
-                {
-                    Vector2 neighbor = coord + dir;
-
-                    // Check bounds and if the neighbor is unassigned
-                    if (map.ContainsKey(neighbor) && map[neighbor] == null)
-                    {
-                        map[neighbor] = domain; // Expand domain
-                        expansionMade = true;
-                    }
-                }
-            }
-        } while (expansionMade); // Continue until no further expansion is possible
-    }
-    //{
-    //    int spread = domainNum;
-    //    int i = 0;
-    //    while (i <= domainNum)
-    //    {
-    //        Vector2 nextSpot = new Vector2(startingPoint.x +1, startingPoint.y);
-    //    }
-    //
-    //
-
 
 }

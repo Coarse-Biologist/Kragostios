@@ -24,6 +24,7 @@ public class Inventory : MonoBehaviour
     private bool itemSelected = false;
     private Item_SO selectedSellableItem;
     private Item_SO selectedBuyableItem;
+    private Button selectedButton;
 
 
     private List<TemplateContainer> traderButtons = new List<TemplateContainer>();
@@ -72,6 +73,7 @@ public class Inventory : MonoBehaviour
             panel.Add(container);
             container.Add(button);
             button.RegisterCallback<ClickEvent>(e => ShowItemInfo(item, false));
+            button.RegisterCallback<PointerEnterEvent>(e => AlterColor(button));
             //button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
         }
         TemplateContainer otherContainer = templateButton.Instantiate();
@@ -98,6 +100,7 @@ public class Inventory : MonoBehaviour
             traderInv.Add(container);
             container.Add(button);
             button.RegisterCallback<ClickEvent>(e => ShowItemInfo(item, true));
+            button.RegisterCallback<ClickEvent>(e => AlterColor(button));
             //button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
             traderButtons.Add(container);
         }
@@ -217,5 +220,14 @@ public class Inventory : MonoBehaviour
         //Label itemText = rightCreationPanel.Q<Label>("CharCreationText");
 
         exitInventoryScreen?.Invoke();
+    }
+    private void AlterColor(Button button)
+    {
+        if (selectedButton != null)
+        {
+            selectedButton.style.backgroundColor = new StyleColor(Color.grey);
+        }
+        button.style.backgroundColor = new StyleColor(Color.HSVToRGB(120f / 360f, 1f, 0.5f));
+        selectedButton = button;
     }
 }
