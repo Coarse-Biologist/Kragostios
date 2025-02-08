@@ -15,6 +15,21 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 9f3c07b48ce465247994188a6deabb96
   m_SerializeEntries:
+  - m_GUID: 0581262297c694f49b73ef4342873f72
+    m_Address: Assets/My Assets/Addressables/Items/Sword 6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e41466a68556ff469ecac4f8ce32688
+    m_Address: Assets/My Assets/Addressables/Items/Sword 5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 401144d518fcab94eb081758d73150e2
+    m_Address: Assets/My Assets/Addressables/Items/Sword 8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56d1b22e67f7f0040887ef997c5ec5cf
     m_Address: Assets/My Assets/Addressables/Items/Sword 2.asset
     m_ReadOnly: 0
@@ -25,13 +40,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7aaf1901012d2245b5e6819b911de13
+    m_Address: Assets/My Assets/Addressables/Items/Sword 7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: abd9a0771e9169141a337f348cc404bd
     m_Address: Assets/My Assets/Addressables/Items/Sword 1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4c2c611ada925c44bf09bde9a246c74
+    m_Address: Assets/My Assets/Addressables/Items/Sword 4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7eb3b5d6f4d4394fa3d4aa847d71614
     m_Address: Assets/My Assets/Addressables/Items/Sword.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffd26c20d3f9c7948af6cdd36c39216c
+    m_Address: Assets/My Assets/Addressables/Items/Sword 3.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

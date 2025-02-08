@@ -45,6 +45,7 @@ public class DungeonMaster : MonoBehaviour
     #region // SetUp
     private void Awake()
     {
+        root = UIDocument.rootVisualElement;
         KDebug.SeekBug("yeah");
         Player = MakePlayer();
         // Initialize component references
@@ -344,6 +345,9 @@ public class DungeonMaster : MonoBehaviour
             case LocationType.Trader:
                 narrator.DisplayNarrationText("You found a trader. Would you like to look at their services, or journey on?");
                 ShowMainMenu();
+                VisualElement buttonContainer_AO = root.Q<VisualElement>("PlayerOptions");
+                List<Item_SO> traderItems = inventory.worldChest.GetAllItems();
+                inventory.SpawnTraderButton(playerStats, buttonContainer_AO, traderItems);
                 break;
 
 
@@ -523,7 +527,7 @@ public class DungeonMaster : MonoBehaviour
         else
 
         {
-            Debug.Log("Insufficient sttatpoints");
+            Debug.Log("Insufficient statpoints");
             //SpawnContinueButton();
         }
 

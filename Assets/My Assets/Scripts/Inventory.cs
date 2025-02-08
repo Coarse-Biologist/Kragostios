@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 using UnityEngine.Events;
 using UnityEditor.Search;
 using KragostiosAllEnums;
+using System.Reflection.Emit;
 
 public class Inventory : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class Inventory : MonoBehaviour
     [SerializeField] List<Item_SO> allItems;
     [SerializeField] public WorldChest worldChest;
 
+    private List<TemplateContainer> traderButtons = new List<TemplateContainer>();
+
     public UnityEvent requestInventoryScreen;
     public UnityEvent requestTraderScreen;
     public UnityEvent exitInventoryScreen;
@@ -30,12 +33,12 @@ public class Inventory : MonoBehaviour
         itemText = rightCreationPanel.Q<Label>("CharCreationText");
 
     }
-    public void SpawnTraderButton(VisualElement panel, StatsHandler stats)
+    public void SpawnTraderButton(StatsHandler stats, VisualElement panel, List<Item_SO> traderItems)
     {
         TemplateContainer container = templateButton.Instantiate();
         Button button = container.Query<Button>();
         button.text = "Trader";
-        button.RegisterCallback<ClickEvent>(evt => DisplayTraderScreen(stats, leftCreationPanel));
+        button.RegisterCallback<ClickEvent>(evt => DisplayTraderScreen(stats, traderItems, leftCreationPanel, rightCreationPanel));
         panel.Add(button);
     }
     public void SpawnInventoryButton(VisualElement panel, StatsHandler stats)
@@ -50,7 +53,6 @@ public class Inventory : MonoBehaviour
     {
         panel.Clear();
         RequestInventoryScreen();
-
         foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
         {
             Item_SO item = kvp.Key;
@@ -59,54 +61,39 @@ public class Inventory : MonoBehaviour
             button.text = item.ItemName + $" || Value: {item.ItemValue} Gold || Number in Inventory: {kvp.Value}";
             panel.Add(container);
             container.Add(button);
-            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item));
+            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item, itemText));
             button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
         }
         TemplateContainer otherContainer = templateButton.Instantiate();
         Button exitInventoryButton = otherContainer.Q<Button>();
         otherContainer.Add(exitInventoryButton);
         panel.Add(otherContainer);
-        exitInventoryButton.text = "Exit Inventory";
+        exitInventoryButton.text = "Exit";
         exitInventoryButton.RegisterCallback<ClickEvent>(evt => ExitInventory());
     }
-    public void DisplayTraderScreen(StatsHandler stats, VisualElement panel)
+    public void DisplayTraderScreen(StatsHandler stats, List<Item_SO> traderItems, VisualElement playerInv, VisualElement traderInv)
     {
-        panel.Clear();
+        //foreach (TemplateContainer container in traderButtons)
+        //{
+        //    rightCreationPanel.Remove(container);
+        //}
+        traderInv.Clear();
+        DisplayInventoryItems(stats, playerInv);
         RequestInventoryScreen();
-
-        foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
+        foreach (Item_SO item in traderItems)
         {
-            Item_SO item = kvp.Key;
             TemplateContainer container = templateButton.Instantiate();
             Button button = container.Q<Button>();
-            button.text = item.ItemName + $" || Value: {item.ItemValue} Gold || Number in Inventory: {kvp.Value}";
-            panel.Add(container);
+            button.text = item.ItemName + $" || Cost: {item.ItemValue} Gold ||";
+            traderInv.Add(container);
             container.Add(button);
-            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item));
+            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item, itemText));
             button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
+            traderButtons.Add(container);
         }
-        TemplateContainer otherContainer = templateButton.Instantiate();
-        Button exitInventoryButton = otherContainer.Q<Button>();
-        otherContainer.Add(exitInventoryButton);
-        panel.Add(otherContainer);
-        //// trader side (right panel)
-        foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
-        {
-            Item_SO item = kvp.Key;
-            TemplateContainer container = templateButton.Instantiate();
-            Button button = container.Q<Button>();
-            button.text = item.ItemName + $" || Value: {item.ItemValue} Gold || Number in Inventory: {kvp.Value}";
-            panel.Add(container);
-            container.Add(button);
-            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item));
-            button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
-        }
-        TemplateContainer rightContainer = templateButton.Instantiate();
-        panel.Add(rightContainer);
+        //TemplateContainer otherContainer = templateButton.Instantiate();
+        //traderInv.Add(otherContainer);
 
-
-        exitInventoryButton.text = "Exit Inventory";
-        exitInventoryButton.RegisterCallback<ClickEvent>(evt => ExitInventory());
     }
 
     public void RequestInventoryScreen()
@@ -122,9 +109,12 @@ public class Inventory : MonoBehaviour
         requestTraderScreen?.Invoke();
     }
 
-    private void ShowItemInfo(Item_SO item)
+    private void ShowItemInfo(Item_SO item, Label itemText)
     {
         //HideItemInfo();
+        //itemText = rightCreationPanel.Q<Label>("CharCreationText");
+        //Label itemText = new
+        itemText.style.display = DisplayStyle.Flex;
         itemText.style.whiteSpace = WhiteSpace.Normal;
         itemText.style.color = Color.white;
         itemText.text = item.GetItemInfo();
@@ -132,10 +122,13 @@ public class Inventory : MonoBehaviour
 
     private void HideItemInfo()
     {
+        //Label itemText = rightCreationPanel.Q<Label>("CharCreationText");
         itemText.text = " ";
     }
     private void ExitInventory()
     {
+        //Label itemText = rightCreationPanel.Q<Label>("CharCreationText");
+        itemText.style.justifyContent = Justify.FlexStart;
         exitInventoryScreen?.Invoke();
     }
 }

@@ -668,6 +668,9 @@ MonoBehaviour:
   requestInventoryScreen:
     m_PersistentCalls:
       m_Calls: []
+  requestTraderScreen:
+    m_PersistentCalls:
+      m_Calls: []
   exitInventoryScreen:
     m_PersistentCalls:
       m_Calls: []
@@ -704,6 +707,12 @@ MonoBehaviour:
   - Sword
   - Sword 1
   - Sword 2
+  - Sword 3
+  - Sword 4
+  - Sword 5
+  - Sword 6
+  - Sword 7
+  - Sword 8
 --- !u!4 &2016637003
 Transform:
   m_ObjectHideFlags: 0
