@@ -6,35 +6,44 @@ using UnityEngine.Events;
 using UnityEditor.Search;
 using KragostiosAllEnums;
 using System.Reflection.Emit;
+using Unity.VisualScripting;
 
 public class Inventory : MonoBehaviour
 {
-    private Label itemText;
+    private UnityEngine.UIElements.Label itemInfo;
     private VisualElement root;
     private VisualElement leftCreationPanel;
     private VisualElement rightCreationPanel;
     [SerializeField] UIDocument UIDocument;
     [SerializeField] VisualTreeAsset templateButton;
     [SerializeField] Dictionary<Item_SO, int> playerInventory;
+    private StatsHandler playerStats;
     [SerializeField] List<Item_SO> allItems;
     [SerializeField] public WorldChest worldChest;
+
+    private bool itemSelected = false;
+    private Item_SO selectedSellableItem;
+    private Item_SO selectedBuyableItem;
+
 
     private List<TemplateContainer> traderButtons = new List<TemplateContainer>();
 
     public UnityEvent requestInventoryScreen;
     public UnityEvent requestTraderScreen;
     public UnityEvent exitInventoryScreen;
+    public UnityEvent<Item_SO, bool> requestTransaction;
 
     private void Awake()
     {
         VisualElement root = UIDocument.rootVisualElement;
         leftCreationPanel = root.Q<VisualElement>("LeftCreationPanel");
         rightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
-        itemText = rightCreationPanel.Q<Label>("CharCreationText");
+        itemInfo = new UnityEngine.UIElements.Label("");
 
     }
     public void SpawnTraderButton(StatsHandler stats, VisualElement panel, List<Item_SO> traderItems)
     {
+        playerStats = stats;
         TemplateContainer container = templateButton.Instantiate();
         Button button = container.Query<Button>();
         button.text = "Trader";
@@ -43,6 +52,7 @@ public class Inventory : MonoBehaviour
     }
     public void SpawnInventoryButton(VisualElement panel, StatsHandler stats)
     {
+        playerStats = stats;
         TemplateContainer container = templateButton.Instantiate();
         Button button = container.Query<Button>();
         button.text = "Inventory";
@@ -61,8 +71,8 @@ public class Inventory : MonoBehaviour
             button.text = item.ItemName + $" || Value: {item.ItemValue} Gold || Number in Inventory: {kvp.Value}";
             panel.Add(container);
             container.Add(button);
-            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item, itemText));
-            button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
+            button.RegisterCallback<ClickEvent>(e => ShowItemInfo(item, false));
+            //button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
         }
         TemplateContainer otherContainer = templateButton.Instantiate();
         Button exitInventoryButton = otherContainer.Q<Button>();
@@ -87,12 +97,20 @@ public class Inventory : MonoBehaviour
             button.text = item.ItemName + $" || Cost: {item.ItemValue} Gold ||";
             traderInv.Add(container);
             container.Add(button);
-            button.RegisterCallback<PointerEnterEvent>(e => ShowItemInfo(item, itemText));
-            button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
+            button.RegisterCallback<ClickEvent>(e => ShowItemInfo(item, true));
+            //button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
             traderButtons.Add(container);
         }
-        //TemplateContainer otherContainer = templateButton.Instantiate();
-        //traderInv.Add(otherContainer);
+        TemplateContainer sellContainer = templateButton.Instantiate();
+        Button sellButton = sellContainer.Q<Button>();
+        sellButton.text = "Sell";
+        TemplateContainer buyContainer = templateButton.Instantiate();
+        sellButton.RegisterCallback<ClickEvent>(e => RequestTransaction(selectedSellableItem, false));
+        Button buyButton = buyContainer.Q<Button>();
+        buyButton.text = "Buy";
+        buyButton.RegisterCallback<ClickEvent>(e => RequestTransaction(selectedBuyableItem, true));
+        traderInv.Add(sellButton);
+        traderInv.Add(buyButton);
 
     }
 
@@ -109,26 +127,95 @@ public class Inventory : MonoBehaviour
         requestTraderScreen?.Invoke();
     }
 
-    private void ShowItemInfo(Item_SO item, Label itemText)
+    private void ShowItemInfo(Item_SO item, bool tradersItem)
     {
-        //HideItemInfo();
-        //itemText = rightCreationPanel.Q<Label>("CharCreationText");
-        //Label itemText = new
-        itemText.style.display = DisplayStyle.Flex;
-        itemText.style.whiteSpace = WhiteSpace.Normal;
-        itemText.style.color = Color.white;
-        itemText.text = item.GetItemInfo();
+        Debug.Log($"item clicked = {item.name}");
+        HideItemInfo();
+        if (itemSelected == false || item != selectedSellableItem || item != selectedBuyableItem)
+        {
+            itemSelected = true;
+            if (tradersItem)
+            {
+                selectedBuyableItem = item;
+                selectedSellableItem = null;
+            }
+            else
+            {
+                selectedSellableItem = item;
+                selectedBuyableItem = null;
+            }
+
+            itemInfo = new UnityEngine.UIElements.Label("");
+            rightCreationPanel.Add(itemInfo);
+            itemInfo.style.display = DisplayStyle.Flex;
+            itemInfo.style.whiteSpace = WhiteSpace.Normal;
+            itemInfo.style.color = Color.white;
+            itemInfo.text = item.GetItemInfo();
+        }
+        else
+        {
+            if (item == selectedBuyableItem || item == selectedSellableItem)
+            {
+                itemSelected = false;
+                HideItemInfo();
+            }
+
+        }
     }
 
+    private void RequestTransaction(Item_SO selectedItem, bool buying) // true if buying, false if selling
+    {
+        if (selectedItem != null)
+        {
+
+            if (buying)
+            {
+                if (selectedItem == selectedBuyableItem)
+                {
+                    if (playerStats.characterGold >= selectedItem.ItemValue)
+                    {
+                        playerStats.AddToInventory(selectedItem);
+                        playerStats.ChangeGold(-selectedItem.ItemValue);
+                        Debug.Log($"Player spent {selectedItem.ItemValue} gold");
+                    }
+
+
+                    else
+                    {
+                        Debug.Log($"Player lacked the required {selectedItem.ItemValue} gold");
+                    }
+
+                }
+                else { Debug.Log($"You cannot buy your own item"); }
+            }
+            else if (!buying) // selling
+            {
+                if (selectedItem == selectedSellableItem)
+                {
+                    playerStats.RemoveFromInventory(selectedItem);
+                    playerStats.ChangeGold(+selectedItem.ItemValue);
+                    Debug.Log($"Player sold {selectedItem.ItemName} for {selectedItem.ItemValue} gold");
+                }
+                else { Debug.Log("You cant sell an item that doesnt belong to you"); }
+            }
+            DisplayInventoryItems(playerStats, leftCreationPanel);
+        }
+        else Debug.Log("You cannot perform a transaction with an object that is actually nothing");
+
+    }
     private void HideItemInfo()
     {
+        if (rightCreationPanel.Contains(itemInfo))
+        {
+            rightCreationPanel.Remove(itemInfo);
+        }
         //Label itemText = rightCreationPanel.Q<Label>("CharCreationText");
-        itemText.text = " ";
+        itemInfo.text = "";
     }
     private void ExitInventory()
     {
         //Label itemText = rightCreationPanel.Q<Label>("CharCreationText");
-        itemText.style.justifyContent = Justify.FlexStart;
+
         exitInventoryScreen?.Invoke();
     }
 }

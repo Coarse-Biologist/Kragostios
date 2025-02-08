@@ -86,6 +86,7 @@ public class DungeonMaster : MonoBehaviour
 
         inventory.requestInventoryScreen.AddListener(ShowInventoryScreen);
         inventory.exitInventoryScreen.AddListener(ExitInventoryScreen);
+        inventory.requestTransaction.AddListener(HandleTransaction);
 
     }
 
@@ -109,6 +110,7 @@ public class DungeonMaster : MonoBehaviour
 
         inventory.requestInventoryScreen.RemoveListener(ShowInventoryScreen);
         inventory.exitInventoryScreen.RemoveListener(ExitInventoryScreen);
+        inventory.requestTransaction.RemoveListener(HandleTransaction);
 
 
     }
@@ -303,6 +305,15 @@ public class DungeonMaster : MonoBehaviour
                 playerStats.AddToInventory(item);
             }
         }
+    }
+
+
+    #endregion
+    #region trader / transaction handling
+
+    private void HandleTransaction(Item_SO item, bool buying)
+    {
+
     }
 
     #endregion

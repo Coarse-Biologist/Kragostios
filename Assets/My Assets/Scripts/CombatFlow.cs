@@ -359,7 +359,7 @@ public class CombatFlow : MonoBehaviour
             {
                 int goldGained = rewardDict[Rewards.Gold];
                 int XpGained = rewardDict[Rewards.Xp];
-                victorStats.GainGold(goldGained);
+                victorStats.ChangeGold(goldGained);
                 victorStats.GainXp(XpGained);
                 RequestNarration($"{victorStats.characterName} gained {goldGained} gold and {XpGained} XP!");
             }

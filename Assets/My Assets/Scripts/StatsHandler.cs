@@ -583,9 +583,9 @@ public class StatsHandler : MonoBehaviour
         knownAbilities.Add(abilityLibrary.abilityDict[newAbility]);
     }
     #region // inventory
-    public void GainGold(int GoldAmount)
+    public void ChangeGold(int GoldAmount)
     {
-        KDebug.SeekBug($"{characterName} gained {GoldAmount}");
+        KDebug.SeekBug($"{characterName} cahnge amount of gold by: {GoldAmount}");
         characterGold += GoldAmount;
     }
     public Dictionary<Item_SO, int> GetInventory()
@@ -610,11 +610,16 @@ public class StatsHandler : MonoBehaviour
         if (invItems.Contains(item))
         {
             Inventory[item] -= amount;
+            if (Inventory[item] == 0)
+            {
+                Inventory.Remove(item);
+            }
         }
         else
         {
             Inventory.Remove(item);
         }
+
     }
     #endregion
     private void GainLevel()
@@ -698,7 +703,7 @@ public class StatsHandler : MonoBehaviour
         currentXp = 0;
         MaxXp = 30;
         rewards = new List<Rewards>();
-        characterGold = 0;
+        characterGold = 100;
         knownAbilities = new List<Ability_SO>{
     abilityLibrary.Melee, abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch, abilityLibrary.ColdLight, abilityLibrary.BrainDamage, abilityLibrary.LavaPortal, abilityLibrary.GlobalCooling
     };
