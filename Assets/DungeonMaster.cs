@@ -324,7 +324,7 @@ public class DungeonMaster : MonoBehaviour
         travel.TravelInDirection(direction);
         Vector2 playerLocation = travel.playerLocation;
         LocationType locationType = map.GetLocationType(playerLocation);
-        locationType = LocationType.Trader;
+        locationType = LocationType.Hostile;
         switch (locationType)
         {
             case LocationType.Hostile:

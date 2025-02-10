@@ -125,6 +125,7 @@ namespace KragostiosAllEnums
         Oshiania, // Water people
         Bioleb, // Jungle  people 
         SessPool, // Nasty swamp rat people
+        Zactaal // intellectual kidnapping xenophobes
     }
 
     public enum Biomes

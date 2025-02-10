@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEditor.Rendering;
+using System.Numerics;
+using System.IO.Compression;
+using UnityEngine.InputSystem;
 //using System.Numerics;
 
 public class Map : MonoBehaviour
@@ -24,7 +27,7 @@ public class Map : MonoBehaviour
     #endregion
 
     #region // other map variables
-    private Vector2 mapDimensions;
+    private UnityEngine.Vector2 mapDimensions;
     public Dictionary<LocationType, int> LocationDensityDict = new Dictionary<LocationType, int>();
 
     public Dictionary<Directions, Directions> oppositeDirections = new Dictionary<Directions, Directions>
@@ -36,8 +39,8 @@ public class Map : MonoBehaviour
     };
     #endregion
 
-    [SerializeField] private Dictionary<Vector2, LocationType> mapDict;
-    private Dictionary<Vector2, Tuple<Kingdoms, Biomes>> map;
+    [SerializeField] private Dictionary<UnityEngine.Vector2, LocationType> mapDict;
+    private Dictionary<UnityEngine.Vector2, Tuple<Kingdoms, Biomes>> map;
     public List<Directions> directions { private set; get; } = new List<Directions>
     {
         Directions.North,
@@ -46,18 +49,22 @@ public class Map : MonoBehaviour
         Directions.West
     };
 
-    private List<Vector2> vectorDirections = new List<Vector2>
+    private List<UnityEngine.Vector2> vectorDirections = new List<UnityEngine.Vector2>
     {
-        new Vector2(0, 1),  // Up
-        new Vector2(0, -1), // Down
-        new Vector2(1, 0),  // Right
-        new Vector2(-1, 0)  // Left
+        new UnityEngine.Vector2(0, 1),  // Up
+        new UnityEngine.Vector2(0, -1), // Down
+        new UnityEngine.Vector2(1, 0),  // Right
+        new UnityEngine.Vector2(-1, 0)  // Left
     };
     #endregion
     #region // domaine and biome variables
 
     List<Biomes> biomesList;
     List<Kingdoms> kingdomsList;
+    Dictionary<Kingdoms, int> kingdomSizeDict;
+    Dictionary<UnityEngine.Vector2, Kingdoms> kingdomMapDict;
+
+
 
     #endregion
 
@@ -67,19 +74,19 @@ public class Map : MonoBehaviour
     }
 
     // makes map of size mapSize squared and assigns random location types to each integer vector location
-    private Dictionary<Vector2, LocationType> MakeMapDict()
+    private Dictionary<UnityEngine.Vector2, LocationType> MakeMapDict()
     {
-        mapDict = new Dictionary<Vector2, LocationType>();
+        mapDict = new Dictionary<UnityEngine.Vector2, LocationType>();
 
         for (int x = -mapSize * mapSize; x < mapSize; x++)
         {
             for (int y = -mapSize * mapSize; y < mapSize; y++)
             {
                 LocationType locationType = GetRandomLocation();
-                mapDict.Add(new Vector2(x, y), locationType);
+                mapDict.Add(new UnityEngine.Vector2(x, y), locationType);
             }
         }
-        mapDimensions = new Vector2(mapSize, mapSize);
+        mapDimensions = new UnityEngine.Vector2(mapSize, mapSize);
         return mapDict;
     }
     private Dictionary<LocationType, int> MakeLocationDensityDict()
@@ -130,7 +137,7 @@ public class Map : MonoBehaviour
 
     }
 
-    public LocationType GetLocationType(Vector2 playerlocation)
+    public LocationType GetLocationType(UnityEngine.Vector2 playerlocation)
     {
         if (mapDict != null)
         {
@@ -148,24 +155,82 @@ public class Map : MonoBehaviour
 
     private Biomes GetRandomBiome()
     {
-        biomesList = GetAllBiomes<Biomes>();
+        biomesList = GetAllEnums<Biomes>();
         int biomeNum = biomesList.Count;
         int randomBiomeIndex = UnityEngine.Random.Range(0, biomeNum - 1);
         Biomes randomBiome = biomesList[randomBiomeIndex];
         return randomBiome;
     }
-    public static List<Biomes> GetAllBiomes<Biomes>()// where T : Enum
+
+    public static List<T> GetAllEnums<T>() where T : Enum
     {
-        return Enum.GetValues(typeof(Biomes)).Cast<Biomes>().ToList();
-    }
-    public static List<Kingdoms> GetAllKingdom<Kingdoms>()// where T : Enum
-    {
-        return Enum.GetValues(typeof(Kingdoms)).Cast<Kingdoms>().ToList();
+        return Enum.GetValues(typeof(T)).Cast<T>().ToList();
     }
 
-    private void SetDomainSizes()
+    private void SetKingdomSizes()
     {
+        List<Kingdoms> allKingdoms = GetAllEnums<Kingdoms>();
 
+        kingdomSizeDict = new Dictionary<Kingdoms, int>();
+        foreach (Kingdoms kingdom in allKingdoms)
+        {
+            int kingdomSize = UnityEngine.Random.Range(20, 30);
+            kingdomSizeDict.Add(kingdom, kingdomSize);
+        }
+    }
+
+    private Dictionary<UnityEngine.Vector2, Kingdoms> KingdomStartPoints()
+    {
+        List<Kingdoms> domainType = GetAllEnums<Kingdoms>();
+        kingdomMapDict = new Dictionary<UnityEngine.Vector2, Kingdoms>();
+        foreach (Kingdoms kingdom in domainType)
+        {
+            bool found = false;
+            while (!found)
+            {
+                UnityEngine.Vector2 startPoint = mapDict.Keys.ToList()[UnityEngine.Random.Range(0, kingdomMapDict.Count)];
+                if (!kingdomMapDict.TryGetValue(startPoint, out Kingdoms kingdoms))
+                {
+                    kingdomMapDict.Add(startPoint, kingdom);
+                    found = true; // leave the while loop
+                }
+            }
+        }
+        return kingdomMapDict;
+    }
+
+    private void AddKingdomsToMap()
+    {
+        Dictionary<UnityEngine.Vector2, Kingdoms> kingdomStartPoints = KingdomStartPoints();
+
+        foreach (KeyValuePair<UnityEngine.Vector2, Kingdoms> kvp in kingdomStartPoints)
+        {
+            List<UnityEngine.Vector2> startPoints = new List<UnityEngine.Vector2>();
+            startPoints.Add(kvp.Key);
+            int i = 6;
+            while (i > 0)
+            {
+                List<UnityEngine.Vector2> newStartPoints = BranchOut(startPoints, kvp.Value);
+                BranchOut(newStartPoints, kvp.Value);
+            }
+        }
+    }
+
+    private List<UnityEngine.Vector2> BranchOut(List<UnityEngine.Vector2> startPoints, Kingdoms kingdom)
+    {
+        List<UnityEngine.Vector2> newStartPoints = new List<UnityEngine.Vector2>();
+
+        foreach (UnityEngine.Vector2 startPoint in startPoints)
+        {
+            foreach (UnityEngine.Vector2 direction in vectorDirections)
+            {
+                UnityEngine.Vector2 newLocation = startPoint + direction;
+                kingdomMapDict.TryAdd(newLocation, kingdom);
+                newStartPoints.Add(newLocation);
+            }
+        }
+
+        return newStartPoints;
     }
 
 }
