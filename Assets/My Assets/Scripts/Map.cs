@@ -60,9 +60,10 @@ public class Map : MonoBehaviour
     #region // domaine and biome variables
 
     List<Biomes> biomesList;
-    List<Kingdoms> kingdomsList;
+    private List<Kingdoms> kingdomsList;
     Dictionary<Kingdoms, int> kingdomSizeDict;
-    Dictionary<UnityEngine.Vector2, Kingdoms> kingdomMapDict;
+    public Dictionary<UnityEngine.Vector2, Kingdoms> kingdomMapDict;
+    public Dictionary<UnityEngine.Vector2, Biomes> biomesMapDict;
 
 
 
@@ -71,6 +72,7 @@ public class Map : MonoBehaviour
     private void Awake()
     {
         mapDict = MakeMapDict();
+        AddKingdomsToMap();
     }
 
     // makes map of size mapSize squared and assigns random location types to each integer vector location
@@ -167,56 +169,94 @@ public class Map : MonoBehaviour
         return Enum.GetValues(typeof(T)).Cast<T>().ToList();
     }
 
-    private void SetKingdomSizes()
-    {
-        List<Kingdoms> allKingdoms = GetAllEnums<Kingdoms>();
-
-        kingdomSizeDict = new Dictionary<Kingdoms, int>();
-        foreach (Kingdoms kingdom in allKingdoms)
-        {
-            int kingdomSize = UnityEngine.Random.Range(20, 30);
-            kingdomSizeDict.Add(kingdom, kingdomSize);
-        }
-    }
-
-    private Dictionary<UnityEngine.Vector2, Kingdoms> KingdomStartPoints()
+    private Dictionary<UnityEngine.Vector2, Kingdoms> KingdomStartPointss()
     {
         List<Kingdoms> domainType = GetAllEnums<Kingdoms>();
         kingdomMapDict = new Dictionary<UnityEngine.Vector2, Kingdoms>();
+        List<UnityEngine.Vector2> mapDictList = mapDict.Keys.ToList();
+
         foreach (Kingdoms kingdom in domainType)
         {
             bool found = false;
             while (!found)
             {
-                UnityEngine.Vector2 startPoint = mapDict.Keys.ToList()[UnityEngine.Random.Range(0, kingdomMapDict.Count)];
+                int randomIndex = UnityEngine.Random.Range(0, mapDict.Count);
+                UnityEngine.Vector2 startPoint = mapDictList[randomIndex];
+                Debug.Log($"{startPoint}");
                 if (!kingdomMapDict.TryGetValue(startPoint, out Kingdoms kingdoms))
                 {
                     kingdomMapDict.Add(startPoint, kingdom);
                     found = true; // leave the while loop
                 }
+                Debug.Log($"found: {found}");
+
             }
         }
         return kingdomMapDict;
     }
+    private Dictionary<UnityEngine.Vector2, Kingdoms> KingdomStartPoints()
+    {
+        List<Kingdoms> domainType = GetAllEnums<Kingdoms>();
+        kingdomMapDict = new Dictionary<UnityEngine.Vector2, Kingdoms>();
 
+        // Store the keys from mapDict into a list once for efficiency
+        List<UnityEngine.Vector2> availablePoints = mapDict.Keys.ToList();
+
+        foreach (Kingdoms kingdom in domainType)
+        {
+            bool found = false;
+            while (!found)
+            {
+                if (availablePoints.Count == 0)
+                {
+                    Debug.LogWarning("No available points left to assign kingdoms!");
+                    break;
+                }
+
+                int randomIndex = UnityEngine.Random.Range(0, availablePoints.Count);
+                UnityEngine.Vector2 startPoint = availablePoints[randomIndex];
+
+                if (!kingdomMapDict.ContainsKey(startPoint))
+                {
+                    kingdomMapDict.Add(startPoint, kingdom);
+                    found = true;
+
+                    // Optional: Remove the assigned point from availablePoints to prevent reassignment
+                    availablePoints.RemoveAt(randomIndex);
+                }
+            }
+        }
+        return kingdomMapDict;
+    }
+    public Kingdoms GetKingdom(UnityEngine.Vector2 vectorLocation)
+    {
+        Kingdoms kingdom = Kingdoms.SessPool;
+        if (kingdomMapDict.Keys.ToList().Contains(vectorLocation))
+        {
+            kingdom = kingdomMapDict[vectorLocation];
+
+        }
+        return kingdom;
+    }
     private void AddKingdomsToMap()
     {
         Dictionary<UnityEngine.Vector2, Kingdoms> kingdomStartPoints = KingdomStartPoints();
+        List<UnityEngine.Vector2> startPointList = kingdomStartPoints.Keys.ToList();
 
-        foreach (KeyValuePair<UnityEngine.Vector2, Kingdoms> kvp in kingdomStartPoints)
+        foreach (UnityEngine.Vector2 point in startPointList)
         {
-            List<UnityEngine.Vector2> startPoints = new List<UnityEngine.Vector2>();
-            startPoints.Add(kvp.Key);
-            int i = 6;
-            while (i > 0)
+            List<UnityEngine.Vector2> startPoints = new List<UnityEngine.Vector2> { point };
+            int iterations = 10; // Expand twice instead of redundant calls
+
+            for (int i = 0; i < iterations; i++)
             {
-                List<UnityEngine.Vector2> newStartPoints = BranchOut(startPoints, kvp.Value);
-                BranchOut(newStartPoints, kvp.Value);
+                Kingdoms kingdom = kingdomStartPoints[point];
+                startPoints = BranchOut(startPoints, kingdom);
+                if (startPoints.Count == 0) break; // Stop early if no new points were added
             }
         }
     }
-
-    private List<UnityEngine.Vector2> BranchOut(List<UnityEngine.Vector2> startPoints, Kingdoms kingdom)
+    private List<UnityEngine.Vector2> BranchOutKingdom(List<UnityEngine.Vector2> startPoints, Kingdoms kingdom)
     {
         List<UnityEngine.Vector2> newStartPoints = new List<UnityEngine.Vector2>();
 
@@ -225,12 +265,91 @@ public class Map : MonoBehaviour
             foreach (UnityEngine.Vector2 direction in vectorDirections)
             {
                 UnityEngine.Vector2 newLocation = startPoint + direction;
-                kingdomMapDict.TryAdd(newLocation, kingdom);
-                newStartPoints.Add(newLocation);
+
+                if (!kingdomMapDict.ContainsKey(newLocation)) // More efficient check
+                {
+                    kingdomMapDict[newLocation] = kingdom; // Direct assignment
+                    newStartPoints.Add(newLocation);
+                    Debug.Log($"Kingdom at point {newLocation}: {kingdom}");
+                }
             }
         }
 
         return newStartPoints;
+    }
+    private List<UnityEngine.Vector2> BranchOutBiome(List<UnityEngine.Vector2> startPoints, Biomes biome)
+    {
+        List<UnityEngine.Vector2> newStartPoints = new List<UnityEngine.Vector2>();
+
+        foreach (UnityEngine.Vector2 startPoint in startPoints)
+        {
+            foreach (UnityEngine.Vector2 direction in vectorDirections)
+            {
+                UnityEngine.Vector2 newLocation = startPoint + direction;
+
+                if (!biomesMapDict.ContainsKey(newLocation)) // More efficient check
+                {
+                    biomesMapDict[newLocation] = biome; // Direct assignment
+                    newStartPoints.Add(newLocation);
+                    Debug.Log($"Kingdom at point {newLocation}: {biome}");
+                }
+            }
+        }
+
+        return newStartPoints;
+    }
+    private Dictionary<UnityEngine.Vector2, Biomes> BiomeStartPoints()
+    {
+        List<Biomes> domainType = GetAllEnums<Biomes>();
+        biomesMapDict = new Dictionary<UnityEngine.Vector2, Biomes>();
+        List<UnityEngine.Vector2> mapDictList = mapDict.Keys.ToList();
+
+        foreach (Biomes biome in domainType)
+        {
+            bool found = false;
+            while (!found)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, mapDict.Count);
+                UnityEngine.Vector2 startPoint = mapDictList[randomIndex];
+                Debug.Log($"{startPoint}");
+                if (!biomesMapDict.TryGetValue(startPoint, out Biomes biomes))
+                {
+                    biomesMapDict.Add(startPoint, biome);
+                    found = true; // leave the while loop
+                }
+                Debug.Log($"found: {found}");
+
+            }
+        }
+        return biomesMapDict;
+    }
+    private void AddBiomesToMap()
+    {
+        Dictionary<UnityEngine.Vector2, Biomes> biomeStartPoints = BiomeStartPoints();
+        List<UnityEngine.Vector2> startPointList = biomeStartPoints.Keys.ToList();
+
+        foreach (UnityEngine.Vector2 point in startPointList)
+        {
+            List<UnityEngine.Vector2> startPoints = new List<UnityEngine.Vector2> { point };
+            int iterations = 10; // Expand twice instead of redundant calls
+
+            for (int i = 0; i < iterations; i++)
+            {
+                Biomes biome = biomeStartPoints[point];
+                startPoints = BranchOutBiome(startPoints, biome);
+                if (startPoints.Count == 0) break; // Stop early if no new points were added
+            }
+        }
+    }
+    public Kingdoms GetBiome(UnityEngine.Vector2 vectorLocation)
+    {
+        Biomes biome = Biomes.Swamp;
+        if (biomesMapDict.Keys.ToList().Contains(vectorLocation))
+        {
+            biome = biomesMapDict[vectorLocation];
+
+        }
+        return biome;
     }
 
 }

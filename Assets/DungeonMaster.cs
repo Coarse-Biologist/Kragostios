@@ -324,7 +324,10 @@ public class DungeonMaster : MonoBehaviour
         travel.TravelInDirection(direction);
         Vector2 playerLocation = travel.playerLocation;
         LocationType locationType = map.GetLocationType(playerLocation);
+        Kingdoms kingdom = map.GetKingdom(playerLocation);
+        narrator.DisplayNarrationText($"You are in the kingdom: {kingdom}");
         locationType = LocationType.Hostile;
+
         switch (locationType)
         {
             case LocationType.Hostile:
