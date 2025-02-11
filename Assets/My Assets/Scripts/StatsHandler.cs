@@ -619,7 +619,15 @@ public class StatsHandler : MonoBehaviour
         {
             Inventory.Remove(item);
         }
-
+    }
+    public int GetNumItemsInInventory(Item_SO item)
+    {
+        int itemNum = 0;
+        if (Inventory.TryGetValue(item, out int num))
+        {
+            itemNum = num;
+        }
+        return itemNum;
     }
     #endregion
     private void GainLevel()

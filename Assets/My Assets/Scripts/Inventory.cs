@@ -93,12 +93,7 @@ public class Inventory : MonoBehaviour
         exitInventoryButton.text = "Exit";
         exitInventoryButton.RegisterCallback<ClickEvent>(evt => ExitInventory());
 
-        TemplateContainer equipButtonContainer = templateButton.Instantiate();
-        Button equipItemButton = equipButtonContainer.Q<Button>();
-        otherContainer.Add(equipItemButton);
-        panel.Add(equipButtonContainer);
-        equipItemButton.text = "Equip Item";
-        equipItemButton.RegisterCallback<ClickEvent>(evt => HandleEquip(selectedItemSlotType));
+
     }
     public void DisplayTraderScreen(StatsHandler stats, List<Item_SO> traderItems, VisualElement playerInv, VisualElement traderInv)
     {
@@ -248,15 +243,11 @@ public class Inventory : MonoBehaviour
         button.style.backgroundColor = new StyleColor(Color.HSVToRGB(120f / 360f, 1f, 0.5f));
         selectedButton = button;
     }
+
+    #region // equipment
     private void ShowSlotOptions(Item_SO item, VisualElement panel)
     {
-        //foreach (Button button in currentSlotButtons)
-        //{
-        //    if (panel.Contains(button))
-        //    {
-        //        panel.Remove(button);
-        //    }
-        //}
+
         foreach (Button button in currentSlotButtons)
         {
             VisualElement parent = button.parent; // Get parent container
@@ -274,24 +265,33 @@ public class Inventory : MonoBehaviour
             {
                 TemplateContainer container = templateButton.Instantiate();
                 Button button = container.Q<Button>();
-                button.text = $"{slot}";
+                button.text = $"Equip {item.ItemName} in {slot}";
                 panel.Add(container);
                 container.Add(button);
-                button.RegisterCallback<ClickEvent>(e => SetSelectedItemSlot(slot));
+                //button.RegisterCallback<ClickEvent>(e => SetSelectedItemSlot(slot));
+                button.RegisterCallback<ClickEvent>(e => HandleEquip(slot, item));
                 currentSlotButtons.Add(button);
             }
         }
 
+        //TemplateContainer equipButtonContainer = templateButton.Instantiate();
+        //Button equipItemButton = equipButtonContainer.Q<Button>();
+        //panel.Add(equipItemButton);
+        //panel.Add(equipButtonContainer);
+        //equipItemButton.text = "Equip Item";
+        //equipItemButton.RegisterCallback<ClickEvent>(evt => HandleEquip(selectedItemSlotType));
     }
 
-    private void HandleEquip(ItemSlot slot)
+    private void HandleEquip(ItemSlot slot, Item_SO item)
     {
-        Item_SO item = selectedEquippableItem;
-        if (selectedEquippableItem != null)
+        //Item_SO item = selectedEquippableItem;
+        if (item != null)
         {
-            if (selectedItemSlotType != ItemSlot.None)
+            if (slot != ItemSlot.None)
             {
                 equipmentHandler.DecideEquipItem(playerStats, item, slot);
+                Debug.Log($"You have equipped {equipmentHandler.GetItemNameFromSlot(playerStats, slot)} from slot {slot}");
+                Debug.Log($"AL EQUIPMENT: {equipmentHandler.GetAllSlotItems(playerStats)}");
             }
             else Debug.Log("Selected item cannot be equipped.");
         }
@@ -301,4 +301,5 @@ public class Inventory : MonoBehaviour
     {
         selectedItemSlotType = slot;
     }
+    #endregion
 }

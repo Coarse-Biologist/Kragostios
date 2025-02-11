@@ -4,6 +4,8 @@ using UnityEngine;
 using KragostiosAllEnums;
 using System.Linq;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using NUnit.Framework.Constraints;
 
 public class EquipmentHandler : MonoBehaviour
 {
@@ -22,16 +24,17 @@ public class EquipmentHandler : MonoBehaviour
         PlayerStats = playerStats;
         if (!playerDictAdded)
         {
+            Debug.Log($"Adding player stats ({playerStats}) to dict");
             AddCharToEquipmentDict(PlayerStats);
             playerDictAdded = true;
         }
+        Debug.Log($"player dict added? = {playerDictAdded}");
     }
 
     private void AddCharToEquipmentDict(StatsHandler stats)
     {
         Dictionary<ItemSlot, Item_SO> charEquipment = new Dictionary<ItemSlot, Item_SO>();
         allEquipmentDicts.TryAdd(stats, charEquipment);
-
         foreach (ItemSlot slot in allItemSlots)
         {
             charEquipment.Add(slot, placeHolderItem);
@@ -73,10 +76,23 @@ public class EquipmentHandler : MonoBehaviour
         {
             if (equipment.TryGetValue(slot, out Item_SO dictValue))  // check if the slot exists in the dictionary
             {
-                Debug.Log($"You want to unequip {item.name} of slot {slot}");
                 Unequip(stats, slot);                   // clear it
             }
             // equip item in newly cleared slot
+        }
+        if (equipSlot == ItemSlot.LeftHand && stats.GetNumItemsInInventory(item) < 2)
+        {
+            if (GetItemFromSlot(stats, ItemSlot.RightHand) == item)
+            {
+                Unequip(stats, ItemSlot.RightHand);
+            }
+        }
+        if (equipSlot == ItemSlot.RightHand && stats.GetNumItemsInInventory(item) < 2)
+        {
+            if (GetItemFromSlot(stats, ItemSlot.LeftHand) == item)
+            {
+                Unequip(stats, ItemSlot.LeftHand);
+            }
         }
         EquipItem(stats, equipSlot, item);
 
@@ -87,6 +103,7 @@ public class EquipmentHandler : MonoBehaviour
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
         if (equipment.TryGetValue(slot, out Item_SO dictValue))
         {
+            Debug.Log($"You want to unequip {dictValue.ItemName} in slot {slot}");
             equipment[slot] = placeHolderItem;
         }
         else equipment.TryAdd(slot, placeHolderItem);
@@ -96,13 +113,71 @@ public class EquipmentHandler : MonoBehaviour
     {
         Debug.Log($"You want to equip {item.ItemName}");
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
-        if (equipment[slot] != placeHolderItem)
+        if (equipment.TryGetValue(slot, out Item_SO whoCares))
         {
+            Debug.Log($"{item.ItemName} is actually litterally being added to {slot}");
             equipment[slot] = item;
         }
 
     }
 
+    public string GetItemNameFromSlot(StatsHandler stats, ItemSlot slot)
+    {
+        string itemName = "None";
+        if (allEquipmentDicts.TryGetValue(stats, out Dictionary<ItemSlot, Item_SO> charEquipment))
+        {
+            if (charEquipment.TryGetValue(slot, out Item_SO item))
+            {
+                item = charEquipment[slot];
+                if (item != placeHolderItem)
+                {
+                    itemName = item.ItemName;
+                }
+            }
+        }
+        Debug.Log("dict has no key playerStats");
+        return itemName;
+    }
 
+    public Item_SO GetItemFromSlot(StatsHandler stats, ItemSlot slot)
+    {
+        Item_SO itemInSlot = placeHolderItem;
+        if (allEquipmentDicts.TryGetValue(stats, out Dictionary<ItemSlot, Item_SO> charEquipment))
+        {
+            if (charEquipment.TryGetValue(slot, out Item_SO item))
+            {
+                item = charEquipment[slot];
+                if (item != placeHolderItem)
+                {
+                    itemInSlot = item;
+                }
+            }
 
+        }
+        return itemInSlot;
+    }
+    public string GetAllSlotItems(StatsHandler stats)
+    {
+        string slotAndItem = "";
+        if (allEquipmentDicts.TryGetValue(stats, out Dictionary<ItemSlot, Item_SO> charEquipment))
+        {
+            foreach (KeyValuePair<ItemSlot, Item_SO> kvp in charEquipment)
+            {
+                string itemName = kvp.Value.ItemName;
+                if (kvp.Key != ItemSlot.None)
+                {
+                    if (kvp.Value != placeHolderItem)
+                    {
+                        slotAndItem += $"\n {kvp.Key}: {itemName} ||";
+                    }
+                    else
+                    {
+                        slotAndItem += $"\n {kvp.Key}: None ||";
+                    }
+                }
+            }
+        }
+        Debug.Log("dict has no key playerStats");
+        return slotAndItem;
+    }
 }

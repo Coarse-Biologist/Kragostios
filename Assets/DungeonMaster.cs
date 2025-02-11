@@ -299,7 +299,7 @@ public class DungeonMaster : MonoBehaviour
             foreach (Item_SO item in items)
             {
                 narrator.DisplayNarrationText($"{playerStats.characterName} looted {item.ItemName}!");
-                playerStats.AddToInventory(item);
+                //playerStats.AddToInventory(item);
             }
         }
     }
