@@ -16,8 +16,14 @@ public class Item_SO : ScriptableObject
     public string ItemName => itemName;
     [SerializeField] private string itemDescription = "Item Description";
     public string ItemDescription => itemDescription;
+    [SerializeField] private List<ItemSlot> itemSlot = new List<ItemSlot>();
+    public List<ItemSlot> ItemSlot => itemSlot;
+
     #region // weapon stats
     [Header("Weapon Stats")]
+
+    [SerializeField] private List<Handedness> wieldability = new List<Handedness> { Handedness.None };
+    public List<Handedness> Wieldability => wieldability;
     [SerializeField] private Elements element = Elements.None;
     public Elements Element => element;
     [SerializeField] private int damage = 0;

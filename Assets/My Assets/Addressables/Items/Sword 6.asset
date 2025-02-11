@@ -17,6 +17,8 @@ MonoBehaviour:
   itemValue: 26
   itemName: Brutal Obsidian Sword
   itemDescription: Gnarly looking obsidian sword.
+  itemSlot: 0700000008000000
+  wieldability: 
   element: 0
   damage: 14
   heal: 0

@@ -143,7 +143,7 @@ public class CombatFlow : MonoBehaviour
 
         if (targets.Count == 0)
         {
-            KDebug.SeekBug($"No targets possible fopr {stats.characterName} turn");
+            KDebug.SeekBug($"No targets possible for {stats.characterName} turn");
 
             ResetCombat();
             CombatEnded?.Invoke();
@@ -161,7 +161,7 @@ public class CombatFlow : MonoBehaviour
             RequestNarration(EnemyTurnNarration);
         }
 
-        RequestContinueButton();
+        //RequestContinueButton();
     }
 
     private void ExecuteSummonTurn(GameObject combatant)

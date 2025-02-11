@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
   m_Name: Melee
   m_EditorClassIdentifier: 
-  abilityName: 
-  description: None
-  resource: 0
-  type: 0
+  abilityName: Claw Swipe
+  description: Creature swipes with their claw
+  resource: 2
+  type: 1
   elementType: 0
-  physicalType: 0
+  physicalType: 1
   abilityCost: 0
   healValue: 0
-  damageValue: 0
+  damageValue: 1
   turnDuration: 0
-  targets: 0
+  targets: 1
   summons: 0
   damageOverTime: 0
   syphonPercentage: 0

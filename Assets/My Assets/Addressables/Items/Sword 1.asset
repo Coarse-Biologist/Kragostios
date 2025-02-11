@@ -17,6 +17,8 @@ MonoBehaviour:
   itemValue: 8
   itemName: Steel Sword
   itemDescription: A steel sword used by adventerers.
+  itemSlot: 0700000008000000
+  wieldability: 0100000002000000
   element: 0
   damage: 4
   heal: 0

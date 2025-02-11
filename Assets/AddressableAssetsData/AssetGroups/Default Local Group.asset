@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f90b3517e98f6340b6e573c443368ef
+    m_Address: Assets/My Assets/Addressables/Items/PlaceHolder.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 401144d518fcab94eb081758d73150e2
     m_Address: Assets/My Assets/Addressables/Items/Sword 8.asset
     m_ReadOnly: 0

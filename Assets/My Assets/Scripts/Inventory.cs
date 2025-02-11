@@ -10,6 +10,7 @@ using Unity.VisualScripting;
 
 public class Inventory : MonoBehaviour
 {
+
     private UnityEngine.UIElements.Label itemInfo;
     private VisualElement root;
     private VisualElement leftCreationPanel;
@@ -18,6 +19,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] VisualTreeAsset templateButton;
     [SerializeField] Dictionary<Item_SO, int> playerInventory;
     private StatsHandler playerStats;
+    private EquipmentHandler equipmentHandler;
     [SerializeField] List<Item_SO> allItems;
     [SerializeField] public WorldChest worldChest;
 
@@ -25,6 +27,10 @@ public class Inventory : MonoBehaviour
     private Item_SO selectedSellableItem;
     private Item_SO selectedBuyableItem;
     private Button selectedButton;
+    private Item_SO selectedEquippableItem;
+    private ItemSlot selectedItemSlotType = ItemSlot.None;
+
+    private List<Button> currentSlotButtons = new List<Button>();
 
 
     private List<TemplateContainer> traderButtons = new List<TemplateContainer>();
@@ -40,6 +46,7 @@ public class Inventory : MonoBehaviour
         leftCreationPanel = root.Q<VisualElement>("LeftCreationPanel");
         rightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         itemInfo = new UnityEngine.UIElements.Label("");
+        equipmentHandler = GetComponent<EquipmentHandler>();
 
     }
     public void SpawnTraderButton(StatsHandler stats, VisualElement panel, List<Item_SO> traderItems)
@@ -62,6 +69,7 @@ public class Inventory : MonoBehaviour
     }
     public void DisplayInventoryItems(StatsHandler stats, VisualElement panel)
     {
+        equipmentHandler.SetPlayerStats(playerStats);
         panel.Clear();
         RequestInventoryScreen();
         foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
@@ -74,6 +82,8 @@ public class Inventory : MonoBehaviour
             container.Add(button);
             button.RegisterCallback<ClickEvent>(e => ShowItemInfo(item, false));
             button.RegisterCallback<PointerEnterEvent>(e => AlterColor(button));
+            button.RegisterCallback<ClickEvent>(e => ShowSlotOptions(item, panel));
+            button.RegisterCallback<ClickEvent>(e => selectedEquippableItem = item);
             //button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
         }
         TemplateContainer otherContainer = templateButton.Instantiate();
@@ -82,6 +92,13 @@ public class Inventory : MonoBehaviour
         panel.Add(otherContainer);
         exitInventoryButton.text = "Exit";
         exitInventoryButton.RegisterCallback<ClickEvent>(evt => ExitInventory());
+
+        TemplateContainer equipButtonContainer = templateButton.Instantiate();
+        Button equipItemButton = equipButtonContainer.Q<Button>();
+        otherContainer.Add(equipItemButton);
+        panel.Add(equipButtonContainer);
+        equipItemButton.text = "Equip Item";
+        equipItemButton.RegisterCallback<ClickEvent>(evt => HandleEquip(selectedItemSlotType));
     }
     public void DisplayTraderScreen(StatsHandler stats, List<Item_SO> traderItems, VisualElement playerInv, VisualElement traderInv)
     {
@@ -218,7 +235,8 @@ public class Inventory : MonoBehaviour
     private void ExitInventory()
     {
         //Label itemText = rightCreationPanel.Q<Label>("CharCreationText");
-
+        rightCreationPanel.Clear();
+        leftCreationPanel.Clear();
         exitInventoryScreen?.Invoke();
     }
     private void AlterColor(Button button)
@@ -229,5 +247,58 @@ public class Inventory : MonoBehaviour
         }
         button.style.backgroundColor = new StyleColor(Color.HSVToRGB(120f / 360f, 1f, 0.5f));
         selectedButton = button;
+    }
+    private void ShowSlotOptions(Item_SO item, VisualElement panel)
+    {
+        //foreach (Button button in currentSlotButtons)
+        //{
+        //    if (panel.Contains(button))
+        //    {
+        //        panel.Remove(button);
+        //    }
+        //}
+        foreach (Button button in currentSlotButtons)
+        {
+            VisualElement parent = button.parent; // Get parent container
+            if (parent != null && panel.Contains(parent))
+            {
+                panel.Remove(parent);
+            }
+        }
+
+        currentSlotButtons = new List<Button>();
+        List<ItemSlot> itemSlots = item.ItemSlot;
+        if (itemSlots[0] != ItemSlot.None)
+        {
+            foreach (ItemSlot slot in itemSlots)
+            {
+                TemplateContainer container = templateButton.Instantiate();
+                Button button = container.Q<Button>();
+                button.text = $"{slot}";
+                panel.Add(container);
+                container.Add(button);
+                button.RegisterCallback<ClickEvent>(e => SetSelectedItemSlot(slot));
+                currentSlotButtons.Add(button);
+            }
+        }
+
+    }
+
+    private void HandleEquip(ItemSlot slot)
+    {
+        Item_SO item = selectedEquippableItem;
+        if (selectedEquippableItem != null)
+        {
+            if (selectedItemSlotType != ItemSlot.None)
+            {
+                equipmentHandler.DecideEquipItem(playerStats, item, slot);
+            }
+            else Debug.Log("Selected item cannot be equipped.");
+        }
+        else Debug.Log("Select an item to equip");
+    }
+    private void SetSelectedItemSlot(ItemSlot slot)
+    {
+        selectedItemSlotType = slot;
     }
 }

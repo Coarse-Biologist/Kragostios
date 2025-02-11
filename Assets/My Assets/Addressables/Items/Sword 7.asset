@@ -17,6 +17,8 @@ MonoBehaviour:
   itemValue: 28
   itemName: Cold obsidian Sword
   itemDescription: An obsidian Sword which emits the chill of ice adventerers.
+  itemSlot: 0700000008000000
+  wieldability: 
   element: 1
   damage: 14
   heal: 0

@@ -497,6 +497,7 @@ GameObject:
   - component: {fileID: 1889742909}
   - component: {fileID: 1889742908}
   - component: {fileID: 1889742914}
+  - component: {fileID: 1889742915}
   m_Layer: 0
   m_Name: DungeonMaster
   m_TagString: Untagged
@@ -674,6 +675,22 @@ MonoBehaviour:
   exitInventoryScreen:
     m_PersistentCalls:
       m_Calls: []
+  requestTransaction:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1889742915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1889742905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5364cfdd6b78b4545839ace52da7ea62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeHolderItem: {fileID: 11400000, guid: 1f90b3517e98f6340b6e573c443368ef, type: 2}
 --- !u!1 &2016637001
 GameObject:
   m_ObjectHideFlags: 0

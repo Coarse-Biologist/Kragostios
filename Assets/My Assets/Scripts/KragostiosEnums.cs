@@ -85,6 +85,28 @@ namespace KragostiosAllEnums
         Armor,
     }
 
+    public enum ItemSlot
+    {
+        None,
+        Head,
+        Shoulder,
+        Chest,
+        Gloves,
+        Legs,
+        Feet,
+        RightHand,
+        LeftHand,
+        TwoHands
+    }
+
+    public enum Handedness
+    {
+        None,
+        LeftHand,
+        RightHand,
+        TwoHands
+    }
+
     public enum Combatants
     {
         Allies,

@@ -17,6 +17,8 @@ MonoBehaviour:
   itemValue: 20
   itemName: Sharp Platinum Sword
   itemDescription: A platinum sword used by successful adventerers.
+  itemSlot: 0700000008000000
+  wieldability: 0100000002000000
   element: 0
   damage: 8
   heal: 0

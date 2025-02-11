@@ -17,6 +17,8 @@ MonoBehaviour:
   itemValue: 24
   itemName: Obsidian Sword
   itemDescription: An obsidian sword.
+  itemSlot: 0700000008000000
+  wieldability: 0100000002000000
   element: 0
   damage: 12
   heal: 0

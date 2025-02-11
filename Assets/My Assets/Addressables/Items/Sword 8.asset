@@ -17,6 +17,8 @@ MonoBehaviour:
   itemValue: 30
   itemName: Hot obsidian Sword
   itemDescription: An obsidian sword which emits a steaming heat
+  itemSlot: 0700000008000000
+  wieldability: 
   element: 4
   damage: 10
   heal: 0

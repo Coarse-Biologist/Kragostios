@@ -251,7 +251,7 @@ public class Map : MonoBehaviour
             for (int i = 0; i < iterations; i++)
             {
                 Kingdoms kingdom = kingdomStartPoints[point];
-                startPoints = BranchOut(startPoints, kingdom);
+                startPoints = BranchOutKingdom(startPoints, kingdom);
                 if (startPoints.Count == 0) break; // Stop early if no new points were added
             }
         }
@@ -270,7 +270,7 @@ public class Map : MonoBehaviour
                 {
                     kingdomMapDict[newLocation] = kingdom; // Direct assignment
                     newStartPoints.Add(newLocation);
-                    Debug.Log($"Kingdom at point {newLocation}: {kingdom}");
+                    //Debug.Log($"Kingdom at point {newLocation}: {kingdom}");
                 }
             }
         }
@@ -341,15 +341,13 @@ public class Map : MonoBehaviour
             }
         }
     }
-    public Kingdoms GetBiome(UnityEngine.Vector2 vectorLocation)
+    public Biomes GetBiome(UnityEngine.Vector2 vectorLocation)
     {
         Biomes biome = Biomes.Swamp;
         if (biomesMapDict.Keys.ToList().Contains(vectorLocation))
         {
             biome = biomesMapDict[vectorLocation];
-
         }
         return biome;
     }
-
 }
