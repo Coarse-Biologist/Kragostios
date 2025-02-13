@@ -234,4 +234,21 @@ namespace KragostiosAllEnums
 
         #endregion
     }
+
+    public enum AlchemyTools
+    {
+        None,
+        Beaker,
+        AccurateWeights,
+        Pipette,
+        MicroPipette,
+        Filter,
+        Centrifuge,
+        PressureChamber,
+        Chromatograph,
+        ArcSpring,
+        OneWayValves,
+
+    }
+
 }

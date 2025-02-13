@@ -40,7 +40,6 @@ public class Inventory : MonoBehaviour
     public UnityEvent requestInventoryScreen;
     public UnityEvent requestTraderScreen;
     public UnityEvent exitInventoryScreen;
-    public UnityEvent<Item_SO, bool> requestTransaction;
 
     private void Awake()
     {
@@ -84,7 +83,7 @@ public class Inventory : MonoBehaviour
             container.Add(button);
             button.RegisterCallback<ClickEvent>(e => ShowItemInfo(item, false));
             button.RegisterCallback<PointerEnterEvent>(e => AlterColor(button));
-            if(item.ItemType == ItemType.Weapon || item.ItemType == ItemType.Armor)
+            if (item.ItemType == ItemType.Weapon || item.ItemType == ItemType.Armor)
             {
                 button.RegisterCallback<ClickEvent>(e => ShowSlotOptions(item, panel));
             }
