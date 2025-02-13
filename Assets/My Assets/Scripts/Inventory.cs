@@ -10,13 +10,15 @@ using Unity.VisualScripting;
 
 public class Inventory : MonoBehaviour
 {
-
+    #region // UI elements
     private UnityEngine.UIElements.Label itemInfo;
     private VisualElement root;
     private VisualElement leftCreationPanel;
     private VisualElement rightCreationPanel;
     [SerializeField] UIDocument UIDocument;
     [SerializeField] VisualTreeAsset templateButton;
+    # endregion 
+
     [SerializeField] Dictionary<Item_SO, int> playerInventory;
     private StatsHandler playerStats;
     private EquipmentHandler equipmentHandler;
@@ -268,18 +270,11 @@ public class Inventory : MonoBehaviour
                 button.text = $"Equip {item.ItemName} in {slot}";
                 panel.Add(container);
                 container.Add(button);
-                //button.RegisterCallback<ClickEvent>(e => SetSelectedItemSlot(slot));
                 button.RegisterCallback<ClickEvent>(e => HandleEquip(slot, item));
                 currentSlotButtons.Add(button);
             }
         }
 
-        //TemplateContainer equipButtonContainer = templateButton.Instantiate();
-        //Button equipItemButton = equipButtonContainer.Q<Button>();
-        //panel.Add(equipItemButton);
-        //panel.Add(equipButtonContainer);
-        //equipItemButton.text = "Equip Item";
-        //equipItemButton.RegisterCallback<ClickEvent>(evt => HandleEquip(selectedItemSlotType));
     }
 
     private void HandleEquip(ItemSlot slot, Item_SO item)
@@ -297,9 +292,6 @@ public class Inventory : MonoBehaviour
         }
         else Debug.Log("Select an item to equip");
     }
-    private void SetSelectedItemSlot(ItemSlot slot)
-    {
-        selectedItemSlotType = slot;
-    }
+
     #endregion
 }
