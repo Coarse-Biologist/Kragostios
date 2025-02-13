@@ -17,7 +17,7 @@ public class Inventory : MonoBehaviour
     private VisualElement rightCreationPanel;
     [SerializeField] UIDocument UIDocument;
     [SerializeField] VisualTreeAsset templateButton;
-    # endregion 
+    #endregion 
 
     [SerializeField] Dictionary<Item_SO, int> playerInventory;
     private StatsHandler playerStats;
@@ -84,8 +84,11 @@ public class Inventory : MonoBehaviour
             container.Add(button);
             button.RegisterCallback<ClickEvent>(e => ShowItemInfo(item, false));
             button.RegisterCallback<PointerEnterEvent>(e => AlterColor(button));
-            button.RegisterCallback<ClickEvent>(e => ShowSlotOptions(item, panel));
-            button.RegisterCallback<ClickEvent>(e => selectedEquippableItem = item);
+            if(item.ItemType == ItemType.Weapon || item.ItemType == ItemType.Armor)
+            {
+                button.RegisterCallback<ClickEvent>(e => ShowSlotOptions(item, panel));
+            }
+            //button.RegisterCallback<ClickEvent>(e => selectedEquippableItem = item);
             //button.RegisterCallback<PointerLeaveEvent>(evt => HideItemInfo());
         }
         TemplateContainer otherContainer = templateButton.Instantiate();
@@ -249,7 +252,6 @@ public class Inventory : MonoBehaviour
     #region // equipment
     private void ShowSlotOptions(Item_SO item, VisualElement panel)
     {
-
         foreach (Button button in currentSlotButtons)
         {
             VisualElement parent = button.parent; // Get parent container
@@ -279,7 +281,6 @@ public class Inventory : MonoBehaviour
 
     private void HandleEquip(ItemSlot slot, Item_SO item)
     {
-        //Item_SO item = selectedEquippableItem;
         if (item != null)
         {
             if (slot != ItemSlot.None)
