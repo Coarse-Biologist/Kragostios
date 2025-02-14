@@ -19,6 +19,7 @@ namespace KragostiosAllEnums
 
     public enum ResourceTypes
     {
+        None,
         Health,
         Mana,
         Stamina
@@ -249,6 +250,39 @@ namespace KragostiosAllEnums
         ArcSpring,
         OneWayValves,
 
+    }
+
+    public enum AbilityVars
+    {
+        AbilityName,
+        Description,
+        ElementType,
+        PhysicalType,
+        AbilityCost,
+        HealValue,
+        DamageValue,
+        TurnDuration,
+        Targets,
+        Summons,
+        DamageOverTime,
+        SyphonPercentage,
+        AbilityLevel,
+        BuffEffects,
+        DebuffEffects
+    }
+
+    public enum ItemVars
+    {
+        Value,
+        Name,
+        Description,
+        Element,
+        Damage,
+        Heal,
+        Debuffs,
+        Buffs,
+        ArmorBuffs,
+        DamageReduction,
     }
 
 }
