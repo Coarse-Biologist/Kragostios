@@ -14,6 +14,7 @@ public class EquipmentHandler : MonoBehaviour
     private StatsHandler PlayerStats;
     private List<ItemSlot> allItemSlots;
     private bool playerDictAdded = false;
+    public List<Item_SO> playerEquippedItems = new List<Item_SO>();
 
     void Awake()
     {
@@ -103,14 +104,17 @@ public class EquipmentHandler : MonoBehaviour
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
         if (equipment.TryGetValue(slot, out Item_SO dictValue))
         {
+            playerEquippedItems.Remove(dictValue);
             Debug.Log($"You want to unequip {dictValue.ItemName} in slot {slot}");
             equipment[slot] = placeHolderItem;
+
         }
         else equipment.TryAdd(slot, placeHolderItem);
     }
 
     public void EquipItem(StatsHandler stats, ItemSlot slot, Item_SO item)
     {
+        playerEquippedItems.Add(item);
         Debug.Log($"You want to equip {item.ItemName}");
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
         if (equipment.TryGetValue(slot, out Item_SO whoCares))
@@ -152,10 +156,10 @@ public class EquipmentHandler : MonoBehaviour
                     itemInSlot = item;
                 }
             }
-
         }
         return itemInSlot;
     }
+
     public string GetAllSlotItems(StatsHandler stats)
     {
         string slotAndItem = "";
@@ -179,5 +183,22 @@ public class EquipmentHandler : MonoBehaviour
         }
         Debug.Log("dict has no key playerStats");
         return slotAndItem;
+    }
+
+    public List<Item_SO> GetAllEquippedItems(StatsHandler stats)
+    {
+        return playerEquippedItems;
+    }
+    public List<Ability_SO> GetEquippedItemsWithAbilities(StatsHandler stats)
+    {
+        List<Ability_SO> itemAbilities = new List<Ability_SO>();
+        foreach (Item_SO item in playerEquippedItems)
+        {
+            if (item.Ability != null)
+            {
+                itemAbilities.Add(item.Ability);
+            }
+        }
+        return itemAbilities;
     }
 }

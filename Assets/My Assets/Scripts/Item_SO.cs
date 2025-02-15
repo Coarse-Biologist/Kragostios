@@ -11,6 +11,7 @@ using UnityEditor.Build.Pipeline;
 [CreateAssetMenu(fileName = "Item", menuName = "CrewObject/ Item")]
 public class Item_SO : ScriptableObject
 {
+    [SerializeField] AbilityLibrary abilityLibrary;
     [SerializeField] private Rarity itemRarity = Rarity.Common;
     public Rarity ItemRarity => itemRarity;
     [SerializeField] private ItemType itemType = ItemType.Weapon;
@@ -29,16 +30,10 @@ public class Item_SO : ScriptableObject
 
     [SerializeField] private List<Handedness> wieldability = new List<Handedness> { Handedness.None };
     public List<Handedness> Wieldability => wieldability;
-    [SerializeField] private Elements element = Elements.None;
-    public Elements Element => element;
-    [SerializeField] private int damage = 0;
-    public int Damage => damage;
-    [SerializeField] private int heal = 0;
-    public int Heal => heal;
-    [SerializeField] private List<Debuffs> debuffs = new List<Debuffs>();
-    public List<Debuffs> Debuffs => debuffs;
-    [SerializeField] private List<Buffs> Buffs = new List<Buffs>();
-    public List<Buffs> buffs => Buffs;
+
+    [SerializeField] private Ability_SO ability;
+    public Ability_SO Ability => ability;
+
     #endregion
     [Header("Armor Stats")]
     [SerializeField] private List<Buffs> armorBuffs = new List<Buffs>();
@@ -46,13 +41,24 @@ public class Item_SO : ScriptableObject
     [SerializeField] private int damageReduction = 0;
     public int DamageReduction => damageReduction;
 
+    public Ability_SO GetItemsAbility()
+    {
+        if (ability != null)
+        {
+            return ability;
+        }
+        else return null;
+
+    }
+
     public string GetItemInfo()
     {
         string itemInfo = $"{itemName} || {itemDescription} || value: {itemValue} || {itemRarity}";
         switch (itemType)
         {
+
             case ItemType.Armor:
-                string buffList = "Can apply buffs:";
+                string buffList = "Confers buffs to wearer:";
                 foreach (Buffs buff in armorBuffs)
                 {
                     buffList += $"|| {buff} || ";
@@ -60,45 +66,43 @@ public class Item_SO : ScriptableObject
                 itemInfo += $" \n Damage Reduction: {damageReduction}";
                 break;
             case ItemType.Weapon:
-                string debuffList = "Can apply debuffs:";
-                foreach (Debuffs debuff in debuffs)
+                string weaponAbilityInfo = "";
+                if (ability != null)
                 {
-                    debuffList += $"|| {debuff} || ";
+                    if (abilityLibrary != null)
+                    {
+                        weaponAbilityInfo = abilityLibrary.GetAbilityInfo(ability);
+                    }
+                    else weaponAbilityInfo = ability.AbilityName;
                 }
-                string weaponBuffList = "Can apply buffs:";
-                foreach (Buffs buff in Buffs)
-                {
-                    weaponBuffList += $"|| {buff} || ";
-                }
-                itemInfo += $" \n Damage: {damage} \n Heal: {heal} \n {debuffList} \n {weaponBuffList}";
+                itemInfo += weaponAbilityInfo;
+
                 break;
             case ItemType.Potion:
-                string potionDebuffList = "Can apply debuffs:";
+                string potionAbilityInfo = "";
+                if (ability != null)
+                {
+                    if (abilityLibrary != null)
+                    {
+                        potionAbilityInfo += abilityLibrary.GetAbilityInfo(ability);
+                    }
+                    else potionAbilityInfo += ability.AbilityName;
+                }
+                itemInfo += potionAbilityInfo;
 
-                foreach (Debuffs debuff in debuffs)
-                {
-                    potionDebuffList += $"|| {debuff} || ";
-                }
-                string potionBuffList = "Can apply buffs:";
-                foreach (Buffs buff in Buffs)
-                {
-                    potionBuffList += $"|| {buff} || ";
-                }
-                itemInfo += $" \n Damage: {damage} \n Heal: {heal} \n {potionDebuffList} \n {potionBuffList}";
                 break;
             case ItemType.Scroll:
-                string scrollDebuffList = "Can apply debuffs:";
+                string scrollAbilityInfo = "";
+                if (ability != null)
+                {
+                    if (abilityLibrary != null)
+                    {
+                        scrollAbilityInfo += abilityLibrary.GetAbilityInfo(ability);
+                    }
+                    else scrollAbilityInfo += ability.AbilityName;
+                }
+                itemInfo += scrollAbilityInfo;                //string scrollDebuffList = "Can apply debuffs:";
 
-                foreach (Debuffs debuff in debuffs)
-                {
-                    scrollDebuffList += $"|| {debuff} || ";
-                }
-                string scrollBuffList = "Can apply buffs:";
-                foreach (Buffs buff in Buffs)
-                {
-                    scrollBuffList += $"|| {buff} || ";
-                }
-                itemInfo += $" \n Damage: {damage} \n Heal: {heal} \n {scrollDebuffList} \n {scrollBuffList}";
                 break;
             case ItemType.Quest:
                 break;
@@ -110,6 +114,7 @@ public class Item_SO : ScriptableObject
     }
 
 }
+
 
 
 [CreateAssetMenu(fileName = "Item", menuName = "CrewObject/ Item")]
@@ -215,7 +220,6 @@ public class AlchemyHandler : MonoBehaviour
         }
     }
     #endregion
-
 
 }
 

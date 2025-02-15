@@ -10,19 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8c3f92ddc8369543ae4f65e72e16733, type: 3}
-  m_Name: Sword 8
+  m_Name: Sword 1
   m_EditorClassIdentifier: 
-  itemRarity: 2
+  abilityLibrary: {fileID: 0}
+  itemRarity: 0
   itemType: 3
-  itemValue: 30
-  itemName: Hot obsidian Sword
-  itemDescription: An obsidian sword which emits a steaming heat
+  itemValue: 8
+  itemName: Steel Sword
+  itemDescription: A steel sword used by adventerers.
   itemSlot: 0700000008000000
-  wieldability: 
-  element: 4
-  damage: 10
-  heal: 0
-  debuffs: 
-  Buffs: 
+  wieldability: 0100000002000000
+  ability: {fileID: 11400000, guid: 7bfb0ff4bd041164789e37097ebb8614, type: 2}
   armorBuffs: 
   damageReduction: 0

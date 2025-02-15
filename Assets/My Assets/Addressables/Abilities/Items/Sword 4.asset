@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8c3f92ddc8369543ae4f65e72e16733, type: 3}
   m_Name: Sword 4
   m_EditorClassIdentifier: 
+  abilityLibrary: {fileID: 0}
   itemRarity: 1
   itemType: 3
   itemValue: 22
@@ -19,10 +20,6 @@ MonoBehaviour:
   itemDescription: A platinum sword used by successful adventerers.
   itemSlot: 0700000008000000
   wieldability: 0100000002000000
-  element: 0
-  damage: 10
-  heal: 0
-  debuffs: 
-  Buffs: 
+  ability: {fileID: 11400000, guid: 6aae2fdb4ad0d3a498f59b10581184c6, type: 2}
   armorBuffs: 
   damageReduction: 0

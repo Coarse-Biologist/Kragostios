@@ -28,6 +28,7 @@ public class DungeonMaster : MonoBehaviour
     private List<Tuple<Difficulty, Elements>> enemyCombatantTuple;
     [SerializeField] AbilityLibrary abilityLibrary;
     private Inventory inventory;
+    private EquipmentHandler equipment;
 
     [Header("player")]
 
@@ -56,6 +57,7 @@ public class DungeonMaster : MonoBehaviour
         travel = GetComponent<TravelScript>();
         combat = GetComponent<CombatFlow>();
         inventory = GetComponent<Inventory>();
+        equipment = GetComponent<EquipmentHandler>();
     }
     private void Start()
     {
@@ -122,7 +124,13 @@ public class DungeonMaster : MonoBehaviour
 
     private void SpawnOptionButtons(List<Ability_SO> abilities)
     {
-        playerOptions.SpawnAbilityButtons(playerStats.knownAbilities);
+        List<Ability_SO> playerAbilities = playerStats.knownAbilities;
+        List<Ability_SO> itemAbilities = equipment.GetEquippedItemsWithAbilities(playerStats);
+        foreach (Ability_SO itemAbility in itemAbilities)
+        {
+            playerAbilities.Add(itemAbility);
+        }
+        playerOptions.SpawnAbilityButtons(playerAbilities);
         List<GameObject> combatants = combat.combatants;
         playerOptions.SpawnTargetButtons(combatants);
     }

@@ -10,19 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8c3f92ddc8369543ae4f65e72e16733, type: 3}
-  m_Name: Sword 7
+  m_Name: Sword 8
   m_EditorClassIdentifier: 
+  abilityLibrary: {fileID: 0}
   itemRarity: 2
   itemType: 3
-  itemValue: 28
-  itemName: Cold obsidian Sword
-  itemDescription: An obsidian Sword which emits the chill of ice adventerers.
+  itemValue: 30
+  itemName: Hot obsidian Sword
+  itemDescription: An obsidian sword which emits a steaming heat
   itemSlot: 0700000008000000
   wieldability: 
-  element: 1
-  damage: 14
-  heal: 0
-  debuffs: 
-  Buffs: 
+  ability: {fileID: 11400000, guid: ac42bd65ec19f1e49b4367dd89004dbf, type: 2}
   armorBuffs: 
   damageReduction: 0
