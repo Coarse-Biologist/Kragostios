@@ -18,11 +18,11 @@ MonoBehaviour:
   type: 8
   elementType: 1
   physicalType: 0
-  abilityCost: 20
+  abilityCost: 0
   healValue: 0
-  damageValue: 4
+  damageValue: 20
   turnDuration: 2
-  targets: 5
+  targets: 3
   summons: 0
   damageOverTime: 0
   syphonPercentage: 0

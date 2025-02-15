@@ -124,12 +124,15 @@ public class DungeonMaster : MonoBehaviour
 
     private void SpawnOptionButtons(List<Ability_SO> abilities)
     {
-        List<Ability_SO> playerAbilities = playerStats.knownAbilities;
+        List<Ability_SO> playerAbilities = new List<Ability_SO>(playerStats.knownAbilities);
         List<Ability_SO> itemAbilities = equipment.GetEquippedItemsWithAbilities(playerStats);
+        KDebug.SeekBug($"item abilities length = {itemAbilities.Count}");
         foreach (Ability_SO itemAbility in itemAbilities)
         {
             playerAbilities.Add(itemAbility);
         }
+        KDebug.SeekBug($"player abilities total length = {playerAbilities.Count}");
+
         playerOptions.SpawnAbilityButtons(playerAbilities);
         List<GameObject> combatants = combat.combatants;
         playerOptions.SpawnTargetButtons(combatants);
@@ -325,7 +328,7 @@ public class DungeonMaster : MonoBehaviour
         LocationType locationType = map.GetLocationType(playerLocation);
         Kingdoms kingdom = map.GetKingdom(playerLocation);
         narrator.DisplayNarrationText($"You are in the kingdom: {kingdom}");
-        locationType = LocationType.Trader;
+        locationType = LocationType.Hostile;
 
         switch (locationType)
         {
