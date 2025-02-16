@@ -62,17 +62,20 @@ public class CombatFlow : MonoBehaviour
         if (currentTurnIndex > sortedturnOrder.Count - 1) currentTurnIndex = 0; // resets turn index if the end is reached
 
         GameObject combatant = sortedturnOrder[currentTurnIndex].Key; // stores the combatant found at the current turn index as "combatant"
-        caster = combatant;
+
+        caster = combatant; // sets the caster game object to be the combatant whose turn it is.
+
         KDebug.SeekBug($"{sortedturnOrder} = list of caombatants");
 
-        StatsHandler stats = combatant.GetComponent<StatsHandler>();
+        StatsHandler stats = combatant.GetComponent<StatsHandler>(); // retriev stat script belonging to the caster/combatant
 
-        if (stats.currentHealth > 0) // hydn did this
+        if (stats.currentHealth > 0) // if the combatant is alive;
         {
-            DecrementBuffsandDebuffs(combatant);
+            DecrementBuffsandDebuffs(combatant); // decrement remaining buff/debuff durations and remove buffs/debuffs which have 0 remaining turns
+
             KDebug.SeekBug($"{stats.characterName}, {stats.charType} started his turn");
 
-            switch (stats.charType)
+            switch (stats.charType) // check the combatants type (can be player, enemy, summon, companion) 
             {
 
                 case (Combatants.Player):
@@ -96,7 +99,7 @@ public class CombatFlow : MonoBehaviour
 
                 default:
                     {
-                        KDebug.SeekBug($"{stats.characterName} was none of the above character types");
+                        KDebug.SeekBug($"{stats.characterName} was none of the above character types"); // should be an impossible case, unless something is changed (i.e a new type is added)
                         break;
                     }
 
