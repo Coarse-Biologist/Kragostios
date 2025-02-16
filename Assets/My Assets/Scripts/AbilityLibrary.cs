@@ -15,7 +15,7 @@ public class AbilityLibrary : MonoBehaviour
     public Ability_SO GlobalCooling;
 
     public Dictionary<Abilities, Ability_SO> abilityDict { private set; get; } = new Dictionary<Abilities, Ability_SO>();
-
+    //During awake, the dictionary will be filled with kvp of ability enums and references to the enums.
     public void Awake()
     {
         abilityDict.Add(Abilities.Fireball, FireBall);
@@ -29,7 +29,7 @@ public class AbilityLibrary : MonoBehaviour
         abilityDict.Add(Abilities.GlobalCooling, GlobalCooling);
     }
 
-    // returns a list of abilities based on the creature difficulty
+    // returns a list of abilities based on the creature difficulty. # todo
     public List<Ability_SO> GetAbilities(int creatureDifficulty)
     {
         List<Ability_SO> abilities = new List<Ability_SO>();
@@ -53,7 +53,7 @@ public class AbilityLibrary : MonoBehaviour
         }
         return abilities;
     }
-
+    // returns a string describing the ability
     public string GetAbilityInfo(Ability_SO ability)
     {
         string abilityInfo =

@@ -174,8 +174,6 @@ public class AlchemyHandler : MonoBehaviour
     public string GainKnowledge(Elements element)
     {
         KnowledgeDict.TryGetValue(element, out int PlayerKnowledge);
-
-
         int knowledgeGain = 1;
         int toolsKnown = GetNumToolsKnown();
         int knowledgeBonus = 2 ^ toolsKnown;
@@ -599,7 +597,6 @@ public class ModdedItems
     }
     public List<Debuffs> GetModdedDebuffs(Item_SO item, ItemVars var)
     {
-
         if (ItemDebuffMods.TryGetValue(item, out Dictionary<ItemVars, List<Debuffs>> innerDict))
         {
             if (innerDict.TryGetValue(var, out List<Debuffs> value))

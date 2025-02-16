@@ -68,7 +68,7 @@ public class Inventory : MonoBehaviour
         button.RegisterCallback<ClickEvent>(evt => DisplayInventoryItems(stats, leftCreationPanel));
         panel.Add(button);
     }
-    public void DisplayInventoryItems(StatsHandler stats, VisualElement panel)
+    public void DisplayInventoryItems(StatsHandler stats, VisualElement panel) // Show nventory items in the panel i pass w]for the character who 
     {
         equipmentHandler.SetPlayerStats(playerStats);
         panel.Clear();

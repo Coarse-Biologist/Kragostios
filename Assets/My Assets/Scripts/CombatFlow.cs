@@ -15,51 +15,53 @@ public class CombatFlow : MonoBehaviour
     #region // class variables
 
     #region // combatant variables
-    public List<GameObject> combatants { private set; get; }
-    public GameObject caster { private set; get; }
-    private Dictionary<GameObject, int> uncookedList = new Dictionary<GameObject, int>();
-    private List<KeyValuePair<GameObject, int>> sortedturnOrder;
+    public List<GameObject> combatants { private set; get; } // list of objects with the StatsHandler script attached. these are the fight participants. This is set at the beginning of s combat by dungeon master script and modified in the Handle death function
+    public GameObject caster { private set; get; } //single object whose turn is currently activve
+    private Dictionary<GameObject, int> uncookedList = new Dictionary<GameObject, int>(); //dict for storing s yet undorted kvp of combstsnts and an undetermined initiative roll
+    private List<KeyValuePair<GameObject, int>> sortedturnOrder; // dict dtoring turn order, decided by initistive roll in DecideTurn Order function
 
     #endregion
 
     #region // event variables
-    public UnityEvent<string> NarrationRequest;
-    public UnityEvent<List<Ability_SO>> OptionButtonRequest;
-    public UnityEvent<List<GameObject>> TargetButtonRequest;
-    public UnityEvent ContinueButtonRequest;
-    public UnityEvent CombatEnded;
+    public UnityEvent<string> NarrationRequest; //ask Dm for narration which would then be sent to narrator script
+    public UnityEvent<List<Ability_SO>> OptionButtonRequest; // ask Dm for a continue button to be spawned with the playeroptions script.The options are abilities which can be selected.
+    public UnityEvent<List<GameObject>> TargetButtonRequest; // ask Dm for a target buttons to be spawned with the playeroptions script.
+    public UnityEvent ContinueButtonRequest; // ask Dm for a con tinue button to be spawned. used to add separation between player and enemyt turns
+    public UnityEvent CombatEnded; // indicates to DM that combat has ended. The remaining combatants are used to  determine who wn and lost and what is to be looted.
 
     #endregion
 
     #region // turn variables
     private int turnNumber;
-    private int currentTurnIndex = 0;
+    private int currentTurnIndex = 0; // variable used for iterating theough the SortedTurnOrderDictionary
 
     #endregion
 
     #region // ability/ target variables
-    private int targetsExpected;
-    private List<GameObject> selectedTargets = new List<GameObject>();
-    private Ability_SO selectedAbility;
+    private int targetsExpected; //variable stores the number of targets expected by a selected ability so that the program waits for such a number before handling the affects of the ability on all targets.
+    private List<GameObject> selectedTargets = new List<GameObject>(); // the targets upon which the selected ability will have effect.
+    private Ability_SO selectedAbility; // stores the currently selected ability if the caster had sufficient resource to use it
 
     #endregion
 
     #region // buff debuff variables
-    public Dictionary<GameObject, Dictionary<Buffs, int>> combatantBuffDurations = new Dictionary<GameObject, Dictionary<Buffs, int>>();
+    public Dictionary<GameObject, Dictionary<Buffs, int>> combatantBuffDurations = new Dictionary<GameObject, Dictionary<Buffs, int>>(); // Holds an outter dictioary which stores key(combatant) and value(what BUFFS they have active(key) and for how long they are active)
     public Dictionary<GameObject, Dictionary<Debuffs, int>> combatantDebuffDurations = new Dictionary<GameObject, Dictionary<Debuffs, int>>();
-    public Dictionary<GameObject, Dictionary<Ability_SO, int>> combatantDOTDicts = new Dictionary<GameObject, Dictionary<Ability_SO, int>>();
-    public List<AbilityCategories> defensiveAbilities = new List<AbilityCategories> { AbilityCategories.Heal, AbilityCategories.Buff, AbilityCategories.BuffHeal };
-    public List<AbilityCategories> offensiveAbilities = new List<AbilityCategories> { AbilityCategories.Attack, AbilityCategories.Debuff, AbilityCategories.DebuffAttack };
+    // Holds an outter dictioary which stores key(combatant) and value(what DEBUFFS they have active(key) and for how long they are active)
+    public Dictionary<GameObject, Dictionary<Ability_SO, int>> combatantDOTDicts = new Dictionary<GameObject, Dictionary<Ability_SO, int>>();// Holds an outter dictioary which stores key(combatant) and value(what DAMAGE OVER TIME EFFECTS they have active(key) and for how long they are active)
+    public List<AbilityCategories> defensiveAbilities = new List<AbilityCategories> { AbilityCategories.Heal, AbilityCategories.Buff, AbilityCategories.BuffHeal }; // contains a list of abilities, categorized based on whether it is usually reasonable to use on ALLIED combatants(including self)
+    public List<AbilityCategories> offensiveAbilities = new List<AbilityCategories> { AbilityCategories.Attack, AbilityCategories.Debuff, AbilityCategories.DebuffAttack }; // contains a list of abilities, categorized based on whether it is usually reasonable to use on ENEMY combatants(including self)
     #endregion
 
     #endregion
 
     #region // combat loop
+    //Main loop for combat. Called by Dungeonmaster at the end of the function "Initiate Combat"
     public void CombatCycle()
     {
-        if (currentTurnIndex > sortedturnOrder.Count - 1) currentTurnIndex = 0;
+        if (currentTurnIndex > sortedturnOrder.Count - 1) currentTurnIndex = 0; // resets turn index if the end is reached
 
-        GameObject combatant = sortedturnOrder[currentTurnIndex].Key;
+        GameObject combatant = sortedturnOrder[currentTurnIndex].Key; // stores the combatant found at the current turn index as "combatant"
         caster = combatant;
         KDebug.SeekBug($"{sortedturnOrder} = list of caombatants");
 
