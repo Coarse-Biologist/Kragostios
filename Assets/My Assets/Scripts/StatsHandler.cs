@@ -167,11 +167,9 @@ public class StatsHandler : MonoBehaviour
         AffinityDict = new Dictionary<string, int>
         {
             { "Cold Affinity", ColdAffinity },
-            //{ "Ice Affinity", IceAffinity },
             { "Water Affinity", WaterAffinity },
             { "Earth Affinity", EarthAffinity },
             { "Heat Affinity", HeatAffinity },
-            //{ "Lava Affinity", LavaAffinity },
             { "Fire Affinity", FireAffinity },
             { "Air Affinity", AirAffinity },
             { "Electricity Affinity", ElectricityAffinity },
