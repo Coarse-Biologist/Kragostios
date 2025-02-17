@@ -328,7 +328,7 @@ public class DungeonMaster : MonoBehaviour
         LocationType locationType = map.GetLocationType(playerLocation);
         Kingdoms kingdom = map.GetKingdom(playerLocation);
         narrator.DisplayNarrationText($"You are in the kingdom: {kingdom}");
-        locationType = LocationType.Hostile;
+        locationType = LocationType.Trader;
 
         switch (locationType)
         {

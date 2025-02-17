@@ -249,20 +249,20 @@ public class CombatFlow : MonoBehaviour
 
     public void NextTurn()
     {
+        StatsHandler stats = caster.GetComponent<StatsHandler>();
         // if the caster has action points left, they can take another turn
-        if (caster.GetComponent<StatsHandler>().currentActionPoints > 0)
+        if (stats.currentActionPoints > 0)
         {
             selectedTargets = new List<GameObject>();
             Invoke("CombatCycle", 1f);
         }
         else // if the caster has no action points left, the next combatant takes their turn
         {
-            caster.GetComponent<StatsHandler>().RegenActionPoints();
+            stats.RegenActionPoints();
             selectedTargets = new List<GameObject>();
             currentTurnIndex++;
             Invoke("CombatCycle", 1f);
         }
-
     }
 
     #endregion
