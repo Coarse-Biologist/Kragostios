@@ -200,8 +200,9 @@ public class ModdedAbilities
 
     #endregion
 
-    public void LoadData(ModdedAbilitySaveData moddedData)
+    public void LoadData()
     {
+        ModdedAbilitySaveData moddedData = SaveSystem.LoadModdedAbilityData();
         AbilityIntMods = moddedData.AbilityIntMods_SD;
         AbilityStringMods = moddedData.AbilityStringMods_SD;
         AbilityResourceMods = moddedData.AbilityResourceMods_SD;

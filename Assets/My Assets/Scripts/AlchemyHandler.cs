@@ -107,8 +107,9 @@ public class AlchemyHandler : MonoBehaviour
         }
     }
     #endregion
-    public void LoadData(AlchemyData alchemyData)
+    public void LoadData()
     {
+        AlchemyData alchemyData = SaveSystem.LoadAlchemyData();
         AvailableTools = alchemyData.AvailableTools_SD;
         PlayerEther = alchemyData.PlayerEther_SD;
         KnowledgeDict = alchemyData.KnowledgeDict_SD;

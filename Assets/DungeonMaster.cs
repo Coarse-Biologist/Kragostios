@@ -29,6 +29,10 @@ public class DungeonMaster : MonoBehaviour
     [SerializeField] AbilityLibrary abilityLibrary;
     private Inventory inventory;
     private EquipmentHandler equipment;
+    private AlchemyHandler alchemy;
+    private ModdedAbilities moddedAbilities;
+    private ModdedItems moddedItems;
+
 
     [Header("player")]
 
@@ -81,6 +85,8 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.StatIncrented.AddListener(HandleStatIncremented);
         playerOptions.CharacterCreationConfirmed.AddListener(CharacterCreationComplete);
 
+        playerOptions.requestLoad.AddListener(LoadAllData);
+
         inventory.requestInventoryScreen.AddListener(ShowInventoryScreen);
         inventory.exitInventoryScreen.AddListener(ExitInventoryScreen);
 
@@ -103,6 +109,7 @@ public class DungeonMaster : MonoBehaviour
 
         playerOptions.StatIncrented.RemoveListener(HandleStatIncremented);
         playerOptions.CharacterCreationConfirmed.RemoveListener(CharacterCreationComplete);
+        playerOptions.requestLoad.RemoveListener(LoadAllData);
 
         inventory.requestInventoryScreen.RemoveListener(ShowInventoryScreen);
         inventory.exitInventoryScreen.RemoveListener(ExitInventoryScreen);
@@ -317,7 +324,8 @@ public class DungeonMaster : MonoBehaviour
         Vector2 playerLocation = travel.playerLocation;
         LocationType locationType = map.GetLocationType(playerLocation);
         Kingdoms kingdom = map.GetKingdom(playerLocation);
-        narrator.DisplayNarrationText($"You are in the kingdom: {kingdom}");
+        Biomes biome = map.GetBiome(playerLocation);
+        narrator.DisplayNarrationText($"You are in the kingdom: {kingdom}. The surrounding biome is: {biome}");
         locationType = LocationType.Trader;
 
         switch (locationType)
@@ -393,6 +401,7 @@ public class DungeonMaster : MonoBehaviour
         inventory.SpawnInventoryButton(buttonContainer_AO, playerStats);
         List<Directions> directions = map.directions;
         playerOptions.SpawnDirectionOptions(directions);
+        playerOptions.DisplayLoadAndSaveButtons(playerStats, map, alchemy, moddedAbilities, moddedItems);
 
     }
 
@@ -552,6 +561,17 @@ public class DungeonMaster : MonoBehaviour
 
     }
     #endregion
+
+    private void LoadAllData()
+    {
+        //moddedAbilities.LoadData();
+        //moddedItems.LoadData();
+        //playerStats.LoadStats();
+        map.LoadData();
+        //alchemy.LoadData();
+        //equipment.LoadData();
+
+    }
 }
 
 

@@ -195,8 +195,9 @@ public class ModdedItems
         else return new List<Debuffs>();
     }
     #endregion
-    public void LoadData(ModdedItemSaveData moddedData)
+    public void LoadData()
     {
+        ModdedItemSaveData moddedData = SaveSystem.LoadModdedItemData();
         ItemIntMods = moddedData.ItemIntMods_SD;
         ItemStringMods = moddedData.ItemStringMods_SD;
         ItemResourceMods = moddedData.ItemResourceMods_SD;

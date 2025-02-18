@@ -73,14 +73,14 @@ public static class SaveSystem
         stream.Close();
     }
 
-    public static ModdedItems LoadModdedItemData()
+    public static ModdedItemSaveData LoadModdedItemData()
     {
         string path = Application.persistentDataPath + "/moddedItems.data";
         if (File.Exists(path))
         {
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
-            ModdedItems saveData = formatter.Deserialize(stream) as ModdedItems;
+            ModdedItemSaveData saveData = formatter.Deserialize(stream) as ModdedItemSaveData;
             stream.Close();
             return saveData;
         }
@@ -101,14 +101,14 @@ public static class SaveSystem
         stream.Close();
     }
 
-    public static ModdedAbilities LoadModdedAbilityData()
+    public static ModdedAbilitySaveData LoadModdedAbilityData()
     {
         string path = Application.persistentDataPath + "/moddedAbilities.data";
         if (File.Exists(path))
         {
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
-            ModdedAbilities saveData = formatter.Deserialize(stream) as ModdedAbilities;
+            ModdedAbilitySaveData saveData = formatter.Deserialize(stream) as ModdedAbilitySaveData;
             stream.Close();
             return saveData;
         }
@@ -147,13 +147,42 @@ public static class SaveSystem
         }
     }
 
+
+    public static void SaveEquipmentData(EquipmentHandler equipmentHandler)
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        string path = Application.persistentDataPath + "/EquipmentData.data";
+        FileStream stream = new FileStream(path, FileMode.Create);
+        EquipmentData saveData = new EquipmentData(equipmentHandler);
+        formatter.Serialize(stream, saveData);
+        stream.Close();
+    }
+
+    public static EquipmentData LoadEquipmentData()
+    {
+        string path = Application.persistentDataPath + "/EquipmentData.data";
+        if (File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            EquipmentData saveData = formatter.Deserialize(stream) as EquipmentData;
+            stream.Close();
+            return saveData;
+        }
+        else
+        {
+            Debug.Log($"file not found{path} -------------------");
+            return null;
+        }
+    }
+
     public static void SaveAll(StatsHandler stats, Map map, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
     {
-        SavePlayerData(stats);
+        //SavePlayerData(stats);
         SaveMapData(map);
-        SaveAlchemyyData(alchemyHandler);
-        SaveModdedAbilityData(moddedAbilities);
-        SaveModdedItemData(moddedItems);
+        //SaveAlchemyyData(alchemyHandler);
+        //SaveModdedAbilityData(moddedAbilities);
+        //SaveModdedItemData(moddedItems);
     }
 
 

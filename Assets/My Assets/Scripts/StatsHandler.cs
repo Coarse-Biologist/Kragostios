@@ -15,7 +15,7 @@ using System.Linq;
 public class StatsHandler : MonoBehaviour
 {
     #region // class references
-    private Ability_SO ability;
+    //private Ability_SO ability;
     [SerializeField] public AbilityLibrary abilityLibrary;
     #endregion
 
@@ -959,8 +959,10 @@ public class StatsHandler : MonoBehaviour
 
     }
 
-    public void LoadStats(PlayerSaveData saveData)
+    public void LoadStats()
     {
+        PlayerSaveData saveData = SaveSystem.LoadPlayerData();
+
         characterName = saveData.characterName_SD;
         description = saveData.description_SD;
 

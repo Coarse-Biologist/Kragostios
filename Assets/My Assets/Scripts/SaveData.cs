@@ -238,3 +238,16 @@ public class AlchemyData
     }
 }
 
+public class EquipmentData
+{
+    public Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> allEquipmentDicts_SD = new Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>>();
+    public List<Item_SO> playerEquippedItems_SD = new List<Item_SO>();
+
+    public EquipmentData(EquipmentHandler equipmentHandler)
+
+    {
+        allEquipmentDicts_SD = equipmentHandler.allEquipmentDicts;
+        playerEquippedItems_SD = equipmentHandler.playerEquippedItems;
+    }
+}
+

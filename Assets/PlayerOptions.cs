@@ -45,6 +45,8 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent<string> PlayertextInput;
     public UnityEvent<string> StatIncrented;
 
+    public UnityEvent requestLoad;
+
     public bool awaitingAbilitySelection { private set; get; }
 
     public Dictionary<string, List<string>> IntroOptionDict { private set; get; }
@@ -88,13 +90,7 @@ public class PlayerOptions : MonoBehaviour
         }
     }
 
-    //public void PrepareMenuScreen()
-    //{
-    //    //ClearAbilityContainer();
-    //    ClearTargetContainer();
-    //    ShowCombatScreen();
-    //    HideCreationScreen();
-    //}
+
     // Combat functions
     public void SpawnDirectionOptions(List<Directions> directions)
     {
@@ -194,12 +190,19 @@ public class PlayerOptions : MonoBehaviour
 
     public void DisplayLoadAndSaveButtons(StatsHandler stats, Map map, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
     {
-        TemplateContainer newButtonContainer = templateButton.Instantiate();
-        Button newButton = newButtonContainer.Q<Button>();
-        newButton.text = "Save";
-        buttonContainer_AO.Add(newButtonContainer);
-        newButtonContainer.Add(newButton);
-        newButton.RegisterCallback<ClickEvent>(e => SaveSystem.SaveAll(stats, map, alchemyHandler, moddedAbilities, moddedItems));
+        TemplateContainer saveButtonContainer = templateButton.Instantiate();
+        Button saveButton = saveButtonContainer.Q<Button>();
+        saveButton.text = "Save";
+        buttonContainer_AO.Add(saveButtonContainer);
+        saveButtonContainer.Add(saveButton);
+        saveButton.RegisterCallback<ClickEvent>(e => SaveSystem.SaveAll(stats, map, alchemyHandler, moddedAbilities, moddedItems));
+
+        TemplateContainer loadButtonContainer = templateButton.Instantiate();
+        Button loadButton = loadButtonContainer.Q<Button>();
+        loadButton.text = "Load";
+        buttonContainer_AO.Add(loadButtonContainer);
+        loadButtonContainer.Add(loadButton);
+        loadButton.RegisterCallback<ClickEvent>(e => OnLoadRequest());
         buttonContainer_AO.MarkDirtyRepaint();
         root.MarkDirtyRepaint();
     }
@@ -209,6 +212,10 @@ public class PlayerOptions : MonoBehaviour
         ClearAbilityContainer();
         JourneyDirectionSelected?.Invoke(direction);
 
+    }
+    private void OnLoadRequest()
+    {
+        requestLoad?.Invoke();
     }
     public void OnAbilitySelected(Ability_SO ability)
     {

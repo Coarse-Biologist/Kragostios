@@ -201,4 +201,12 @@ public class EquipmentHandler : MonoBehaviour
         }
         return itemAbilities;
     }
+
+
+    public void LoadData()
+    {
+        EquipmentData equipmentData = SaveSystem.LoadEquipmentData();
+        allEquipmentDicts = equipmentData.allEquipmentDicts_SD;
+        playerEquippedItems = equipmentData.playerEquippedItems_SD;
+    }
 }

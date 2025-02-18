@@ -13,7 +13,7 @@ public class Map : MonoBehaviour
 {
     #region // all map variables
     #region // map density variables
-    [SerializeField] private int mapSize = 4;
+    [SerializeField] private int mapSize = 40;
     [SerializeField] private int hostileDensity;
     [SerializeField] private int traderDensity;
     [SerializeField] private int cityDensity;
@@ -39,8 +39,8 @@ public class Map : MonoBehaviour
     };
     #endregion
 
-    [SerializeField] public Dictionary<UnityEngine.Vector2, LocationType> mapDict { private set; get; }
-    private Dictionary<UnityEngine.Vector2, Tuple<Kingdoms, Biomes>> map;
+    [SerializeField] public Dictionary<UnityEngine.Vector2, LocationType> mapDict { private set; get; } = new Dictionary<UnityEngine.Vector2, LocationType>();
+    private Dictionary<UnityEngine.Vector2, Tuple<Kingdoms, Biomes>> map = new Dictionary<UnityEngine.Vector2, Tuple<Kingdoms, Biomes>>();
     public List<Directions> directions { private set; get; } = new List<Directions>
     {
         Directions.North,
@@ -62,8 +62,8 @@ public class Map : MonoBehaviour
     List<Biomes> biomesList;
     private List<Kingdoms> kingdomsList;
     Dictionary<Kingdoms, int> kingdomSizeDict;
-    public Dictionary<UnityEngine.Vector2, Kingdoms> kingdomMapDict { private set; get; }
-    public Dictionary<UnityEngine.Vector2, Biomes> biomesMapDict { private set; get; }
+    public Dictionary<UnityEngine.Vector2, Kingdoms> kingdomMapDict { private set; get; } = new Dictionary<UnityEngine.Vector2, Kingdoms>();
+    public Dictionary<UnityEngine.Vector2, Biomes> biomesMapDict { private set; get; } = new Dictionary<UnityEngine.Vector2, Biomes>();
 
 
 
@@ -73,6 +73,7 @@ public class Map : MonoBehaviour
     {
         mapDict = MakeMapDict();
         AddKingdomsToMap();
+        AddBiomesToMap();
     }
 
     // makes map of size mapSize squared and assigns random location types to each integer vector location
@@ -143,8 +144,8 @@ public class Map : MonoBehaviour
     {
         if (mapDict != null)
         {
-            if (playerlocation.x <= mapSize || playerlocation.y <= mapSize
-            || playerlocation.x >= -mapSize || playerlocation.y <= -mapSize)
+            if (playerlocation.x <= mapSize && playerlocation.y <= mapSize
+            || playerlocation.x >= -mapSize && playerlocation.y <= -mapSize)
             {
                 LocationType locationType = mapDict[playerlocation];
                 return locationType;
@@ -169,31 +170,6 @@ public class Map : MonoBehaviour
         return Enum.GetValues(typeof(T)).Cast<T>().ToList();
     }
 
-    private Dictionary<UnityEngine.Vector2, Kingdoms> KingdomStartPointss()
-    {
-        List<Kingdoms> domainType = GetAllEnums<Kingdoms>();
-        kingdomMapDict = new Dictionary<UnityEngine.Vector2, Kingdoms>();
-        List<UnityEngine.Vector2> mapDictList = mapDict.Keys.ToList();
-
-        foreach (Kingdoms kingdom in domainType)
-        {
-            bool found = false;
-            while (!found)
-            {
-                int randomIndex = UnityEngine.Random.Range(0, mapDict.Count);
-                UnityEngine.Vector2 startPoint = mapDictList[randomIndex];
-                Debug.Log($"{startPoint}");
-                if (!kingdomMapDict.TryGetValue(startPoint, out Kingdoms kingdoms))
-                {
-                    kingdomMapDict.Add(startPoint, kingdom);
-                    found = true; // leave the while loop
-                }
-                Debug.Log($"found: {found}");
-
-            }
-        }
-        return kingdomMapDict;
-    }
     private Dictionary<UnityEngine.Vector2, Kingdoms> KingdomStartPoints()
     {
         List<Kingdoms> domainType = GetAllEnums<Kingdoms>();
@@ -350,8 +326,10 @@ public class Map : MonoBehaviour
         }
         return biome;
     }
-    public void LoadData(MapData mapData)
+
+    public void LoadData()
     {
+        MapData mapData = SaveSystem.LoadMapData();
         mapDict.Clear();
         biomesMapDict.Clear();
         kingdomMapDict.Clear();
