@@ -4,6 +4,7 @@ using System.Collections;
 using KragostiosAllEnums;
 using System.Linq;
 using System;
+using System.Runtime.CompilerServices;
 
 [CreateAssetMenu(fileName = "Item", menuName = "CrewObject/ Item")]
 public class Ether_SO : ScriptableObject
@@ -20,9 +21,9 @@ public class AlchemyHandler : MonoBehaviour
     [SerializeField] Ether_SO ImpureEther;
 
     private readonly StatsHandler PlayerStats;
-    private readonly Dictionary<AlchemyTools, bool> AvailableTools = new Dictionary<AlchemyTools, bool>();
-    private Dictionary<Ether_SO, int> PlayerEther = new Dictionary<Ether_SO, int> { };
-    private Dictionary<Elements, int> KnowledgeDict = new Dictionary<Elements, int>();
+    public Dictionary<AlchemyTools, bool> AvailableTools { private set; get; } = new Dictionary<AlchemyTools, bool>();
+    public Dictionary<Ether_SO, int> PlayerEther { private set; get; } = new Dictionary<Ether_SO, int> { };
+    public Dictionary<Elements, int> KnowledgeDict { private set; get; } = new Dictionary<Elements, int>();
 
     #endregion
     void Awake()
@@ -106,5 +107,10 @@ public class AlchemyHandler : MonoBehaviour
         }
     }
     #endregion
-
+    public void LoadData(AlchemyData alchemyData)
+    {
+        AvailableTools = alchemyData.AvailableTools_SD;
+        PlayerEther = alchemyData.PlayerEther_SD;
+        KnowledgeDict = alchemyData.KnowledgeDict_SD;
+    }
 }

@@ -192,6 +192,18 @@ public class PlayerOptions : MonoBehaviour
         root.MarkDirtyRepaint();
     }
 
+    public void DisplayLoadAndSaveButtons(StatsHandler stats, Map map, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
+    {
+        TemplateContainer newButtonContainer = templateButton.Instantiate();
+        Button newButton = newButtonContainer.Q<Button>();
+        newButton.text = "Save";
+        buttonContainer_AO.Add(newButtonContainer);
+        newButtonContainer.Add(newButton);
+        newButton.RegisterCallback<ClickEvent>(e => SaveSystem.SaveAll(stats, map, alchemyHandler, moddedAbilities, moddedItems));
+        buttonContainer_AO.MarkDirtyRepaint();
+        root.MarkDirtyRepaint();
+    }
+
     private void OnJourneyDirectionSelected(Directions direction)
     {
         ClearAbilityContainer();

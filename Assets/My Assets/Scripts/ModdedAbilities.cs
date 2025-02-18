@@ -199,4 +199,14 @@ public class ModdedAbilities
     }
 
     #endregion
+
+    public void LoadData(ModdedAbilitySaveData moddedData)
+    {
+        AbilityIntMods = moddedData.AbilityIntMods_SD;
+        AbilityStringMods = moddedData.AbilityStringMods_SD;
+        AbilityResourceMods = moddedData.AbilityResourceMods_SD;
+        AbilityElementMods = moddedData.AbilityElementMods_SD;
+        AbilityBuffMods = moddedData.AbilityBuffMods_SD;
+        AbilityDebuffMods = moddedData.AbilityDebuffMods_SD;
+    }
 }

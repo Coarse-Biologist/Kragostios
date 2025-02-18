@@ -39,7 +39,7 @@ public class Map : MonoBehaviour
     };
     #endregion
 
-    [SerializeField] private Dictionary<UnityEngine.Vector2, LocationType> mapDict;
+    [SerializeField] public Dictionary<UnityEngine.Vector2, LocationType> mapDict { private set; get; }
     private Dictionary<UnityEngine.Vector2, Tuple<Kingdoms, Biomes>> map;
     public List<Directions> directions { private set; get; } = new List<Directions>
     {
@@ -62,8 +62,8 @@ public class Map : MonoBehaviour
     List<Biomes> biomesList;
     private List<Kingdoms> kingdomsList;
     Dictionary<Kingdoms, int> kingdomSizeDict;
-    public Dictionary<UnityEngine.Vector2, Kingdoms> kingdomMapDict;
-    public Dictionary<UnityEngine.Vector2, Biomes> biomesMapDict;
+    public Dictionary<UnityEngine.Vector2, Kingdoms> kingdomMapDict { private set; get; }
+    public Dictionary<UnityEngine.Vector2, Biomes> biomesMapDict { private set; get; }
 
 
 
@@ -350,4 +350,38 @@ public class Map : MonoBehaviour
         }
         return biome;
     }
+    public void LoadData(MapData mapData)
+    {
+        mapDict.Clear();
+        biomesMapDict.Clear();
+        kingdomMapDict.Clear();
+
+        Dictionary<float[], LocationType> arrayMapDict = mapData.locationTypeDict_SD;
+
+        foreach (KeyValuePair<float[], LocationType> kvp in arrayMapDict)
+        {
+            float arrayX = kvp.Key[0];
+            float arrayY = kvp.Key[1];
+            UnityEngine.Vector2 array = new UnityEngine.Vector2(arrayX, arrayY);
+            mapDict.Add(array, kvp.Value);
+        }
+        Dictionary<float[], Biomes> arrayBiomesMapDict = mapData.biomeDict_SD;
+        foreach (KeyValuePair<float[], Biomes> kvp in arrayBiomesMapDict)
+        {
+            float arrayX = kvp.Key[0];
+            float arrayY = kvp.Key[1];
+            UnityEngine.Vector2 array = new UnityEngine.Vector2(arrayX, arrayY);
+            biomesMapDict.Add(array, kvp.Value);
+        }
+        Dictionary<float[], Kingdoms> arrayKingdomMapDict = mapData.kingdomDict_SD;
+        foreach (KeyValuePair<float[], Kingdoms> kvp in arrayKingdomMapDict)
+        {
+            float arrayX = kvp.Key[0];
+            float arrayY = kvp.Key[1];
+            UnityEngine.Vector2 array = new UnityEngine.Vector2(arrayX, arrayY);
+            kingdomMapDict.Add(array, kvp.Value);
+        }
+    }
+
+
 }

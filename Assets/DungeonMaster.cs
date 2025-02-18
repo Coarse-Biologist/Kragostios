@@ -61,12 +61,7 @@ public class DungeonMaster : MonoBehaviour
     }
     private void Start()
     {
-
-        //RequestPlayerName();
         CharacterCreation();
-        //InitiateCombat();
-
-
     }
 
     private void OnEnable()
@@ -312,11 +307,6 @@ public class DungeonMaster : MonoBehaviour
             }
         }
     }
-
-
-    #endregion
-    #region trader / transaction handling
-
 
     #endregion
 

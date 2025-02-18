@@ -959,4 +959,58 @@ public class StatsHandler : MonoBehaviour
 
     }
 
+    public void LoadStats(PlayerSaveData saveData)
+    {
+        characterName = saveData.characterName_SD;
+        description = saveData.description_SD;
+
+        MaxHealth = saveData.MaxHealth_SD;
+        MaxMana = saveData.MaxMana_SD;
+        MaxStamina = saveData.MaxStamina_SD;
+
+        currentHealth = saveData.currentHealth_SD;
+        currentOverHealth = saveData.currentOverHealth_SD;
+        currentMana = saveData.currentMana_SD;
+        currentStamina = saveData.currentStamina_SD;
+
+        HealthRegen = saveData.HealthRegen_SD;
+        ManaRegen = saveData.ManaRegen_SD;
+        StaminaRegen = saveData.StaminaRegen_SD;
+
+        ActionPoints = saveData.ActionPoints_SD;
+        currentActionPoints = saveData.currentActionPoints_SD;
+        ActionPointRegen = saveData.ActionPointRegen_SD;
+
+        initiative = saveData.initiative_SD;
+        knownAbilities = saveData.knownAbilities_SD;
+        Inventory = saveData.inventory_SD;
+        characterGold = saveData.characterGold_SD;
+
+        ColdAffinity = saveData.ColdAffinity_SD;
+        WaterAffinity = saveData.WaterAffinity_SD;
+        EarthAffinity = saveData.EarthAffinity_SD;
+        HeatAffinity = saveData.HeatAffinity_SD;
+        FireAffinity = saveData.FireAffinity_SD;
+        AirAffinity = saveData.AirAffinity_SD;
+        ElectricityAffinity = saveData.LightAffinity_SD;
+        LightAffinity = saveData.LightAffinity_SD;
+        PsychicAffinity = saveData.PsychicAffinity_SD;
+        FungiAffinity = saveData.FungiAffinity_SD;
+        PlantAffinity = saveData.PlantAffinity_SD;
+        PoisonAffinity = saveData.PlantAffinity_SD;
+        AcidAffinity = saveData.AcidAffinity_SD;
+        RadiationAffinity = saveData.RadiationAffinity_SD;
+        BacteriaAffinity = saveData.BacteriaAffinity_SD;
+        VirusAffinity = saveData.VirusAffinity_SD;
+
+        BludgeoningResist = saveData.BludgeoningResist_SD;
+        SlashingResist = saveData.SlashingResist_SD;
+        PiercingResist = saveData.PiercingResist_SD;
+
+        characterLevel = saveData.characterLevel_SD;
+        availableStatPoints = saveData.availableStatPoints_SD;
+        currentXp = saveData.currentXp_SD;
+        MaxXp = saveData.MaxXp_SD;
+    }
+
 }

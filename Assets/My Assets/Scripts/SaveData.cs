@@ -3,9 +3,13 @@ using System.Collections;
 using UnityEngine;
 using KragostiosAllEnums;
 using AbilityEnums;
+using System;
+using JetBrains.Annotations;
+
 [System.Serializable]
 public class PlayerSaveData
 {
+    #region // player stats
     public List<Ability_SO> knownAbilities_SD;
     public Dictionary<Item_SO, int> inventory_SD;
     public string characterName_SD = "Sqreegler";
@@ -13,8 +17,6 @@ public class PlayerSaveData
     public string description_SD;
     public Combatants charType_SD;
     public Difficulty difficulty_SD;
-
-    #region //  resources
 
     public int MaxHealth_SD = 100;
     public int MaxMana_SD = 100;
@@ -29,9 +31,7 @@ public class PlayerSaveData
     public int currentMana_SD = 100;
     public int currentStamina_SD = 100;
     public int currentOverHealth_SD = 0;
-    #endregion
 
-    #region // Elemental Affinityences
     public int ColdAffinity_SD = 0;
     public int WaterAffinity_SD = 0;
     public int EarthAffinity_SD = 0;
@@ -49,33 +49,21 @@ public class PlayerSaveData
     public int BacteriaAffinity_SD = 0;
     public int VirusAffinity_SD = 0;
 
-    #endregion
 
-
-    #region // Physical Affinityences 
     public int BludgeoningResist_SD = 0;
     public int SlashingResist_SD = 0;
     public int PiercingResist_SD = 0;
     public Elements Element_SD = Elements.None;
-    #endregion
-
-    #region // resource regen
     public int HealthRegen_SD = 1;
     public int ManaRegen_SD = 1;
     public int StaminaRegen_SD = 1;
-
-    #endregion
-
-    #region // "Level Stats"
 
     public int characterLevel_SD = 1;
     public int availableStatPoints_SD = 40;
     public int currentXp_SD = 0;
     public int MaxXp_SD = 100;
 
-    #endregion
 
-    #region // inventory
     public List<Rewards> rewards_SD = new List<Rewards> { Rewards.Gold, Rewards.Xp };
     public int characterGold_SD = 0;
 
@@ -138,3 +126,115 @@ public class PlayerSaveData
     }
 
 }
+
+[System.Serializable]
+public class MapData
+{
+    public Dictionary<float[], LocationType> locationTypeDict_SD;
+    public Dictionary<float[], Biomes> biomeDict_SD;
+    public Dictionary<float[], Kingdoms> kingdomDict_SD;
+    public MapData(Map mapData)
+    {
+        locationTypeDict_SD = new Dictionary<float[], LocationType>();
+        Dictionary<Vector2, LocationType> mapDict = mapData.mapDict;
+        if (mapData != null)
+        {
+            foreach (KeyValuePair<Vector2, LocationType> kvp in mapDict)
+            {
+                float arrayX = kvp.Key.x;
+                float arrayY = kvp.Key.y;
+                float[] array = new float[] { arrayX, arrayY };
+                locationTypeDict_SD.Add(array, kvp.Value);
+            }
+        }
+        biomeDict_SD = new Dictionary<float[], Biomes>();
+        Dictionary<Vector2, Biomes> biomeMapDict = mapData.biomesMapDict;
+        if (mapData != null)
+        {
+            foreach (KeyValuePair<Vector2, Biomes> kvp in biomeMapDict)
+            {
+                float arrayX = kvp.Key.x;
+                float arrayY = kvp.Key.y;
+                float[] array = new float[] { arrayX, arrayY };
+                biomeDict_SD.Add(array, kvp.Value);
+            }
+        }
+
+        kingdomDict_SD = new Dictionary<float[], Kingdoms>();
+        Dictionary<Vector2, Kingdoms> kingdomDict = mapData.kingdomMapDict;
+        if (mapData != null)
+        {
+            foreach (KeyValuePair<Vector2, Kingdoms> kvp in kingdomDict)
+            {
+                float arrayX = kvp.Key.x;
+                float arrayY = kvp.Key.y;
+                float[] array = new float[] { arrayX, arrayY };
+                kingdomDict_SD.Add(array, kvp.Value);
+            }
+        }
+
+    }
+
+}
+
+[System.Serializable]
+public class ModdedItemSaveData
+{
+    public Dictionary<Item_SO, Dictionary<ItemVars, int>> ItemIntMods_SD = new Dictionary<Item_SO, Dictionary<ItemVars, int>>();
+    public Dictionary<Item_SO, Dictionary<ItemVars, string>> ItemStringMods_SD = new Dictionary<Item_SO, Dictionary<ItemVars, string>>();
+    public Dictionary<Item_SO, Dictionary<ItemVars, ResourceTypes>> ItemResourceMods_SD = new Dictionary<Item_SO, Dictionary<ItemVars, ResourceTypes>>();
+    public Dictionary<Item_SO, Dictionary<ItemVars, Elements>> ItemElementMods_SD = new Dictionary<Item_SO, Dictionary<ItemVars, Elements>>();
+    public Dictionary<Item_SO, Dictionary<ItemVars, List<Buffs>>> ItemBuffMods_SD = new Dictionary<Item_SO, Dictionary<ItemVars, List<Buffs>>>();
+    public Dictionary<Item_SO, Dictionary<ItemVars, List<Debuffs>>> ItemDebuffMods_SD = new Dictionary<Item_SO, Dictionary<ItemVars, List<Debuffs>>>();
+
+    public ModdedItemSaveData(ModdedItems moddedItems)
+    {
+        ItemIntMods_SD = moddedItems.ItemIntMods;
+        ItemStringMods_SD = moddedItems.ItemStringMods;
+        ItemResourceMods_SD = moddedItems.ItemResourceMods;
+        ItemElementMods_SD = moddedItems.ItemElementMods;
+        ItemBuffMods_SD = moddedItems.ItemBuffMods;
+        ItemDebuffMods_SD = moddedItems.ItemDebuffMods;
+    }
+
+}
+
+
+[System.Serializable]
+public class ModdedAbilitySaveData
+{
+    public Dictionary<Ability_SO, Dictionary<AbilityVars, int>> AbilityIntMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, int>>();
+    public Dictionary<Ability_SO, Dictionary<AbilityVars, string>> AbilityStringMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, string>>();
+    public Dictionary<Ability_SO, Dictionary<AbilityVars, ResourceTypes>> AbilityResourceMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, ResourceTypes>>();
+    public Dictionary<Ability_SO, Dictionary<AbilityVars, Elements>> AbilityElementMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, Elements>>();
+    public Dictionary<Ability_SO, Dictionary<AbilityVars, List<Buffs>>> AbilityBuffMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, List<Buffs>>>();
+    public Dictionary<Ability_SO, Dictionary<AbilityVars, List<Debuffs>>> AbilityDebuffMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, List<Debuffs>>>();
+
+
+    public ModdedAbilitySaveData(ModdedAbilities moddedAbilities)
+    {
+        AbilityIntMods_SD = moddedAbilities.AbilityIntMods;
+        AbilityStringMods_SD = moddedAbilities.AbilityStringMods;
+        AbilityResourceMods_SD = moddedAbilities.AbilityResourceMods;
+        AbilityElementMods_SD = moddedAbilities.AbilityElementMods;
+        AbilityBuffMods_SD = moddedAbilities.AbilityBuffMods;
+        AbilityDebuffMods_SD = moddedAbilities.AbilityDebuffMods;
+    }
+}
+
+
+[System.Serializable]
+public class AlchemyData
+{
+    public Dictionary<AlchemyTools, bool> AvailableTools_SD = new Dictionary<AlchemyTools, bool>();
+    public Dictionary<Ether_SO, int> PlayerEther_SD = new Dictionary<Ether_SO, int> { };
+    public Dictionary<Elements, int> KnowledgeDict_SD = new Dictionary<Elements, int>();
+
+    public AlchemyData(AlchemyHandler alchemyHandler)
+    {
+        AvailableTools_SD = alchemyHandler.AvailableTools;
+        PlayerEther_SD = alchemyHandler.PlayerEther;
+        KnowledgeDict_SD = alchemyHandler.KnowledgeDict;
+    }
+}
+
