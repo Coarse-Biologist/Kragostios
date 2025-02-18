@@ -250,4 +250,15 @@ public class EquipmentData
         playerEquippedItems_SD = equipmentHandler.playerEquippedItems;
     }
 }
+[System.Serializable]
+public class LocationData
+{
+    public float[] playerLocation_SD = new float[2] { 0, 0 };
 
+    public LocationData(TravelScript travelScript)
+
+    {
+        playerLocation_SD[0] = travelScript.playerLocation[0];
+        playerLocation_SD[0] = travelScript.playerLocation[1];
+    }
+}

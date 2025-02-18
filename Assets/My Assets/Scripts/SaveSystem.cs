@@ -175,11 +175,39 @@ public static class SaveSystem
             return null;
         }
     }
+    public static void SavePlayerLocationData(TravelScript travelScript)
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        string path = Application.persistentDataPath + "/playerLocationData.data";
+        FileStream stream = new FileStream(path, FileMode.Create);
+        LocationData saveData = new LocationData(travelScript);
+        formatter.Serialize(stream, saveData);
+        stream.Close();
+    }
 
-    public static void SaveAll(StatsHandler stats, Map map, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
+    public static LocationData LoadPlayerLocationData()
+    {
+        string path = Application.persistentDataPath + "/playerLocationData.data";
+        if (File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            LocationData saveData = formatter.Deserialize(stream) as LocationData;
+            stream.Close();
+            return saveData;
+        }
+        else
+        {
+            Debug.Log($"file not found{path} -------------------");
+            return null;
+        }
+    }
+
+    public static void SaveAll(StatsHandler stats, Map map, TravelScript travelScript, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
     {
         //SavePlayerData(stats);
         SaveMapData(map);
+        SavePlayerLocationData(travelScript);
         //SaveAlchemyyData(alchemyHandler);
         //SaveModdedAbilityData(moddedAbilities);
         //SaveModdedItemData(moddedItems);

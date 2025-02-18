@@ -188,14 +188,14 @@ public class PlayerOptions : MonoBehaviour
         root.MarkDirtyRepaint();
     }
 
-    public void DisplayLoadAndSaveButtons(StatsHandler stats, Map map, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
+    public void DisplayLoadAndSaveButtons(StatsHandler stats, Map map, TravelScript travelScript, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
     {
         TemplateContainer saveButtonContainer = templateButton.Instantiate();
         Button saveButton = saveButtonContainer.Q<Button>();
         saveButton.text = "Save";
         buttonContainer_AO.Add(saveButtonContainer);
         saveButtonContainer.Add(saveButton);
-        saveButton.RegisterCallback<ClickEvent>(e => SaveSystem.SaveAll(stats, map, alchemyHandler, moddedAbilities, moddedItems));
+        saveButton.RegisterCallback<ClickEvent>(e => SaveSystem.SaveAll(stats, map, travelScript, alchemyHandler, moddedAbilities, moddedItems));
 
         TemplateContainer loadButtonContainer = templateButton.Instantiate();
         Button loadButton = loadButtonContainer.Q<Button>();

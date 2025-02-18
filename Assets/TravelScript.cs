@@ -52,5 +52,12 @@ public class TravelScript : MonoBehaviour
     }
     //myButton.onClick.AddListener(() => CustomMethod("Hello, World!"));
     //myButton.onClick.RemoveAlllisteners();
+    public void LoadData()
+    {
+        LocationData locationData = SaveSystem.LoadPlayerLocationData();
+        float arrayX = locationData.playerLocation_SD[0];
+        float arrayY = locationData.playerLocation_SD[1];
+        playerLocation = new UnityEngine.Vector2(arrayX, arrayY);
+    }
 
 }

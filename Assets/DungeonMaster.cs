@@ -401,8 +401,7 @@ public class DungeonMaster : MonoBehaviour
         inventory.SpawnInventoryButton(buttonContainer_AO, playerStats);
         List<Directions> directions = map.directions;
         playerOptions.SpawnDirectionOptions(directions);
-        playerOptions.DisplayLoadAndSaveButtons(playerStats, map, alchemy, moddedAbilities, moddedItems);
-
+        playerOptions.DisplayLoadAndSaveButtons(playerStats, map, travel, alchemy, moddedAbilities, moddedItems);
     }
 
     #endregion
@@ -567,6 +566,7 @@ public class DungeonMaster : MonoBehaviour
         //moddedAbilities.LoadData();
         //moddedItems.LoadData();
         //playerStats.LoadStats();
+        travel.LoadData();
         map.LoadData();
         //alchemy.LoadData();
         //equipment.LoadData();
