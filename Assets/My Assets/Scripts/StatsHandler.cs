@@ -133,6 +133,7 @@ public class StatsHandler : MonoBehaviour
     {
         foreach (Ability_SO ability in knownAbilities)
         {
+            KDebug.SeekBug($"ability= {ability.name}");
             Abilities abilityEnum = AbilityLibrary.reverseAbilityDict[ability];
             if (!knownAbilities_save.Contains(abilityEnum))
             {

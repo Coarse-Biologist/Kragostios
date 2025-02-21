@@ -153,10 +153,7 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_AO.MarkDirtyRepaint();
         //root.MarkDirtyRepaint();  
     }
-    //public void SetAbilitiesScript(AbilityLibrary theAbilityLibrary)
-    //{
-    //    abilityLibrary = theAbilityLibrary;
-    //}
+
 
     public void SpawnPlayerInfoButton(GameObject player)
     {

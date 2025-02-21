@@ -85,7 +85,6 @@ public class DungeonMaster : MonoBehaviour
 
         playerOptions.StatIncrented.AddListener(HandleStatIncremented);
         playerOptions.CharacterCreationConfirmed.AddListener(CharacterCreationComplete);
-
         playerOptions.requestLoad.AddListener(LoadAllData);
 
         inventory.requestInventoryScreen.AddListener(ShowInventoryScreen);
@@ -105,7 +104,6 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
         playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
         playerOptions.ContinueSelected.RemoveListener(HandleCombatContinuePressed);
-        //playerOptions.PlayertextInput.RemoveListener(HandlePlayerTextInput);
         playerOptions.IntroOptionSelected.RemoveListener(NarratorResponseToPlayer);
 
         playerOptions.StatIncrented.RemoveListener(HandleStatIncremented);
