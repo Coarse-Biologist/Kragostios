@@ -52,7 +52,6 @@ public class PlayerOptions : MonoBehaviour
     public Dictionary<string, List<string>> IntroOptionDict { private set; get; }
 
 
-    [SerializeField] public AbilityLibrary abilityLibrary;
 
     private void Awake()
     {
@@ -154,10 +153,10 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_AO.MarkDirtyRepaint();
         //root.MarkDirtyRepaint();  
     }
-    public void SetAbilitiesScript(AbilityLibrary theAbilityLibrary)
-    {
-        abilityLibrary = theAbilityLibrary;
-    }
+    //public void SetAbilitiesScript(AbilityLibrary theAbilityLibrary)
+    //{
+    //    abilityLibrary = theAbilityLibrary;
+    //}
 
     public void SpawnPlayerInfoButton(GameObject player)
     {
@@ -259,7 +258,7 @@ public class PlayerOptions : MonoBehaviour
     {
         try
         {
-            string abilityInfo = abilityLibrary.GetAbilityInfo(ability);
+            string abilityInfo = AbilityLibrary.GetAbilityInfo(ability);
             abilityInfoPanel.style.display = DisplayStyle.Flex;
             abilityInfoText.style.whiteSpace = WhiteSpace.Normal;
             abilityInfoText.style.color = Color.white;
@@ -268,7 +267,6 @@ public class PlayerOptions : MonoBehaviour
         catch (NullReferenceException)
         {
             KDebug.SeekBug("Hovering over button! but something doesnt exist");
-            KDebug.SeekBug($"ability library script: {abilityLibrary}!");
         }
 
         //KDebug.SeekBug("Hovering over button!");

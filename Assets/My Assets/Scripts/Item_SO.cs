@@ -11,7 +11,6 @@ using UnityEditor.Build.Pipeline;
 [CreateAssetMenu(fileName = "Item", menuName = "CrewObject/ Item")]
 public class Item_SO : ScriptableObject
 {
-    [SerializeField] AbilityLibrary abilityLibrary;
     [SerializeField] private Rarity itemRarity = Rarity.Common;
     public Rarity ItemRarity => itemRarity;
     [SerializeField] private ItemType itemType = ItemType.Weapon;
@@ -69,11 +68,7 @@ public class Item_SO : ScriptableObject
                 string weaponAbilityInfo = "";
                 if (ability != null)
                 {
-                    if (abilityLibrary != null)
-                    {
-                        weaponAbilityInfo = abilityLibrary.GetAbilityInfo(ability);
-                    }
-                    else weaponAbilityInfo = ability.AbilityName;
+                    weaponAbilityInfo = AbilityLibrary.GetAbilityInfo(ability);
                 }
                 itemInfo += weaponAbilityInfo;
 
@@ -82,11 +77,7 @@ public class Item_SO : ScriptableObject
                 string potionAbilityInfo = "";
                 if (ability != null)
                 {
-                    if (abilityLibrary != null)
-                    {
-                        potionAbilityInfo += abilityLibrary.GetAbilityInfo(ability);
-                    }
-                    else potionAbilityInfo += ability.AbilityName;
+                    potionAbilityInfo += AbilityLibrary.GetAbilityInfo(ability);
                 }
                 itemInfo += potionAbilityInfo;
 
@@ -95,11 +86,7 @@ public class Item_SO : ScriptableObject
                 string scrollAbilityInfo = "";
                 if (ability != null)
                 {
-                    if (abilityLibrary != null)
-                    {
-                        scrollAbilityInfo += abilityLibrary.GetAbilityInfo(ability);
-                    }
-                    else scrollAbilityInfo += ability.AbilityName;
+                    scrollAbilityInfo += AbilityLibrary.GetAbilityInfo(ability);
                 }
                 itemInfo += scrollAbilityInfo;                //string scrollDebuffList = "Can apply debuffs:";
 

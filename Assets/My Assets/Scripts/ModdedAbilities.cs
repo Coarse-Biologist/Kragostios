@@ -211,3 +211,5 @@ public class ModdedAbilities
         AbilityDebuffMods = moddedData.AbilityDebuffMods_SD;
     }
 }
+
+// all dicts have to be unpacked and repacked with data types replacing the scriptable objects.

@@ -10,8 +10,8 @@ using JetBrains.Annotations;
 public class PlayerSaveData
 {
     #region // player stats
-    public List<Ability_SO> knownAbilities_SD;
-    public Dictionary<Item_SO, int> inventory_SD;
+    public List<Abilities> knownAbilities_SD; // changed from Abilities_SO
+    public Dictionary<string, int> inventory_SD; // changed fro Items_SO
     public string characterName_SD = "Sqreegler";
 
     public string description_SD;
@@ -94,8 +94,8 @@ public class PlayerSaveData
         initiative_SD = stats.initiative;
 
 
-        knownAbilities_SD = stats.knownAbilities;
-        inventory_SD = stats.Inventory;
+        knownAbilities_SD = stats.SetKnownAbilities_Save();
+        inventory_SD = stats.SetInventory_save();
         characterGold_SD = stats.characterGold;
 
         ColdAffinity_SD = stats.ColdAffinity;
@@ -124,6 +124,8 @@ public class PlayerSaveData
         currentXp_SD = stats.currentXp;
         MaxXp_SD = stats.MaxXp;
     }
+
+
 
 }
 

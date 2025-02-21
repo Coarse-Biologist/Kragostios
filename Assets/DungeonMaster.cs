@@ -26,7 +26,6 @@ public class DungeonMaster : MonoBehaviour
     private TravelScript travel;
     private CombatFlow combat;
     private List<Tuple<Difficulty, Elements>> enemyCombatantTuple;
-    [SerializeField] AbilityLibrary abilityLibrary;
     private Inventory inventory;
     private EquipmentHandler equipment;
     private AlchemyHandler alchemy;
@@ -55,7 +54,7 @@ public class DungeonMaster : MonoBehaviour
         Player = MakePlayer();
         // Initialize component references
         playerOptions = GetComponent<PlayerOptions>();
-        playerOptions.SetAbilitiesScript(abilityLibrary);
+        //playerOptions.SetAbilitiesScript(abilityLibrary);
         map = GetComponent<Map>();
         narrator = GetComponent<NarrationScript>();
         travel = GetComponent<TravelScript>();
@@ -65,6 +64,8 @@ public class DungeonMaster : MonoBehaviour
     }
     private void Start()
     {
+        WorldChest.LoadItems(WorldChest.allAddresses);
+        AbilityLibrary.LoadAbilities(AbilityLibrary.allAddresses, AbilityLibrary.allAbilities);
         CharacterCreation();
     }
 
@@ -284,23 +285,23 @@ public class DungeonMaster : MonoBehaviour
             switch (difficulty)
             {
                 case Difficulty.Easy:
-                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Common);
+                    items = WorldChest.GetAllItemsofRarity(Rarity.Common);
                     playerStats.AddToInventory(items[0]);
                     break;
                 case Difficulty.Medium:
-                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Rare);
+                    items = WorldChest.GetAllItemsofRarity(Rarity.Rare);
                     playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
                     break;
                 case Difficulty.Hard:
-                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Epic);
+                    items = WorldChest.GetAllItemsofRarity(Rarity.Epic);
                     playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
                     break;
                 case Difficulty.Brutal:
-                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Grand);
+                    items = WorldChest.GetAllItemsofRarity(Rarity.Grand);
                     playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
                     break;
                 case Difficulty.Nightmare:
-                    items = inventory.worldChest.GetAllItemsofRarity(Rarity.Legndary);
+                    items = WorldChest.GetAllItemsofRarity(Rarity.Legndary);
                     playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
                     break;
                 default:
@@ -360,7 +361,7 @@ public class DungeonMaster : MonoBehaviour
                 narrator.DisplayNarrationText("You found a trader. Would you like to look at their services, or journey on?");
                 ShowMainMenu();
                 VisualElement buttonContainer_AO = root.Q<VisualElement>("PlayerOptions");
-                List<Item_SO> traderItems = inventory.worldChest.GetAllItems();
+                List<Item_SO> traderItems = WorldChest.GetAllItems();
                 inventory.SpawnTraderButton(playerStats, buttonContainer_AO, traderItems);
                 break;
 

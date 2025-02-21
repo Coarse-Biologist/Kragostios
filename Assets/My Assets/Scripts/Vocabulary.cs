@@ -4,7 +4,7 @@ using UnityEngine;
 using KragostiosAllEnums;
 using UnityEditor.Build.Pipeline;
 
-public class Vocabulary
+public static class Vocabulary
 {
     public static string GetRandomVillainousAdjective()
     {

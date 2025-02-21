@@ -206,3 +206,5 @@ public class ModdedItems
         ItemDebuffMods = moddedData.ItemDebuffMods_SD;
     }
 }
+
+// all dicts have to be unpacked and repacked with data types replacing the scriptable objects.

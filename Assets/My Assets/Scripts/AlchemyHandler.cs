@@ -111,7 +111,11 @@ public class AlchemyHandler : MonoBehaviour
     {
         AlchemyData alchemyData = SaveSystem.LoadAlchemyData();
         AvailableTools = alchemyData.AvailableTools_SD;
-        PlayerEther = alchemyData.PlayerEther_SD;
+        PlayerEther = alchemyData.PlayerEther_SD; // must be replaced with non-scriptable object data types
         KnowledgeDict = alchemyData.KnowledgeDict_SD;
     }
 }
+
+// playerEther must be replaced with non-scriptable object data types
+
+

@@ -11,10 +11,15 @@ public class EquipmentHandler : MonoBehaviour
 {
     public Item_SO placeHolderItem;
     public Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> allEquipmentDicts = new Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>>();
+
+    public Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allEquipmentDicts_save = new Dictionary<StatsHandler, Dictionary<ItemSlot, string>>();
+
     private StatsHandler PlayerStats;
     private List<ItemSlot> allItemSlots;
     private bool playerDictAdded = false;
     public List<Item_SO> playerEquippedItems = new List<Item_SO>();
+    public List<string> playerDictAdded_save = new List<string>();
+
 
     void Awake()
     {
@@ -115,6 +120,7 @@ public class EquipmentHandler : MonoBehaviour
     public void EquipItem(StatsHandler stats, ItemSlot slot, Item_SO item)
     {
         playerEquippedItems.Add(item);
+        playerDictAdded_save.Add(item.ItemName);
         Debug.Log($"You want to equip {item.ItemName}");
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
         if (equipment.TryGetValue(slot, out Item_SO whoCares))
@@ -210,3 +216,5 @@ public class EquipmentHandler : MonoBehaviour
         playerEquippedItems = equipmentData.playerEquippedItems_SD;
     }
 }
+
+// player equipment and allEquipmentdicts must be replaced with non-scriptable object data types

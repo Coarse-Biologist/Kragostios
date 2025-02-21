@@ -5,22 +5,19 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using KragostiosAllEnums;
 
-public class WorldChest : MonoBehaviour
+public static class WorldChest
 {
     // Dictionary to store loaded ScriptableObjects
-    private Dictionary<string, Item_SO> allItems = new Dictionary<string, Item_SO>();
+    public static Dictionary<string, Item_SO> allItems = new Dictionary<string, Item_SO>();
+    public static List<Item_SO> allItemsList = new List<Item_SO>();
 
 
     // List of addresses to load (manually assigned or from an external source)
-    public List<string> allAddresses = new List<string> { "Sword", "Sword 1", "Sword 3" };
+    public static List<string> allAddresses = new List<string> { "Sword", "Sword 1", "Sword 3", "Sword 4", "Sword 5", "Sword 6", "Sword 7", "Sword 8" };
 
 
-    void Start()
-    {
-        LoadItems(allAddresses, allItems);
-    }
 
-    private void LoadItems(List<string> addressType, Dictionary<string, Item_SO> destination)
+    public static void LoadItems(List<string> addressType)
     {
         foreach (string address in addressType)
         {
@@ -29,10 +26,15 @@ public class WorldChest : MonoBehaviour
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     Item_SO loadedSO = handle.Result;
-                    if (!destination.ContainsKey(address))
+                    if (!allItems.ContainsKey(address))
                     {
-                        destination.Add(address, loadedSO);
+                        allItems.Add(address, loadedSO);
+
                         Debug.Log($"Loaded: {address}");
+                    }
+                    if (!allItemsList.Contains(loadedSO))
+                    {
+                        allItemsList.Add(loadedSO);
                     }
                 }
                 else
@@ -44,15 +46,15 @@ public class WorldChest : MonoBehaviour
     }
 
     // Example method to access a ScriptableObject
-    public Item_SO GetItem(string key)
+    public static Item_SO GetItem(string key)
     {
         return allItems.TryGetValue(key, out Item_SO so) ? so : null;
     }
-    public List<Item_SO> GetAllItems()
+    public static List<Item_SO> GetAllItems()
     {
         return new List<Item_SO>(allItems.Values.ToList());
     }
-    public List<Item_SO> GetAllItemsofRarity(Rarity desiredRarity)
+    public static List<Item_SO> GetAllItemsofRarity(Rarity desiredRarity)
     {
         List<Item_SO> items = new List<Item_SO>();
         foreach (Item_SO item in allItems.Values)
@@ -64,7 +66,7 @@ public class WorldChest : MonoBehaviour
         }
         return new List<Item_SO>(items);
     }
-    public List<Item_SO> GetItemsOfType(ItemType desiredItemType)
+    public static List<Item_SO> GetItemsOfType(ItemType desiredItemType)
     {
         List<Item_SO> items = new List<Item_SO>();
         foreach (Item_SO item in allItems.Values)

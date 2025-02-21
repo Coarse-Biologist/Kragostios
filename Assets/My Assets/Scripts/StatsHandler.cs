@@ -10,13 +10,14 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Unity.VisualScripting;
 using System.Linq;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.Collections;
 
 
 public class StatsHandler : MonoBehaviour
 {
     #region // class references
     //private Ability_SO ability;
-    [SerializeField] public AbilityLibrary abilityLibrary;
     #endregion
 
     #region // char description
@@ -103,7 +104,10 @@ public class StatsHandler : MonoBehaviour
     [SerializeField] public List<Rewards> rewards { private set; get; } = new List<Rewards> { Rewards.Gold, Rewards.Xp };
     [SerializeField] public int characterGold { private set; get; } = 0;
     public Dictionary<Item_SO, int> Inventory { private set; get; } = new Dictionary<Item_SO, int>();
+    public Dictionary<string, int> Inventory_save { private set; get; } = new Dictionary<string, int>();
+
     [SerializeField] public List<Ability_SO> knownAbilities { private set; get; } = new List<Ability_SO>();
+    [SerializeField] public List<Abilities> knownAbilities_save { private set; get; } = new List<Abilities>();
 
     #endregion
 
@@ -124,6 +128,30 @@ public class StatsHandler : MonoBehaviour
             knownAbilitiesString += ability.AbilityName + ", ";
         }
         return knownAbilitiesString;
+    }
+    public List<Abilities> SetKnownAbilities_Save()
+    {
+        foreach (Ability_SO ability in knownAbilities)
+        {
+            Abilities abilityEnum = AbilityLibrary.reverseAbilityDict[ability];
+            if (!knownAbilities_save.Contains(abilityEnum))
+            {
+                knownAbilities_save.Add(abilityEnum);
+            }
+            else KDebug.SeekBug($"{abilityEnum} already exists in save list");
+        }
+        return knownAbilities_save;
+    }
+
+    public List<Ability_SO> ConvertLoadedAbilities(List<Abilities> knownAbilityEnums)
+    {
+        knownAbilities = new List<Ability_SO>();
+        foreach (Abilities abilityEnum in knownAbilityEnums)
+        {
+            Ability_SO ability = AbilityLibrary.abilityDict[abilityEnum];
+            knownAbilities.Add(ability);
+        }
+        return knownAbilities;
     }
     public string GetCharInfo()
     {
@@ -578,7 +606,11 @@ public class StatsHandler : MonoBehaviour
     }
     public void LearnAbility(Abilities newAbility)
     {
-        knownAbilities.Add(abilityLibrary.abilityDict[newAbility]);
+        if (!knownAbilities.Contains(AbilityLibrary.abilityDict[newAbility]))
+        {
+            knownAbilities.Add(AbilityLibrary.abilityDict[newAbility]);
+        }
+        SetKnownAbilities_Save();
     }
     #region // inventory
     public void ChangeGold(int GoldAmount)
@@ -626,6 +658,31 @@ public class StatsHandler : MonoBehaviour
             itemNum = num;
         }
         return itemNum;
+    }
+
+    public Dictionary<string, int> SetInventory_save()
+    {
+        foreach (KeyValuePair<Item_SO, int> invSlot in Inventory)
+        {
+            if (!Inventory_save.TryGetValue(invSlot.Key.name, out int num))
+            {
+                Inventory_save.Add(invSlot.Key.name, num);
+            }
+        }
+        return Inventory_save;
+    }
+
+    public Dictionary<Item_SO, int> ConvertLoadedInventory(Dictionary<string, int> loadedInv) // searches World Chest's items for an item with the specified name
+    {
+        Inventory = new Dictionary<Item_SO, int>();
+        foreach (KeyValuePair<string, int> kvp in loadedInv)
+        {
+            Item_SO newItem = GeneralFunctions.GetItemFromItemName(kvp.Key);
+            Inventory.Add(newItem, kvp.Value);
+
+        }
+
+        return Inventory;
     }
     #endregion
     private void GainLevel()
@@ -711,8 +768,9 @@ public class StatsHandler : MonoBehaviour
         rewards = new List<Rewards>();
         characterGold = 100;
         knownAbilities = new List<Ability_SO>{
-    abilityLibrary.Melee, abilityLibrary.FireBall, abilityLibrary.DivineStrike, abilityLibrary.HealingTouch, abilityLibrary.ColdLight, abilityLibrary.BrainDamage, abilityLibrary.LavaPortal, abilityLibrary.GlobalCooling
+    AbilityLibrary.Melee, AbilityLibrary.FireBall, AbilityLibrary.DivineStrike, AbilityLibrary.HealingTouch, AbilityLibrary.ColdLight, AbilityLibrary.BrainDamage, AbilityLibrary.LavaPortal, AbilityLibrary.GlobalCooling
     };
+        SetKnownAbilities_Save();
 
         return gameObject;
 
@@ -727,7 +785,7 @@ public class StatsHandler : MonoBehaviour
         ManaRegen = scaleFactor;
         StaminaRegen = scaleFactor;
         characterLevel = scaleFactor;
-        knownAbilities = abilityLibrary.GetAbilities(scaleFactor);
+        knownAbilities = AbilityLibrary.GetAbilities(scaleFactor);
     }
 
     private Elements GetRandomCreatureElement()
@@ -984,8 +1042,8 @@ public class StatsHandler : MonoBehaviour
         ActionPointRegen = saveData.ActionPointRegen_SD;
 
         initiative = saveData.initiative_SD;
-        knownAbilities = saveData.knownAbilities_SD;
-        Inventory = saveData.inventory_SD;
+        knownAbilities = ConvertLoadedAbilities(saveData.knownAbilities_SD); // must be replaced with non-scriptable object data types
+        Inventory = ConvertLoadedInventory(saveData.inventory_SD); // must be replaced with non-scriptable object data types
         characterGold = saveData.characterGold_SD;
 
         ColdAffinity = saveData.ColdAffinity_SD;
@@ -1016,3 +1074,5 @@ public class StatsHandler : MonoBehaviour
     }
 
 }
+
+//replace known abilities and inventory with correct data types

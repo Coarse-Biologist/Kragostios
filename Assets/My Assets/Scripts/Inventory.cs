@@ -23,7 +23,6 @@ public class Inventory : MonoBehaviour
     private StatsHandler playerStats;
     private EquipmentHandler equipmentHandler;
     [SerializeField] List<Item_SO> allItems;
-    [SerializeField] public WorldChest worldChest;
 
     private bool itemSelected = false;
     private Item_SO selectedSellableItem;

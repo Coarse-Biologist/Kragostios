@@ -1,36 +1,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AbilityEnums;
+using System.Linq;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class AbilityLibrary : MonoBehaviour
+
+public static class AbilityLibrary
 {
-    public Ability_SO FireBall;
-    public Ability_SO HealingTouch;
-    public Ability_SO DivineStrike;
-    public Ability_SO Melee;
-    public Ability_SO Push;
-    public Ability_SO ColdLight;
-    public Ability_SO BrainDamage;
-    public Ability_SO LavaPortal;
-    public Ability_SO GlobalCooling;
+    public static Ability_SO FireBall;
+    public static Ability_SO HealingTouch;
+    public static Ability_SO DivineStrike;
+    public static Ability_SO Melee;
+    public static Ability_SO Push;
+    public static Ability_SO ColdLight;
+    public static Ability_SO BrainDamage;
+    public static Ability_SO LavaPortal;
+    public static Ability_SO GlobalCooling;
+    public static Dictionary<Abilities, Ability_SO> abilityDict { private set; get; } = new Dictionary<Abilities, Ability_SO>();
+    public static Dictionary<Ability_SO, Abilities> reverseAbilityDict { private set; get; } = new Dictionary<Ability_SO, Abilities>();
+    public static List<Ability_SO> allAbilities = new List<Ability_SO>();
 
-    public Dictionary<Abilities, Ability_SO> abilityDict { private set; get; } = new Dictionary<Abilities, Ability_SO>();
-    //During awake, the dictionary will be filled with kvp of ability enums and references to the enums.
-    public void Awake()
-    {
-        abilityDict.Add(Abilities.Fireball, FireBall);
-        abilityDict.Add(Abilities.HealingTouch, HealingTouch);
-        abilityDict.Add(Abilities.DivineStrike, DivineStrike);
-        abilityDict.Add(Abilities.Melee, Melee);
-        abilityDict.Add(Abilities.Push, Push);
-        abilityDict.Add(Abilities.ColdLight, ColdLight);
-        abilityDict.Add(Abilities.BrainDamage, BrainDamage);
-        abilityDict.Add(Abilities.LavaPortal, LavaPortal);
-        abilityDict.Add(Abilities.GlobalCooling, GlobalCooling);
-    }
+
+    // List of addresses to load (manually assigned or from an external source)
+    public static List<string> allAddresses = new List<string> { "Melee", "FireBall", "BrainDamage", "DivineSmite", "HealingTouch", "LavaPortal", "Push", "GlobalCooling" };
+
 
     // returns a list of abilities based on the creature difficulty. # todo
-    public List<Ability_SO> GetAbilities(int creatureDifficulty)
+    public static List<Ability_SO> GetAbilities(int creatureDifficulty)
     {
         List<Ability_SO> abilities = new List<Ability_SO>();
         foreach (KeyValuePair<Abilities, Ability_SO> kvp in abilityDict)
@@ -42,7 +39,6 @@ public class AbilityLibrary : MonoBehaviour
                 {
                     abilities.Add(kvp.Value);
                 }
-
             }
         }
 
@@ -54,13 +50,37 @@ public class AbilityLibrary : MonoBehaviour
         return abilities;
     }
     // returns a string describing the ability
-    public string GetAbilityInfo(Ability_SO ability)
+    public static string GetAbilityInfo(Ability_SO ability)
     {
         string abilityInfo =
 
         $"Ability Name: {ability.AbilityName}. Resource: {ability.Resource}. Type: {ability.Type}. Cost: {ability.AbilityCost}.Heal Amount: {ability.HealValue}. Damage: {ability.DamageValue}.Effect duration: {ability.TurnDuration}. Number of targets: {ability.Targets}. Summons?: {ability.Summons}. Sypon percentage: {ability.SyphonPercentage}. Ability level: {ability.AbilityLevel}.";
 
         return abilityInfo;
+    }
+
+    public static void LoadAbilities(List<string> addressType, List<Ability_SO> destination)
+    {
+        foreach (string address in addressType)
+        {
+
+            Addressables.LoadAssetAsync<Ability_SO>("Assets/My Assets/Addressables/Abilities/" + address + ".asset").Completed += handle =>
+            {
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    Ability_SO loadedSO = handle.Result;
+                    if (!destination.Contains(loadedSO))
+                    {
+                        destination.Add(loadedSO);
+                        Debug.Log($"Loaded: {address}");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load ScriptableObject at address: {address}");
+                }
+            };
+        }
     }
 
 }
