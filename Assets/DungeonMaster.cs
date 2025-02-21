@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using KragostiosAllEnums;
-using AbilityEnums;
+//using AbilityEnums;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.VersionControl;
-using UnityEngine.UI;
+//using Unity.VisualScripting;
+//using UnityEditor.VersionControl;
+//using UnityEngine.UI;
 using System;
 
 
@@ -51,6 +51,7 @@ public class DungeonMaster : MonoBehaviour
     {
         root = UIDocument.rootVisualElement;
         KDebug.SeekBug("yeah");
+        AbilityLibrary.LoadAbilities(AbilityLibrary.allAddresses, AbilityLibrary.allAbilities);
         Player = MakePlayer();
         // Initialize component references
         playerOptions = GetComponent<PlayerOptions>();
@@ -65,7 +66,7 @@ public class DungeonMaster : MonoBehaviour
     private void Start()
     {
         WorldChest.LoadItems(WorldChest.allAddresses);
-        AbilityLibrary.LoadAbilities(AbilityLibrary.allAddresses, AbilityLibrary.allAbilities);
+
         CharacterCreation();
     }
 
@@ -99,7 +100,6 @@ public class DungeonMaster : MonoBehaviour
         combat.ContinueButtonRequest.RemoveListener(SpawnContinueButton);
         combat.CombatEnded.RemoveListener(HandleCombatEnd);
 
-
         playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
         playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
         playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
@@ -112,8 +112,6 @@ public class DungeonMaster : MonoBehaviour
 
         inventory.requestInventoryScreen.RemoveListener(ShowInventoryScreen);
         inventory.exitInventoryScreen.RemoveListener(ExitInventoryScreen);
-
-
     }
     #endregion
 

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ColdLight
   m_EditorClassIdentifier: 
   abilityName: Cold Light
+  abilityEnum: 6
   description: creates a ball of cold light weakening and chilling targets
   resource: 1
   type: 8

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Push
   m_EditorClassIdentifier: 
   abilityName: Push
+  abilityEnum: 5
   description: None
   resource: 0
   type: 0

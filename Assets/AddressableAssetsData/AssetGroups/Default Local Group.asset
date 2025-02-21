@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0772147ad1f01f54b882879d93ba7f29
+    m_Address: Assets/My Assets/Addressables/Abilities/Melee.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1e41466a68556ff469ecac4f8ce32688
     m_Address: Assets/My Assets/Addressables/Items/Sword 5.asset
     m_ReadOnly: 0
@@ -35,13 +40,48 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46165bd79c3d1ee4ba7da6854f2e041a
+    m_Address: Assets/My Assets/Addressables/Abilities/LavaPortal.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4760590002f89ff499ee971313f0ebb0
+    m_Address: Assets/My Assets/Addressables/Abilities/Push.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56d1b22e67f7f0040887ef997c5ec5cf
     m_Address: Assets/My Assets/Addressables/Items/Sword 2.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66cda9e7a8e4c294484bdf68918006ce
+    m_Address: Assets/My Assets/Addressables/Abilities/ColdLight.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6aae2fdb4ad0d3a498f59b10581184c6
+    m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bfb0ff4bd041164789e37097ebb8614
+    m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c8af8c1d5d2be44289883dbaa7c00f3
+    m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack 4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9218559d6049c9542a2b75e209b5ddde
     m_Address: Assets/My Assets/Addressables/Abilities/FireBall.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a74f50e282c6fa44fb01ae920cbef546
+    m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack 1.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -55,6 +95,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac42bd65ec19f1e49b4367dd89004dbf
+    m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack 6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae6b590521127bb4e869e30f3ae6c4ca
+    m_Address: Assets/My Assets/Addressables/Abilities/BrainDamage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b4c2c611ada925c44bf09bde9a246c74
     m_Address: Assets/My Assets/Addressables/Items/Sword 4.asset
     m_ReadOnly: 0
@@ -62,6 +112,31 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7eb3b5d6f4d4394fa3d4aa847d71614
     m_Address: Assets/My Assets/Addressables/Items/Sword.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd6e51a799917a046ba533ebfd9662b3
+    m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce04edea0488e7c4bbc191eded33daa8
+    m_Address: Assets/My Assets/Addressables/Abilities/GlobalCooling.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3682d3b773b518409e00476831aaa8b
+    m_Address: Assets/My Assets/Addressables/Abilities/DivineSmite.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb96e68addc35d544ba324def6a6cc7c
+    m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack 5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9a5bbc405549af45a9157fe0f766f0d
+    m_Address: Assets/My Assets/Addressables/Abilities/HealingTouch.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

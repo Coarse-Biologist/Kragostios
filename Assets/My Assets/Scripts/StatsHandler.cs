@@ -131,15 +131,20 @@ public class StatsHandler : MonoBehaviour
     }
     public List<Abilities> SetKnownAbilities_Save()
     {
+
         foreach (Ability_SO ability in knownAbilities)
         {
-            KDebug.SeekBug($"ability= {ability.name}");
-            Abilities abilityEnum = AbilityLibrary.reverseAbilityDict[ability];
-            if (!knownAbilities_save.Contains(abilityEnum))
+            KDebug.SeekBug($"checking for {ability.name}");
+            if (AbilityLibrary.reverseAbilityDict.TryGetValue(ability, out Abilities abilityEnum))
             {
-                knownAbilities_save.Add(abilityEnum);
+                if (!knownAbilities_save.Contains(abilityEnum))
+                {
+                    knownAbilities_save.Add(abilityEnum);
+                }
+                else KDebug.SeekBug($"{abilityEnum} already exists in save list");
             }
-            else KDebug.SeekBug($"{abilityEnum} already exists in save list");
+            else KDebug.SeekBug($"{ability.name} not found in the reverse dict");
+
         }
         return knownAbilities_save;
     }

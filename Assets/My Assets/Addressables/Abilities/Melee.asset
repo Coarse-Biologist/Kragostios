@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Melee
   m_EditorClassIdentifier: 
   abilityName: Claw Swipe
+  abilityEnum: 2
   description: Creature swipes with their claw
   resource: 2
   type: 1

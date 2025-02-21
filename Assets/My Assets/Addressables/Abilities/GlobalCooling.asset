@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GlobalCooling
   m_EditorClassIdentifier: 
   abilityName: Global Cooling
+  abilityEnum: 9
   description: Chills and attempts to freeze  the battlefield
   resource: 1
   type: 8

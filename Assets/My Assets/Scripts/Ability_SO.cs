@@ -2,6 +2,7 @@ using UnityEngine;
 using KragostiosAllEnums;
 using System.Collections.Generic;
 using UnityEngine.Animations;
+using AbilityEnums;
 
 
 [CreateAssetMenu(fileName = "Abilities", menuName = "Crew's Abilities/ Ability")]
@@ -9,6 +10,8 @@ public class Ability_SO : ScriptableObject
 {
     [SerializeField] private string abilityName;
     public string AbilityName => abilityName;
+    [SerializeField] public Abilities abilityEnum = Abilities.None;
+    public Abilities AbilityEnum => abilityEnum;
     [SerializeField] private string description = "None";
     public string Description => description;
     [SerializeField] private ResourceTypes resource; // this is the resource which will be subtracted when the ability is used

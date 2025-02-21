@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: LavaPortal
   m_EditorClassIdentifier: 
   abilityName: Lava portal
+  abilityEnum: 8
   description: Opens a portal to a the Lava Plane
   resource: 1
   type: 8

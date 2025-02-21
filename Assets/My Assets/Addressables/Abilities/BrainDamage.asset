@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BrainDamage
   m_EditorClassIdentifier: 
   abilityName: Skull Smash
+  abilityEnum: 7
   description: Focus extreme violence on the head of a target
   resource: 2
   type: 8

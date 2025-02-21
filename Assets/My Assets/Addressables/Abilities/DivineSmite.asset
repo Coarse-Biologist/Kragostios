@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DivineSmite
   m_EditorClassIdentifier: 
   abilityName: Divine Strike
+  abilityEnum: 4
   description: Strike with the might of heaven
   resource: 1
   type: 1

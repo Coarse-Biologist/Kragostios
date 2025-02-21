@@ -58,6 +58,14 @@ public static class AbilityLibrary
 
         return abilityInfo;
     }
+    private static void AddToAbilityDicts(Abilities abilityEnum, Ability_SO loadedSO)
+    {
+        if (abilityEnum != Abilities.None)
+        {
+            abilityDict.Add(abilityEnum, loadedSO);
+            reverseAbilityDict.Add(loadedSO, abilityEnum);
+        }
+    }
 
     public static void LoadAbilities(List<string> addressType, List<Ability_SO> destination)
     {
@@ -72,6 +80,7 @@ public static class AbilityLibrary
                     if (!destination.Contains(loadedSO))
                     {
                         destination.Add(loadedSO);
+                        AddToAbilityDicts(loadedSO.AbilityEnum, loadedSO);
                         Debug.Log($"Loaded: {address}");
                     }
                 }
@@ -80,7 +89,9 @@ public static class AbilityLibrary
                     Debug.LogError($"Failed to load ScriptableObject at address: {address}");
                 }
             };
+
         }
+
     }
 
 }

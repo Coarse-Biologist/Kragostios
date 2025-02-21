@@ -267,7 +267,7 @@ public class Map : MonoBehaviour
                 {
                     biomesMapDict[newLocation] = biome; // Direct assignment
                     newStartPoints.Add(newLocation);
-                    Debug.Log($"Kingdom at point {newLocation}: {biome}");
+                    //Debug.Log($"Kingdom at point {newLocation}: {biome}");
                 }
             }
         }
