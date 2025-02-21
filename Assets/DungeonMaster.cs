@@ -50,7 +50,6 @@ public class DungeonMaster : MonoBehaviour
     private void Awake()
     {
         root = UIDocument.rootVisualElement;
-        KDebug.SeekBug("yeah");
         AbilityLibrary.LoadAbilities(AbilityLibrary.allAddresses, AbilityLibrary.allAbilities);
         Player = MakePlayer();
         // Initialize component references

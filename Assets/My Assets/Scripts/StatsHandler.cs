@@ -3,15 +3,8 @@ using UnityEngine;
 using KragostiosAllEnums;
 using AbilityEnums;
 using System;
-using System.Reflection;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
-using Mono.Cecil.Cil;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using Unity.VisualScripting;
 using System.Linq;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.Collections;
+
 
 
 public class StatsHandler : MonoBehaviour
@@ -776,7 +769,7 @@ public class StatsHandler : MonoBehaviour
         knownAbilities = new List<Ability_SO>{
     AbilityLibrary.Melee, AbilityLibrary.FireBall, AbilityLibrary.DivineStrike, AbilityLibrary.HealingTouch, AbilityLibrary.ColdLight, AbilityLibrary.BrainDamage, AbilityLibrary.LavaPortal, AbilityLibrary.GlobalCooling
     };
-        SetKnownAbilities_Save();
+
 
         return gameObject;
 
