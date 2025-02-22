@@ -21,15 +21,12 @@ public class Inventory : MonoBehaviour
 
     [SerializeField] Dictionary<Item_SO, int> playerInventory;
     private StatsHandler playerStats;
-    private EquipmentHandler equipmentHandler;
     [SerializeField] List<Item_SO> allItems;
 
     private bool itemSelected = false;
     private Item_SO selectedSellableItem;
     private Item_SO selectedBuyableItem;
     private Button selectedButton;
-    private Item_SO selectedEquippableItem;
-    private ItemSlot selectedItemSlotType = ItemSlot.None;
 
     private List<Button> currentSlotButtons = new List<Button>();
 
@@ -46,8 +43,6 @@ public class Inventory : MonoBehaviour
         leftCreationPanel = root.Q<VisualElement>("LeftCreationPanel");
         rightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         itemInfo = new UnityEngine.UIElements.Label("");
-        equipmentHandler = GetComponent<EquipmentHandler>();
-
     }
     public void SpawnTraderButton(StatsHandler stats, VisualElement panel, List<Item_SO> traderItems)
     {
@@ -69,7 +64,7 @@ public class Inventory : MonoBehaviour
     }
     public void DisplayInventoryItems(StatsHandler stats, VisualElement panel) // Show nventory items in the panel i pass w]for the character who 
     {
-        equipmentHandler.SetPlayerStats(playerStats);
+        EquipmentHandler.SetPlayerStats(playerStats);
         panel.Clear();
         RequestInventoryScreen();
         foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
@@ -283,9 +278,9 @@ public class Inventory : MonoBehaviour
         {
             if (slot != ItemSlot.None)
             {
-                equipmentHandler.DecideEquipItem(playerStats, item, slot);
-                Debug.Log($"You have equipped {equipmentHandler.GetItemNameFromSlot(playerStats, slot)} from slot {slot}");
-                Debug.Log($"AL EQUIPMENT: {equipmentHandler.GetAllSlotItems(playerStats)}");
+                EquipmentHandler.DecideEquipItem(playerStats, item, slot);
+                Debug.Log($"You have equipped {EquipmentHandler.GetItemNameFromSlot(playerStats, slot)} from slot {slot}");
+                Debug.Log($"AL EQUIPMENT: {EquipmentHandler.GetAllSlotItems(playerStats)}");
             }
             else Debug.Log("Selected item cannot be equipped.");
         }

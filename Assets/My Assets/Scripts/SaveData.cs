@@ -242,14 +242,12 @@ public class AlchemyData
 
 public class EquipmentData
 {
-    public Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> allEquipmentDicts_SD = new Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>>();
-    public List<Item_SO> playerEquippedItems_SD = new List<Item_SO>();
+    public Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allEquipmentDicts_SD = new Dictionary<StatsHandler, Dictionary<ItemSlot, string>>();
 
-    public EquipmentData(EquipmentHandler equipmentHandler)
+    public EquipmentData()
 
     {
-        allEquipmentDicts_SD = equipmentHandler.allEquipmentDicts;
-        playerEquippedItems_SD = equipmentHandler.playerEquippedItems;
+        allEquipmentDicts_SD = EquipmentHandler.allEquipmentDicts_save;
     }
 }
 [System.Serializable]

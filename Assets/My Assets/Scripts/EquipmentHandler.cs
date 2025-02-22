@@ -6,48 +6,72 @@ using System.Linq;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using NUnit.Framework.Constraints;
+using UnityEngine.InputSystem;
 
-public class EquipmentHandler : MonoBehaviour
+public static class EquipmentHandler
 {
-    public Item_SO placeHolderItem;
-    public Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> allEquipmentDicts = new Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>>();
+    public static Item_SO placeHolderItem;
+    public static List<ItemSlot> allItemSlots = Enum.GetValues(typeof(ItemSlot)).Cast<ItemSlot>().ToList();
+    public static Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> allEquipmentDicts = new Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>>();
 
-    public Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allEquipmentDicts_save = new Dictionary<StatsHandler, Dictionary<ItemSlot, string>>();
+    public static Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allEquipmentDicts_save = new Dictionary<StatsHandler, Dictionary<ItemSlot, string>>();
 
-    private StatsHandler PlayerStats;
-    private List<ItemSlot> allItemSlots;
-    private bool playerDictAdded = false;
-    public List<Item_SO> playerEquippedItems = new List<Item_SO>();
-    public List<string> playerDictAdded_save = new List<string>();
+    private static StatsHandler PlayerStats;
+    private static bool playerDictAdded = false;
+    public static List<Item_SO> playerEquippedItems = new List<Item_SO>();
 
 
-    void Awake()
-    {
-        allItemSlots = Enum.GetValues(typeof(ItemSlot)).Cast<ItemSlot>().ToList();
-    }
-    public void SetPlayerStats(StatsHandler playerStats)
+    public static void SetPlayerStats(StatsHandler playerStats)
     {
         PlayerStats = playerStats;
         if (!playerDictAdded)
         {
             Debug.Log($"Adding player stats ({playerStats}) to dict");
             AddCharToEquipmentDict(PlayerStats);
+            AddCharToEquipmentDict_Save(playerStats);
             playerDictAdded = true;
         }
         Debug.Log($"player dict added? = {playerDictAdded}");
     }
 
-    private void AddCharToEquipmentDict(StatsHandler stats)
+    private static void AddCharToEquipmentDict(StatsHandler stats)
     {
         Dictionary<ItemSlot, Item_SO> charEquipment = new Dictionary<ItemSlot, Item_SO>();
         allEquipmentDicts.TryAdd(stats, charEquipment);
+
         foreach (ItemSlot slot in allItemSlots)
         {
             charEquipment.Add(slot, placeHolderItem);
         }
     }
+    private static void AddCharToEquipmentDict_Save(StatsHandler stats)
+    {
+        Dictionary<ItemSlot, string> charEquipment = new Dictionary<ItemSlot, string>();
+        allEquipmentDicts_save.TryAdd(stats, charEquipment);
+        foreach (ItemSlot slot in allItemSlots)
+        {
+            charEquipment.Add(slot, "None");
+        }
+    }
+    public static Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> ConvertLoadedAllDicts_Save(Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allDicts_save)
+    {
+        allEquipmentDicts = new Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>>();
+        foreach (KeyValuePair<StatsHandler, Dictionary<ItemSlot, string>> outerDict in allDicts_save)
+        {
+            AddCharToEquipmentDict(outerDict.Key);
 
-    public void DecideEquipItem(StatsHandler stats, Item_SO item, ItemSlot slot = ItemSlot.None)
+            foreach (KeyValuePair<ItemSlot, string> innerDict in outerDict.Value)
+            {
+                Item_SO item = WorldChest.GetItemFromName(innerDict.Value);
+                EquipItem(outerDict.Key, innerDict.Key, item);
+            }
+        }
+        return allEquipmentDicts;
+    }
+
+
+
+    public static void DecideEquipItem(StatsHandler stats, Item_SO item, ItemSlot slot = ItemSlot.None)
     {
         Debug.Log($"Slot of {item.ItemName} selected = {slot}");
         // get the correct equipment dict
@@ -75,7 +99,7 @@ public class EquipmentHandler : MonoBehaviour
             //equip weapon in slot
         }
     }
-    private void HandleEquipItem(StatsHandler stats, List<ItemSlot> unequipSlots, ItemSlot equipSlot, Item_SO item)
+    private static void HandleEquipItem(StatsHandler stats, List<ItemSlot> unequipSlots, ItemSlot equipSlot, Item_SO item)
     {
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
         foreach (ItemSlot slot in unequipSlots)
@@ -104,34 +128,38 @@ public class EquipmentHandler : MonoBehaviour
 
     }
 
-    public void Unequip(StatsHandler stats, ItemSlot slot)
+    public static void Unequip(StatsHandler stats, ItemSlot slot)
     {
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
+        Dictionary<ItemSlot, string> equipment_save = allEquipmentDicts_save[stats];
+
         if (equipment.TryGetValue(slot, out Item_SO dictValue))
         {
             playerEquippedItems.Remove(dictValue);
             Debug.Log($"You want to unequip {dictValue.ItemName} in slot {slot}");
             equipment[slot] = placeHolderItem;
-
+            equipment_save[slot] = "None";
         }
         else equipment.TryAdd(slot, placeHolderItem);
     }
 
-    public void EquipItem(StatsHandler stats, ItemSlot slot, Item_SO item)
+    public static void EquipItem(StatsHandler stats, ItemSlot slot, Item_SO item)
     {
         playerEquippedItems.Add(item);
-        playerDictAdded_save.Add(item.ItemName);
         Debug.Log($"You want to equip {item.ItemName}");
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
+        Dictionary<ItemSlot, string> equipment_save = allEquipmentDicts_save[stats];
+
         if (equipment.TryGetValue(slot, out Item_SO whoCares))
         {
             Debug.Log($"{item.ItemName} is actually litterally being added to {slot}");
             equipment[slot] = item;
+            equipment_save[slot] = item.ItemName;
         }
 
     }
 
-    public string GetItemNameFromSlot(StatsHandler stats, ItemSlot slot)
+    public static string GetItemNameFromSlot(StatsHandler stats, ItemSlot slot)
     {
         string itemName = "None";
         if (allEquipmentDicts.TryGetValue(stats, out Dictionary<ItemSlot, Item_SO> charEquipment))
@@ -149,7 +177,7 @@ public class EquipmentHandler : MonoBehaviour
         return itemName;
     }
 
-    public Item_SO GetItemFromSlot(StatsHandler stats, ItemSlot slot)
+    public static Item_SO GetItemFromSlot(StatsHandler stats, ItemSlot slot)
     {
         Item_SO itemInSlot = placeHolderItem;
         if (allEquipmentDicts.TryGetValue(stats, out Dictionary<ItemSlot, Item_SO> charEquipment))
@@ -166,7 +194,7 @@ public class EquipmentHandler : MonoBehaviour
         return itemInSlot;
     }
 
-    public string GetAllSlotItems(StatsHandler stats)
+    public static string GetAllSlotItems(StatsHandler stats)
     {
         string slotAndItem = "";
         if (allEquipmentDicts.TryGetValue(stats, out Dictionary<ItemSlot, Item_SO> charEquipment))
@@ -191,11 +219,11 @@ public class EquipmentHandler : MonoBehaviour
         return slotAndItem;
     }
 
-    public List<Item_SO> GetAllEquippedItems(StatsHandler stats)
+    public static List<Item_SO> GetAllEquippedItems(StatsHandler stats)
     {
         return playerEquippedItems;
     }
-    public List<Ability_SO> GetEquippedItemsWithAbilities(StatsHandler stats)
+    public static List<Ability_SO> GetEquippedItemsWithAbilities(StatsHandler stats)
     {
         List<Ability_SO> itemAbilities = new List<Ability_SO>();
         foreach (Item_SO item in playerEquippedItems)
@@ -209,11 +237,11 @@ public class EquipmentHandler : MonoBehaviour
     }
 
 
-    public void LoadData()
+
+    public static void LoadData()
     {
         EquipmentData equipmentData = SaveSystem.LoadEquipmentData();
-        allEquipmentDicts = equipmentData.allEquipmentDicts_SD;
-        playerEquippedItems = equipmentData.playerEquippedItems_SD;
+        allEquipmentDicts = ConvertLoadedAllDicts_Save(equipmentData.allEquipmentDicts_SD);
     }
 }
 

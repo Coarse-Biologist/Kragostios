@@ -27,7 +27,6 @@ public class DungeonMaster : MonoBehaviour
     private CombatFlow combat;
     private List<Tuple<Difficulty, Elements>> enemyCombatantTuple;
     private Inventory inventory;
-    private EquipmentHandler equipment;
     private AlchemyHandler alchemy;
     private ModdedAbilities moddedAbilities;
     private ModdedItems moddedItems;
@@ -35,6 +34,7 @@ public class DungeonMaster : MonoBehaviour
 
     [Header("player")]
 
+    [SerializeField] private Item_SO emptyItem;
     [SerializeField] GameObject creaturePrefab;
     private GameObject Player;
     private StatsHandler playerStats;
@@ -54,13 +54,12 @@ public class DungeonMaster : MonoBehaviour
         Player = MakePlayer();
         // Initialize component references
         playerOptions = GetComponent<PlayerOptions>();
-        //playerOptions.SetAbilitiesScript(abilityLibrary);
+        EquipmentHandler.placeHolderItem = emptyItem;
         map = GetComponent<Map>();
         narrator = GetComponent<NarrationScript>();
         travel = GetComponent<TravelScript>();
         combat = GetComponent<CombatFlow>();
         inventory = GetComponent<Inventory>();
-        equipment = GetComponent<EquipmentHandler>();
     }
     private void Start()
     {
@@ -123,7 +122,7 @@ public class DungeonMaster : MonoBehaviour
     private void SpawnOptionButtons(List<Ability_SO> abilities)
     {
         List<Ability_SO> playerAbilities = new List<Ability_SO>(playerStats.knownAbilities);
-        List<Ability_SO> itemAbilities = equipment.GetEquippedItemsWithAbilities(playerStats);
+        List<Ability_SO> itemAbilities = EquipmentHandler.GetEquippedItemsWithAbilities(playerStats);
         KDebug.SeekBug($"item abilities length = {itemAbilities.Count}");
         foreach (Ability_SO itemAbility in itemAbilities)
         {

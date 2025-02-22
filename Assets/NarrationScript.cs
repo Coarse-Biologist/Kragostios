@@ -16,7 +16,6 @@ public class NarrationScript : MonoBehaviour
     private Label narratorText;
     [SerializeField] UIDocument UIDocument;
 
-    [SerializeField] 
     private Dictionary<string, string> responseDictionary;
 
     private int linesOfNarration = 0;
@@ -31,53 +30,53 @@ public class NarrationScript : MonoBehaviour
     //}
     private void Awake()
     {
-    root = UIDocument.rootVisualElement;
+        root = UIDocument.rootVisualElement;
 
-    if (root == null)
-    {
-        Debug.LogError("Root VisualElement is null. Ensure UIDocument is assigned and loaded properly.");
-        return;
+        if (root == null)
+        {
+            Debug.LogError("Root VisualElement is null. Ensure UIDocument is assigned and loaded properly.");
+            return;
+        }
+
+        narratorWindow = root.Q<VisualElement>("NarratorWindow");
+        if (narratorWindow == null)
+        {
+            Debug.LogError("NarratorWindow not found. Check your UXML for a VisualElement with the name 'NarratorWindow'.");
+            return;
+        }
+        Debug.Log($"{narratorWindow} = narration window");
+
+        narratorText = narratorWindow.Q<Label>("NarratorText");
+        if (narratorText == null)
+        {
+            Debug.LogError("NarratorText not found. Check your UXML for a Label with the name 'NarratorText' inside NarratorWindow.");
+        }
+        narratorText.style.whiteSpace = WhiteSpace.Normal;
+        narratorText.text = "";
+        root.style.backgroundColor = Color.black;
+        narratorText.style.color = Color.white;
+        root.MarkDirtyRepaint();
+        narratorWindow.style.display = DisplayStyle.None;
     }
 
-    narratorWindow = root.Q<VisualElement>("NarratorWindow");
-    if (narratorWindow == null)
-    {
-        Debug.LogError("NarratorWindow not found. Check your UXML for a VisualElement with the name 'NarratorWindow'.");
-        return;
-    }
-    Debug.Log($"{narratorWindow} = narration window");
-
-    narratorText = narratorWindow.Q<Label>("NarratorText");
-    if (narratorText == null)
-    {
-        Debug.LogError("NarratorText not found. Check your UXML for a Label with the name 'NarratorText' inside NarratorWindow.");
-    }
-    narratorText.style.whiteSpace = WhiteSpace.Normal;
-    narratorText.text = "";
-    root.style.backgroundColor = Color.black;
-    narratorText.style.color = Color.white;
-    root.MarkDirtyRepaint();
-    narratorWindow.style.display = DisplayStyle.None;
-    }
 
 
-    
     public void DisplayNarrationText(string message)
-    {   
+    {
         narratorWindow.style.display = DisplayStyle.Flex;
-        
-        linesOfNarration ++; 
+
+        linesOfNarration++;
 
         if (linesOfNarration >= 6)
         {
             linesOfNarration = 0;
             narratorText.text = message;
         }
-        else 
+        else
         {
             narratorText.text += "\n" + message; // + message;
         }
-        
+
 
     }
 
@@ -85,10 +84,10 @@ public class NarrationScript : MonoBehaviour
 
 
 
-            //public static class NarrationEventManager
-            //{
-            //    public static UnityEvent<string> OnNarrationRequested = new UnityEvent<string>();
-//
-            //}
-        
-    }
+    //public static class NarrationEventManager
+    //{
+    //    public static UnityEvent<string> OnNarrationRequested = new UnityEvent<string>();
+    //
+    //}
+
+}

@@ -148,12 +148,12 @@ public static class SaveSystem
     }
 
 
-    public static void SaveEquipmentData(EquipmentHandler equipmentHandler)
+    public static void SaveEquipmentData()
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/EquipmentData.data";
         FileStream stream = new FileStream(path, FileMode.Create);
-        EquipmentData saveData = new EquipmentData(equipmentHandler);
+        EquipmentData saveData = new EquipmentData();
         formatter.Serialize(stream, saveData);
         stream.Close();
     }
@@ -205,7 +205,8 @@ public static class SaveSystem
 
     public static void SaveAll(StatsHandler stats, Map map, TravelScript travelScript, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
     {
-        //SavePlayerData(stats);
+        SavePlayerData(stats);
+        SaveEquipmentData();
         SaveMapData(map);
         SavePlayerLocationData(travelScript);
         //SaveAlchemyyData(alchemyHandler);

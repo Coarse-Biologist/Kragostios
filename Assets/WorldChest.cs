@@ -50,6 +50,14 @@ public static class WorldChest
     {
         return allItems.TryGetValue(key, out Item_SO so) ? so : null;
     }
+    public static Item_SO GetItemFromName(string itemName)
+    {
+        if (allItems.TryGetValue(itemName, out Item_SO item))
+        {
+            return item;
+        }
+        else return null;
+    }
     public static List<Item_SO> GetAllItems()
     {
         return new List<Item_SO>(allItems.Values.ToList());
