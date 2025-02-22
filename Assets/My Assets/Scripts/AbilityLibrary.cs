@@ -4,6 +4,7 @@ using AbilityEnums;
 using System.Linq;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using System;
 
 
 public static class AbilityLibrary
@@ -18,8 +19,11 @@ public static class AbilityLibrary
     public static Ability_SO LavaPortal;
     public static Ability_SO GlobalCooling;
     public static Dictionary<Abilities, Ability_SO> abilityDict { private set; get; } = new Dictionary<Abilities, Ability_SO>();
-    public static Dictionary<Ability_SO, Abilities> reverseAbilityDict { private set; get; } = new Dictionary<Ability_SO, Abilities>();
+    public static Dictionary<Ability_SO, Abilities> reverseAbilityDict { private set; get; } = abilityDict.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+
     public static List<Ability_SO> allAbilities = new List<Ability_SO>();
+    public static List<Abilities> abilityEnumsList = Enum.GetValues(typeof(Abilities)).Cast<Abilities>().ToList();
+
 
 
     // List of addresses to load (manually assigned or from an external source)
@@ -35,7 +39,7 @@ public static class AbilityLibrary
             Ability_SO ability = kvp.Value;
             if (ability.AbilityLevel <= creatureDifficulty)
             {
-                if (Random.Range(0, 1) > .5)
+                if (UnityEngine.Random.Range(0, 1) > .5)
                 {
                     abilities.Add(kvp.Value);
                 }
@@ -48,6 +52,15 @@ public static class AbilityLibrary
             abilities.Add(Melee);
         }
         return abilities;
+    }
+
+    public static void SetAbilityDict()
+    {
+        foreach (Ability_SO ability in allAbilities)
+        {
+            abilityDict.Add(ability.AbilityEnum, ability);
+            reverseAbilityDict.Add(ability, ability.AbilityEnum);
+        }
     }
     // returns a string describing the ability
     public static string GetAbilityInfo(Ability_SO ability)
@@ -65,6 +78,7 @@ public static class AbilityLibrary
             abilityDict.Add(abilityEnum, loadedSO);
             reverseAbilityDict.Add(loadedSO, abilityEnum);
         }
+        else Debug.Log("oops those had no Ability Enum and couldnt be added to the dicts");
     }
 
     public static void LoadAbilities(List<string> addressType, List<Ability_SO> destination)

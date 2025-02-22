@@ -239,7 +239,7 @@ public class AlchemyData
         KnowledgeDict_SD = alchemyHandler.KnowledgeDict;
     }
 }
-
+[System.Serializable]
 public class EquipmentData
 {
     public Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allEquipmentDicts_SD = new Dictionary<StatsHandler, Dictionary<ItemSlot, string>>();

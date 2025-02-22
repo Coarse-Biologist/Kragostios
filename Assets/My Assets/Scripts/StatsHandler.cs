@@ -124,21 +124,30 @@ public class StatsHandler : MonoBehaviour
     }
     public List<Abilities> SetKnownAbilities_Save()
     {
-
-        foreach (Ability_SO ability in knownAbilities)
+        if (knownAbilities != null)
         {
-            KDebug.SeekBug($"checking for {ability.name}");
-            if (AbilityLibrary.reverseAbilityDict.TryGetValue(ability, out Abilities abilityEnum))
+            foreach (Ability_SO ability in knownAbilities)
             {
-                if (!knownAbilities_save.Contains(abilityEnum))
+                if (ability != null)
                 {
-                    knownAbilities_save.Add(abilityEnum);
+                    KDebug.SeekBug($"checking for {ability}. length is {knownAbilities.Count}");
+                    if (AbilityLibrary.reverseAbilityDict.TryGetValue(ability, out Abilities abilityEnum))
+                    {
+                        if (!knownAbilities_save.Contains(abilityEnum))
+                        {
+                            knownAbilities_save.Add(abilityEnum);
+                        }
+                        else KDebug.SeekBug($"{abilityEnum} already exists in save list");
+                    }
+                    else KDebug.SeekBug($"{ability.name} not found in the reverse dict");
                 }
-                else KDebug.SeekBug($"{abilityEnum} already exists in save list");
-            }
-            else KDebug.SeekBug($"{ability.name} not found in the reverse dict");
+                else Debug.Log("You have a null ability in your known abilities list");
 
+            }
         }
+        else knownAbilities = new List<Ability_SO> { AbilityLibrary.FireBall, AbilityLibrary.Melee };
+
+
         return knownAbilities_save;
     }
 
@@ -605,11 +614,15 @@ public class StatsHandler : MonoBehaviour
     }
     public void LearnAbility(Abilities newAbility)
     {
-        if (!knownAbilities.Contains(AbilityLibrary.abilityDict[newAbility]))
+        if (AbilityLibrary.abilityDict.ContainsKey(newAbility))
         {
-            knownAbilities.Add(AbilityLibrary.abilityDict[newAbility]);
+            if (!knownAbilities.Contains(AbilityLibrary.abilityDict[newAbility]))
+            {
+                knownAbilities.Add(AbilityLibrary.abilityDict[newAbility]);
+            }
+            SetKnownAbilities_Save();
         }
-        SetKnownAbilities_Save();
+
     }
     #region // inventory
     public void ChangeGold(int GoldAmount)
@@ -766,9 +779,9 @@ public class StatsHandler : MonoBehaviour
         MaxXp = 30;
         rewards = new List<Rewards>();
         characterGold = 100;
-        knownAbilities = new List<Ability_SO>{
-    AbilityLibrary.Melee, AbilityLibrary.FireBall, AbilityLibrary.DivineStrike, AbilityLibrary.HealingTouch, AbilityLibrary.ColdLight, AbilityLibrary.BrainDamage, AbilityLibrary.LavaPortal, AbilityLibrary.GlobalCooling
-    };
+        LearnAbility(Abilities.Melee);
+        LearnAbility(Abilities.HealingTouch);
+        LearnAbility(Abilities.Fireball);
 
 
         return gameObject;

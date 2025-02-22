@@ -136,7 +136,7 @@ public static class EquipmentHandler
         if (equipment.TryGetValue(slot, out Item_SO dictValue))
         {
             playerEquippedItems.Remove(dictValue);
-            Debug.Log($"You want to unequip {dictValue.ItemName} in slot {slot}");
+            Debug.Log($"You want to unequip {dictValue} in slot {slot}");
             equipment[slot] = placeHolderItem;
             equipment_save[slot] = "None";
         }
@@ -196,11 +196,14 @@ public static class EquipmentHandler
 
     public static string GetAllSlotItems(StatsHandler stats)
     {
+
         string slotAndItem = "";
         if (allEquipmentDicts.TryGetValue(stats, out Dictionary<ItemSlot, Item_SO> charEquipment))
         {
+            Debug.Log($"{charEquipment.Count} = num of slots in charEquipment");
             foreach (KeyValuePair<ItemSlot, Item_SO> kvp in charEquipment)
             {
+                Debug.Log($"{kvp.Key} = slot name. {kvp.Value} = item in the slot");
                 string itemName = kvp.Value.ItemName;
                 if (kvp.Key != ItemSlot.None)
                 {
