@@ -564,7 +564,7 @@ public class DungeonMaster : MonoBehaviour
         travel.LoadData();
         map.LoadData();
         //alchemy.LoadData();
-        //equipment.LoadData();
+        EquipmentHandler.LoadData();
 
     }
 }

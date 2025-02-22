@@ -242,7 +242,7 @@ public class AlchemyData
 [System.Serializable]
 public class EquipmentData
 {
-    public Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allEquipmentDicts_SD = new Dictionary<StatsHandler, Dictionary<ItemSlot, string>>();
+    public Dictionary<string, Dictionary<ItemSlot, string>> allEquipmentDicts_SD = new Dictionary<string, Dictionary<ItemSlot, string>>();
 
     public EquipmentData()
 

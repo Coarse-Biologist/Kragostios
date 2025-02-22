@@ -14,7 +14,7 @@ public static class EquipmentHandler
     public static List<ItemSlot> allItemSlots = Enum.GetValues(typeof(ItemSlot)).Cast<ItemSlot>().ToList();
     public static Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> allEquipmentDicts = new Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>>();
 
-    public static Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allEquipmentDicts_save = new Dictionary<StatsHandler, Dictionary<ItemSlot, string>>();
+    public static Dictionary<string, Dictionary<ItemSlot, string>> allEquipmentDicts_save = new Dictionary<string, Dictionary<ItemSlot, string>>();
 
     private static StatsHandler PlayerStats;
     private static bool playerDictAdded = false;
@@ -47,23 +47,24 @@ public static class EquipmentHandler
     private static void AddCharToEquipmentDict_Save(StatsHandler stats)
     {
         Dictionary<ItemSlot, string> charEquipment = new Dictionary<ItemSlot, string>();
-        allEquipmentDicts_save.TryAdd(stats, charEquipment);
+        allEquipmentDicts_save.TryAdd(stats.name, charEquipment);
         foreach (ItemSlot slot in allItemSlots)
         {
             charEquipment.Add(slot, "None");
         }
     }
-    public static Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> ConvertLoadedAllDicts_Save(Dictionary<StatsHandler, Dictionary<ItemSlot, string>> allDicts_save)
+    public static Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>> ConvertLoadedAllDicts_Save(Dictionary<string, Dictionary<ItemSlot, string>> allDicts_save)
     {
         allEquipmentDicts = new Dictionary<StatsHandler, Dictionary<ItemSlot, Item_SO>>();
-        foreach (KeyValuePair<StatsHandler, Dictionary<ItemSlot, string>> outerDict in allDicts_save)
+        foreach (KeyValuePair<string, Dictionary<ItemSlot, string>> outerDict in allDicts_save)
         {
-            AddCharToEquipmentDict(outerDict.Key);
+            StatsHandler stats = PlayerStats;
+            AddCharToEquipmentDict(stats); // remake later correct. for now ill just only have the player in it
 
             foreach (KeyValuePair<ItemSlot, string> innerDict in outerDict.Value)
             {
                 Item_SO item = WorldChest.GetItemFromName(innerDict.Value);
-                EquipItem(outerDict.Key, innerDict.Key, item);
+                EquipItem(stats, innerDict.Key, item); // i think the name i using is not getting the correct (or perhaps any item) #todo
             }
         }
         return allEquipmentDicts;
@@ -131,7 +132,7 @@ public static class EquipmentHandler
     public static void Unequip(StatsHandler stats, ItemSlot slot)
     {
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
-        Dictionary<ItemSlot, string> equipment_save = allEquipmentDicts_save[stats];
+        Dictionary<ItemSlot, string> equipment_save = allEquipmentDicts_save[stats.name];
 
         if (equipment.TryGetValue(slot, out Item_SO dictValue))
         {
@@ -146,9 +147,9 @@ public static class EquipmentHandler
     public static void EquipItem(StatsHandler stats, ItemSlot slot, Item_SO item)
     {
         playerEquippedItems.Add(item);
-        Debug.Log($"You want to equip {item.ItemName}");
+        Debug.Log($"You want to equip {item}");
         Dictionary<ItemSlot, Item_SO> equipment = allEquipmentDicts[stats];
-        Dictionary<ItemSlot, string> equipment_save = allEquipmentDicts_save[stats];
+        Dictionary<ItemSlot, string> equipment_save = allEquipmentDicts_save[stats.name];
 
         if (equipment.TryGetValue(slot, out Item_SO whoCares))
         {
@@ -245,6 +246,7 @@ public static class EquipmentHandler
     {
         EquipmentData equipmentData = SaveSystem.LoadEquipmentData();
         allEquipmentDicts = ConvertLoadedAllDicts_Save(equipmentData.allEquipmentDicts_SD);
+
     }
 }
 
