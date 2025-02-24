@@ -644,7 +644,9 @@ public class StatsHandler : MonoBehaviour
         else
         {
             Inventory.Add(item, amount);
+
         }
+        Debug.Log($"amount: {amount}. item: {item.ItemName}");
     }
     public void RemoveFromInventory(Item_SO item, int amount = 1)
     {
@@ -674,23 +676,41 @@ public class StatsHandler : MonoBehaviour
 
     public Dictionary<string, int> SetInventory_save()
     {
+        Debug.Log(GetInventoryString());
+        Debug.Log($"SetInventory_Save func will here convert inv of length: {Inventory.Count} into string form");
         foreach (KeyValuePair<Item_SO, int> invSlot in Inventory)
         {
-            if (!Inventory_save.TryGetValue(invSlot.Key.name, out int num))
+            if (!Inventory_save.TryGetValue(invSlot.Key.ItemName, out int num))
             {
-                Inventory_save.Add(invSlot.Key.name, num);
+                Inventory_save.Add(invSlot.Key.ItemName, invSlot.Value);
+                Debug.Log($"SetInventory-Save method: Adding {num} of the item {invSlot.Key.ItemName} to inventory save variable in playerStats");
             }
         }
         return Inventory_save;
     }
+    public string GetInventoryString()
+    {
+        string inv = "";
+        foreach (KeyValuePair<Item_SO, int> kvp in Inventory)
+        {
+            inv += $"item : {kvp.Key}. num owned: {kvp.Value}";
+        }
+        return inv;
+    }
 
     public Dictionary<Item_SO, int> ConvertLoadedInventory(Dictionary<string, int> loadedInv) // searches World Chest's items for an item with the specified name
     {
+        Debug.Log($"Converting loaded inventory with item Count: {loadedInv.Count}.");
+        //this is currently being passed an empty list
         Inventory = new Dictionary<Item_SO, int>();
         foreach (KeyValuePair<string, int> kvp in loadedInv)
         {
-            Item_SO newItem = GeneralFunctions.GetItemFromItemName(kvp.Key);
+
+            //Item_SO newItem = GeneralFunctions.GetItemFromItemName(kvp.Key);
+            Item_SO newItem = WorldChest.GetItemFromName(kvp.Key);
+
             Inventory.Add(newItem, kvp.Value);
+            Debug.Log($"ConvertLoadedInventory method: Adding {kvp.Value} of item {newItem} to players Inv. Items in inv = {Inventory.Count}/ Num of this  item: {kvp.Value}");
 
         }
 
@@ -1055,7 +1075,10 @@ public class StatsHandler : MonoBehaviour
 
         initiative = saveData.initiative_SD;
         knownAbilities = ConvertLoadedAbilities(saveData.knownAbilities_SD); // must be replaced with non-scriptable object data types
-        Inventory = ConvertLoadedInventory(saveData.inventory_SD); // must be replaced with non-scriptable object data types
+        Debug.Log(GetInventoryString());
+        Inventory = ConvertLoadedInventory(saveData.inventory_SD); //this is empty when passed in
+        Debug.Log(GetInventoryString());
+
         characterGold = saveData.characterGold_SD;
 
         ColdAffinity = saveData.ColdAffinity_SD;

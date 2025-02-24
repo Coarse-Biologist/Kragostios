@@ -95,7 +95,8 @@ public class PlayerSaveData
 
 
         knownAbilities_SD = stats.SetKnownAbilities_Save();
-        inventory_SD = stats.SetInventory_save();
+        inventory_SD = stats.SetInventory_save(); // 
+        Debug.Log($"Save player data: Inv item Count: {inventory_SD.Count}. num of the items: {inventory_SD.Values}");
         characterGold_SD = stats.characterGold;
 
         ColdAffinity_SD = stats.ColdAffinity;
@@ -247,7 +248,19 @@ public class EquipmentData
     public EquipmentData()
 
     {
-        allEquipmentDicts_SD = EquipmentHandler.allEquipmentDicts_save;
+        Debug.Log($"setting value of SAVE DATA");
+
+        allEquipmentDicts_SD = EquipmentHandler.ConvertEquipmentDictToSavableForm();
+        string EquipmentSaveContentString = "";
+        foreach (KeyValuePair<string, Dictionary<ItemSlot, string>> charDict in allEquipmentDicts_SD)
+        {
+            EquipmentSaveContentString += charDict.Key + ":";
+            foreach (KeyValuePair<ItemSlot, string> equipmentInSlots in charDict.Value)
+            {
+                EquipmentSaveContentString += $"\n slot: {equipmentInSlots.Key}. Item = {equipmentInSlots.Value}";
+            }
+        }
+        Debug.Log(EquipmentSaveContentString);
     }
 }
 [System.Serializable]

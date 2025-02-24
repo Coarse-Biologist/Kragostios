@@ -322,6 +322,7 @@ public class DungeonMaster : MonoBehaviour
         Biomes biome = map.GetBiome(playerLocation);
         narrator.DisplayNarrationText($"You are in the kingdom: {kingdom}. The surrounding biome is: {biome}");
         locationType = LocationType.Trader;
+        KDebug.SeekBug(playerStats.GetInventoryString());
 
         switch (locationType)
         {
@@ -560,7 +561,7 @@ public class DungeonMaster : MonoBehaviour
     {
         //moddedAbilities.LoadData();
         //moddedItems.LoadData();
-        //playerStats.LoadStats();
+        playerStats.LoadStats();
         travel.LoadData();
         map.LoadData();
         //alchemy.LoadData();

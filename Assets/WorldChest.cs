@@ -13,7 +13,7 @@ public static class WorldChest
 
 
     // List of addresses to load (manually assigned or from an external source)
-    public static List<string> allAddresses = new List<string> { "Sword", "Sword 1", "Sword 3", "Sword 4", "Sword 5", "Sword 6", "Sword 7", "Sword 8" };
+    public static List<string> allAddresses = new List<string> { "PlaceHolder", "Sword", "Sword 1", "Sword 3", "Sword 4", "Sword 5", "Sword 6", "Sword 7", "Sword 8" };
 
 
 
@@ -28,9 +28,9 @@ public static class WorldChest
                     Item_SO loadedSO = handle.Result;
                     if (!allItems.ContainsKey(address))
                     {
-                        allItems.Add(address, loadedSO);
+                        allItems.Add(loadedSO.ItemName, loadedSO);
 
-                        Debug.Log($"Loaded: {address}");
+                        Debug.Log($"Loaded: {address} which has name {loadedSO.ItemName} -----");
                     }
                     if (!allItemsList.Contains(loadedSO))
                     {
@@ -54,9 +54,14 @@ public static class WorldChest
     {
         if (allItems.TryGetValue(itemName, out Item_SO item))
         {
+            Debug.Log($"{itemName} has return item: {item}");
             return item;
         }
-        else return null;
+        else
+        {
+            Debug.Log($"item: {itemName} not in allItems dict");
+            return null;
+        }
     }
     public static List<Item_SO> GetAllItems()
     {
