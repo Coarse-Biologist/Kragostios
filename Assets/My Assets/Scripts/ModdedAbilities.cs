@@ -1,23 +1,52 @@
-using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 using KragostiosAllEnums;
-using System.Linq;
 
-public class ModdedAbilities
+using System;
+using System.Diagnostics;
+using TMPro;
+
+public static class ModdedAbilities
 {
     #region class variables
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, int>> AbilityIntMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, int>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, string>> AbilityStringMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, string>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, ResourceTypes>> AbilityResourceMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, ResourceTypes>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, Elements>> AbilityElementMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, Elements>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, List<Buffs>>> AbilityBuffMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, List<Buffs>>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, List<Debuffs>>> AbilityDebuffMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, List<Debuffs>>>();
+    public static Dictionary<Ability_SO, Dictionary<AbilityVars, int>> AbilityIntMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, int>>();
+    public static Dictionary<Ability_SO, Dictionary<AbilityVars, string>> AbilityStringMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, string>>();
+    public static Dictionary<Ability_SO, Dictionary<AbilityVars, ResourceTypes>> AbilityResourceMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, ResourceTypes>>();
+    public static Dictionary<Ability_SO, Dictionary<AbilityVars, Elements>> AbilityElementMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, Elements>>();
+    public static Dictionary<Ability_SO, Dictionary<AbilityVars, List<Buffs>>> AbilityBuffMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, List<Buffs>>>();
+    public static Dictionary<Ability_SO, Dictionary<AbilityVars, List<Debuffs>>> AbilityDebuffMods = new Dictionary<Ability_SO, Dictionary<AbilityVars, List<Debuffs>>>();
+
+    #endregion
+
+    #region save variables
+    public static Dictionary<string, Dictionary<AbilityVars, int>> AbilityIntMods_save = new Dictionary<string, Dictionary<AbilityVars, int>>();
+    public static Dictionary<string, Dictionary<AbilityVars, string>> AbilityStringMods_save = new Dictionary<string, Dictionary<AbilityVars, string>>();
+    public static Dictionary<string, Dictionary<AbilityVars, ResourceTypes>> AbilityResourceMods_save = new Dictionary<string, Dictionary<AbilityVars, ResourceTypes>>();
+    public static Dictionary<string, Dictionary<AbilityVars, Elements>> AbilityElementMods_save = new Dictionary<string, Dictionary<AbilityVars, Elements>>();
+    public static Dictionary<string, Dictionary<AbilityVars, List<Buffs>>> AbilityBuffMods_save = new Dictionary<string, Dictionary<AbilityVars, List<Buffs>>>();
+    public static Dictionary<string, Dictionary<AbilityVars, List<Debuffs>>> AbilityDebuffMods_save = new Dictionary<string, Dictionary<AbilityVars, List<Debuffs>>>();
+
     #endregion
 
     #region modify variables
 
-    public void ModifyIntAttribute(Ability_SO ability, AbilityVars var, int amount) // can be used for AbilityCost, HealValue, DamageValue, TurnDuration, Targets
+    public static void DisplayModdedDictstring<TKey, TValue>(Dictionary<TKey, TValue> dict)
+    {
+        foreach (KeyValuePair<TKey, TValue> kvp in dict)
+        {
+            UnityEngine.Debug.Log($"{kvp.Key}");
+        }
+    }
+    public static Dictionary<string, TValue> ChangeDictKeyToString<Abilities_SO, TValue>(Dictionary<Ability_SO, TValue> dict, Func<Ability_SO, string> keyConverter)
+    {
+        var newDict = new Dictionary<string, TValue>();
+
+        foreach (var kvp in dict)
+        {
+            newDict[keyConverter(kvp.Key)] = kvp.Value;
+        }
+        return newDict;
+    }
+    public static void ModifyIntAttribute(Ability_SO ability, AbilityVars var, int amount) // can be used for AbilityCost, HealValue, DamageValue, TurnDuration, Targets
     {
         if (AbilityIntMods.TryGetValue(ability, out Dictionary<AbilityVars, int> intModDict))
         {
@@ -33,7 +62,7 @@ public class ModdedAbilities
             intModDict.TryAdd(var, amount);
         }
     }
-    public void ModifyStringAttribute(Ability_SO ability, AbilityVars var, string newString) // can be used for name and description
+    public static void ModifyStringAttribute(Ability_SO ability, AbilityVars var, string newString) // can be used for name and description
     {
         if (AbilityStringMods.TryGetValue(ability, out Dictionary<AbilityVars, string> stringModDict))
         {
@@ -49,7 +78,7 @@ public class ModdedAbilities
             stringModDict.TryAdd(var, newString);
         }
     }
-    public void ModifyResourceAttribute(Ability_SO ability, AbilityVars var, ResourceTypes resource) // can be used for name and description
+    public static void ModifyResourceAttribute(Ability_SO ability, AbilityVars var, ResourceTypes resource) // can be used for name and description
     {
         if (AbilityResourceMods.TryGetValue(ability, out Dictionary<AbilityVars, ResourceTypes> resourceModDict))
         {
@@ -65,7 +94,7 @@ public class ModdedAbilities
             resourceModDict.TryAdd(var, resource);
         }
     }
-    public void ModifyElementAttribute(Ability_SO ability, AbilityVars var, Elements element) // can be used for name and description
+    public static void ModifyElementAttribute(Ability_SO ability, AbilityVars var, Elements element) // can be used for name and description
     {
         if (AbilityElementMods.TryGetValue(ability, out Dictionary<AbilityVars, Elements> elementModDict))
         {
@@ -81,7 +110,7 @@ public class ModdedAbilities
             elementModDict.TryAdd(var, element);
         }
     }
-    public void ModifyBuffsAttribute(Ability_SO ability, AbilityVars var, Buffs buff) // can be used for name and description
+    public static void ModifyBuffsAttribute(Ability_SO ability, AbilityVars var, Buffs buff) // can be used for name and description
     {
         if (AbilityBuffMods.TryGetValue(ability, out Dictionary<AbilityVars, List<Buffs>> buffModDict))
         {
@@ -97,7 +126,7 @@ public class ModdedAbilities
             buffModDict.TryAdd(var, new List<Buffs> { buff });
         }
     }
-    public void ModifyDebuffsAttribute(Ability_SO ability, AbilityVars var, Debuffs debuff) // can be used for name and description
+    public static void ModifyDebuffsAttribute(Ability_SO ability, AbilityVars var, Debuffs debuff) // can be used for name and description
     {
         if (AbilityDebuffMods.TryGetValue(ability, out Dictionary<AbilityVars, List<Debuffs>> debuffModDict))
         {
@@ -117,7 +146,7 @@ public class ModdedAbilities
 
     #region get modded values
 
-    public int GetModdedInt(Ability_SO ability, AbilityVars var)
+    public static int GetModdedInt(Ability_SO ability, AbilityVars var)
     {
 
         if (AbilityIntMods.TryGetValue(ability, out Dictionary<AbilityVars, int> innerDict))
@@ -130,7 +159,7 @@ public class ModdedAbilities
         }
         else return 0;
     }
-    public string GetModdedString(Ability_SO ability, AbilityVars var)
+    public static string GetModdedString(Ability_SO ability, AbilityVars var)
     {
 
         if (AbilityStringMods.TryGetValue(ability, out Dictionary<AbilityVars, string> innerDict))
@@ -143,7 +172,7 @@ public class ModdedAbilities
         }
         else return "None";
     }
-    public Elements GetModdedElement(Ability_SO ability, AbilityVars var)
+    public static Elements GetModdedElement(Ability_SO ability, AbilityVars var)
     {
 
         if (AbilityElementMods.TryGetValue(ability, out Dictionary<AbilityVars, Elements> innerDict))
@@ -156,7 +185,7 @@ public class ModdedAbilities
         }
         else return Elements.None;
     }
-    public ResourceTypes GetModdedResource(Ability_SO ability, AbilityVars var)
+    public static ResourceTypes GetModdedResource(Ability_SO ability, AbilityVars var)
     {
 
         if (AbilityResourceMods.TryGetValue(ability, out Dictionary<AbilityVars, ResourceTypes> innerDict))
@@ -170,7 +199,7 @@ public class ModdedAbilities
         else return ResourceTypes.None;
     }
 
-    public List<Buffs> GetModdedBuffs(Ability_SO ability, AbilityVars var)
+    public static List<Buffs> GetModdedBuffs(Ability_SO ability, AbilityVars var)
     {
 
         if (AbilityBuffMods.TryGetValue(ability, out Dictionary<AbilityVars, List<Buffs>> innerDict))
@@ -184,7 +213,7 @@ public class ModdedAbilities
         else return new List<Buffs>();
     }
 
-    public List<Debuffs> GetModdedDebuffs(Ability_SO ability, AbilityVars var)
+    public static List<Debuffs> GetModdedDebuffs(Ability_SO ability, AbilityVars var)
     {
 
         if (AbilityDebuffMods.TryGetValue(ability, out Dictionary<AbilityVars, List<Debuffs>> innerDict))
@@ -200,16 +229,46 @@ public class ModdedAbilities
 
     #endregion
 
-    public void LoadData()
+    public static void LoadData()
     {
         ModdedAbilitySaveData moddedData = SaveSystem.LoadModdedAbilityData();
-        AbilityIntMods = moddedData.AbilityIntMods_SD;
-        AbilityStringMods = moddedData.AbilityStringMods_SD;
-        AbilityResourceMods = moddedData.AbilityResourceMods_SD;
-        AbilityElementMods = moddedData.AbilityElementMods_SD;
-        AbilityBuffMods = moddedData.AbilityBuffMods_SD;
-        AbilityDebuffMods = moddedData.AbilityDebuffMods_SD;
+        AbilityIntMods_save = ChangeDictKeyToString<string, Dictionary<AbilityVars, int>>(AbilityIntMods, AbilityLibrary.GetAbilityName);
+        //AbilityStringMods_save = ChangeDictKeyToString(moddedData.AbilityStringMods_SD, AbilityLibrary.GetAbilityName);
+        //AbilityResourceMods = moddedData.AbilityResourceMods_SD;
+        //AbilityElementMods = moddedData.AbilityElementMods_SD;
+        //AbilityBuffMods = moddedData.AbilityBuffMods_SD;
+        //AbilityDebuffMods = moddedData.AbilityDebuffMods_SD;
     }
 }
 
 // all dicts have to be unpacked and repacked with data types replacing the scriptable objects.
+
+//static void DisplayModdedDictString<TKey, TValue>(Dictionary<TKey, TValue> dict)
+//    {
+//        foreach (KeyValuePair<TKey, TValue> kvp in dict)
+//        {
+//            Console.WriteLine($"{kvp.Key}");
+//      
+//    }
+//    static Dictionary<string, TValue> ChangeDictKeyToString<TOldKey, TValue>(Dictionary<TOldKey, TValue> dict, Func<TOldKey, string> keyConverter)
+//    {
+//        var newDict = new Dictionary<string, TValue>();
+//
+//        foreach (var kvp in dict)
+//        {
+//            newDict[keyConverter(kvp.Key)] = kvp.Value;
+//        }
+//        return newDict;
+//    }
+//Dictionary<int, Dictionary<int, string>> dict1 = new Dictionary<int, Dictionary<int, string>>();
+//dict1.Add(2, new Dictionary<int, string>());
+//
+//DisplayModdedDictString(dict1);
+//
+//ChangeDictKeyToString(dict1, key => $"Key_{key}");
+//
+//DisplayModdedDictString(ChangeDictKeyToString(dict1, key => $"Key_{key}"));
+
+
+
+

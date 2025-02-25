@@ -63,6 +63,10 @@ public static class WorldChest
             return null;
         }
     }
+    public static string GetItemName(Item_SO item)
+    {
+        return item.ItemName;
+    }
     public static List<Item_SO> GetAllItems()
     {
         return new List<Item_SO>(allItems.Values.ToList());

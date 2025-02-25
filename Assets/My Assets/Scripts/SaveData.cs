@@ -206,22 +206,22 @@ public class ModdedItemSaveData
 [System.Serializable]
 public class ModdedAbilitySaveData
 {
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, int>> AbilityIntMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, int>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, string>> AbilityStringMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, string>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, ResourceTypes>> AbilityResourceMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, ResourceTypes>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, Elements>> AbilityElementMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, Elements>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, List<Buffs>>> AbilityBuffMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, List<Buffs>>>();
-    public Dictionary<Ability_SO, Dictionary<AbilityVars, List<Debuffs>>> AbilityDebuffMods_SD = new Dictionary<Ability_SO, Dictionary<AbilityVars, List<Debuffs>>>();
+    public Dictionary<string, Dictionary<AbilityVars, int>> AbilityIntMods_SD = new Dictionary<string, Dictionary<AbilityVars, int>>();
+    public Dictionary<string, Dictionary<AbilityVars, string>> AbilityStringMods_SD = new Dictionary<String, Dictionary<AbilityVars, string>>();
+    public Dictionary<string, Dictionary<AbilityVars, ResourceTypes>> AbilityResourceMods_SD = new Dictionary<String, Dictionary<AbilityVars, ResourceTypes>>();
+    public Dictionary<string, Dictionary<AbilityVars, Elements>> AbilityElementMods_SD = new Dictionary<String, Dictionary<AbilityVars, Elements>>();
+    public Dictionary<string, Dictionary<AbilityVars, List<Buffs>>> AbilityBuffMods_SD = new Dictionary<String, Dictionary<AbilityVars, List<Buffs>>>();
+    public Dictionary<string, Dictionary<AbilityVars, List<Debuffs>>> AbilityDebuffMods_SD = new Dictionary<String, Dictionary<AbilityVars, List<Debuffs>>>();
 
 
-    public ModdedAbilitySaveData(ModdedAbilities moddedAbilities)
+    public ModdedAbilitySaveData()
     {
-        AbilityIntMods_SD = moddedAbilities.AbilityIntMods;
-        AbilityStringMods_SD = moddedAbilities.AbilityStringMods;
-        AbilityResourceMods_SD = moddedAbilities.AbilityResourceMods;
-        AbilityElementMods_SD = moddedAbilities.AbilityElementMods;
-        AbilityBuffMods_SD = moddedAbilities.AbilityBuffMods;
-        AbilityDebuffMods_SD = moddedAbilities.AbilityDebuffMods;
+        AbilityIntMods_SD = ModdedAbilities.AbilityIntMods_save;
+        AbilityStringMods_SD = ModdedAbilities.AbilityStringMods_save;
+        AbilityResourceMods_SD = ModdedAbilities.AbilityResourceMods_save;
+        AbilityElementMods_SD = ModdedAbilities.AbilityElementMods_save;
+        AbilityBuffMods_SD = ModdedAbilities.AbilityBuffMods_save;
+        AbilityDebuffMods_SD = ModdedAbilities.AbilityDebuffMods_save;
     }
 }
 

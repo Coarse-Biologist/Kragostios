@@ -71,6 +71,10 @@ public static class AbilityLibrary
 
         return abilityInfo;
     }
+    public static string GetAbilityName(Ability_SO ability)
+    {
+        return ability.AbilityName;
+    }
     private static void AddToAbilityDicts(Abilities abilityEnum, Ability_SO loadedSO)
     {
         if (abilityEnum != Abilities.None)
