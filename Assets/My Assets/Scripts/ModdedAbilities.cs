@@ -4,6 +4,7 @@ using KragostiosAllEnums;
 using System;
 using System.Diagnostics;
 using TMPro;
+using Mono.Cecil;
 
 public static class ModdedAbilities
 {
@@ -39,6 +40,16 @@ public static class ModdedAbilities
     public static Dictionary<string, TValue> ChangeDictKeyToString<Abilities_SO, TValue>(Dictionary<Ability_SO, TValue> dict, Func<Ability_SO, string> keyConverter)
     {
         var newDict = new Dictionary<string, TValue>();
+
+        foreach (var kvp in dict)
+        {
+            newDict[keyConverter(kvp.Key)] = kvp.Value;
+        }
+        return newDict;
+    }
+    public static Dictionary<Ability_SO, TValue> ChangeDictKeyToAbility<Abilities_SO, TValue>(Dictionary<string, TValue> dict, Func<string, Ability_SO> keyConverter)
+    {
+        var newDict = new Dictionary<Ability_SO, TValue>();
 
         foreach (var kvp in dict)
         {
@@ -229,15 +240,25 @@ public static class ModdedAbilities
 
     #endregion
 
+    public static void SetSavableDicts()
+    {
+        AbilityIntMods_save = ChangeDictKeyToString<string, Dictionary<AbilityVars, int>>(AbilityIntMods, AbilityLibrary.GetAbilityName);
+        AbilityStringMods_save = ChangeDictKeyToString<string, Dictionary<AbilityVars, string>>(AbilityStringMods, AbilityLibrary.GetAbilityName);
+        AbilityResourceMods_save = ChangeDictKeyToString<string, Dictionary<AbilityVars, ResourceTypes>>(AbilityResourceMods, AbilityLibrary.GetAbilityName);
+        AbilityElementMods_save = ChangeDictKeyToString<string, Dictionary<AbilityVars, Elements>>(AbilityElementMods, AbilityLibrary.GetAbilityName);
+        AbilityBuffMods_save = ChangeDictKeyToString<string, Dictionary<AbilityVars, List<Buffs>>>(AbilityBuffMods, AbilityLibrary.GetAbilityName);
+        AbilityDebuffMods_save = ChangeDictKeyToString<string, Dictionary<AbilityVars, List<Debuffs>>>(AbilityDebuffMods, AbilityLibrary.GetAbilityName);
+    }
+
     public static void LoadData()
     {
         ModdedAbilitySaveData moddedData = SaveSystem.LoadModdedAbilityData();
-        AbilityIntMods_save = ChangeDictKeyToString<string, Dictionary<AbilityVars, int>>(AbilityIntMods, AbilityLibrary.GetAbilityName);
-        //AbilityStringMods_save = ChangeDictKeyToString(moddedData.AbilityStringMods_SD, AbilityLibrary.GetAbilityName);
-        //AbilityResourceMods = moddedData.AbilityResourceMods_SD;
-        //AbilityElementMods = moddedData.AbilityElementMods_SD;
-        //AbilityBuffMods = moddedData.AbilityBuffMods_SD;
-        //AbilityDebuffMods = moddedData.AbilityDebuffMods_SD;
+        AbilityIntMods = ChangeDictKeyToAbility<string, Dictionary<AbilityVars, int>>(moddedData.AbilityIntMods_SD, AbilityLibrary.GetAbilityFromName);
+        AbilityStringMods = ChangeDictKeyToAbility<string, Dictionary<AbilityVars, string>>(moddedData.AbilityStringMods_SD, AbilityLibrary.GetAbilityFromName);
+        AbilityResourceMods = ChangeDictKeyToAbility<string, Dictionary<AbilityVars, ResourceTypes>>(moddedData.AbilityResourceMods_SD, AbilityLibrary.GetAbilityFromName);
+        AbilityElementMods = ChangeDictKeyToAbility<string, Dictionary<AbilityVars, Elements>>(moddedData.AbilityElementMods_SD, AbilityLibrary.GetAbilityFromName);
+        AbilityBuffMods = ChangeDictKeyToAbility<string, Dictionary<AbilityVars, List<Buffs>>>(moddedData.AbilityBuffMods_SD, AbilityLibrary.GetAbilityFromName);
+        AbilityDebuffMods = ChangeDictKeyToAbility<string, Dictionary<AbilityVars, List<Debuffs>>>(moddedData.AbilityDebuffMods_SD, AbilityLibrary.GetAbilityFromName);
     }
 }
 

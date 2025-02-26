@@ -75,6 +75,16 @@ public static class AbilityLibrary
     {
         return ability.AbilityName;
     }
+    public static Ability_SO GetAbilityFromName(string name)
+    {
+        Ability_SO soughtAbility = allAbilities[0];
+        foreach (Ability_SO ability in allAbilities)
+        {
+            if (ability.AbilityName == name) ;
+            soughtAbility = ability;
+        }
+        return soughtAbility;
+    }
     private static void AddToAbilityDicts(Abilities abilityEnum, Ability_SO loadedSO)
     {
         if (abilityEnum != Abilities.None)

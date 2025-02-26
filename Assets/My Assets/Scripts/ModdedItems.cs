@@ -3,22 +3,55 @@ using System.Collections.Generic;
 using System.Collections;
 using KragostiosAllEnums;
 using System.Linq;
-
-public class ModdedItems
+using System;
+public static class ModdedItems
 {
 
     #region class variables
-    public Dictionary<Item_SO, Dictionary<ItemVars, int>> ItemIntMods = new Dictionary<Item_SO, Dictionary<ItemVars, int>>();
-    public Dictionary<Item_SO, Dictionary<ItemVars, string>> ItemStringMods = new Dictionary<Item_SO, Dictionary<ItemVars, string>>();
-    public Dictionary<Item_SO, Dictionary<ItemVars, ResourceTypes>> ItemResourceMods = new Dictionary<Item_SO, Dictionary<ItemVars, ResourceTypes>>();
-    public Dictionary<Item_SO, Dictionary<ItemVars, Elements>> ItemElementMods = new Dictionary<Item_SO, Dictionary<ItemVars, Elements>>();
-    public Dictionary<Item_SO, Dictionary<ItemVars, List<Buffs>>> ItemBuffMods = new Dictionary<Item_SO, Dictionary<ItemVars, List<Buffs>>>();
-    public Dictionary<Item_SO, Dictionary<ItemVars, List<Debuffs>>> ItemDebuffMods = new Dictionary<Item_SO, Dictionary<ItemVars, List<Debuffs>>>();
+    public static Dictionary<Item_SO, Dictionary<ItemVars, int>> ItemIntMods = new Dictionary<Item_SO, Dictionary<ItemVars, int>>();
+    public static Dictionary<Item_SO, Dictionary<ItemVars, string>> ItemStringMods = new Dictionary<Item_SO, Dictionary<ItemVars, string>>();
+    public static Dictionary<Item_SO, Dictionary<ItemVars, ResourceTypes>> ItemResourceMods = new Dictionary<Item_SO, Dictionary<ItemVars, ResourceTypes>>();
+    public static Dictionary<Item_SO, Dictionary<ItemVars, Elements>> ItemElementMods = new Dictionary<Item_SO, Dictionary<ItemVars, Elements>>();
+    public static Dictionary<Item_SO, Dictionary<ItemVars, List<Buffs>>> ItemBuffMods = new Dictionary<Item_SO, Dictionary<ItemVars, List<Buffs>>>();
+    public static Dictionary<Item_SO, Dictionary<ItemVars, List<Debuffs>>> ItemDebuffMods = new Dictionary<Item_SO, Dictionary<ItemVars, List<Debuffs>>>();
+
+    public static Dictionary<string, Dictionary<ItemVars, int>> ItemIntMods_SAVE = new Dictionary<string, Dictionary<ItemVars, int>>();
+    public static Dictionary<string, Dictionary<ItemVars, string>> ItemStringMods_SAVE = new Dictionary<string, Dictionary<ItemVars, string>>();
+    public static Dictionary<string, Dictionary<ItemVars, ResourceTypes>> ItemResourceMods_SAVE = new Dictionary<string, Dictionary<ItemVars, ResourceTypes>>();
+    public static Dictionary<string, Dictionary<ItemVars, Elements>> ItemElementMods_SAVE = new Dictionary<string, Dictionary<ItemVars, Elements>>();
+    public static Dictionary<string, Dictionary<ItemVars, List<Buffs>>> ItemBuffMods_SAVE = new Dictionary<string, Dictionary<ItemVars, List<Buffs>>>();
+    public static Dictionary<string, Dictionary<ItemVars, List<Debuffs>>> ItemDebuffMods_SAVE = new Dictionary<string, Dictionary<ItemVars, List<Debuffs>>>();
 
     #endregion
 
+    #region make and convert savable dict
+
+    public static Dictionary<string, TValue> ChangeDictKeyToString<Item_SO, TValue>(Dictionary<Item_SO, TValue> dict, Func<Item_SO, string> keyConverter)
+    {
+        var newDict = new Dictionary<string, TValue>();
+
+        foreach (var kvp in dict)
+        {
+            newDict[keyConverter(kvp.Key)] = kvp.Value;
+        }
+        return newDict;
+    }
+    public static Dictionary<Item_SO, TValue> ChangeDictKeyToAbility<Item_SO, TValue>(Dictionary<string, TValue> dict, Func<string, Item_SO> keyConverter)
+    {
+        var newDict = new Dictionary<Item_SO, TValue>();
+
+        foreach (var kvp in dict)
+        {
+            newDict[keyConverter(kvp.Key)] = kvp.Value;
+        }
+        return newDict;
+    }
+
+    #endregion
+
+
     #region modify variables
-    public void ModifyStringAttribute(Item_SO item, ItemVars var, string newValue) // can be used for name and description
+    public static void ModifyStringAttribute(Item_SO item, ItemVars var, string newValue) // can be used for name and description
     {
         if (ItemStringMods.TryGetValue(item, out Dictionary<ItemVars, string> stringModDict))
         {
@@ -34,7 +67,7 @@ public class ModdedItems
             stringModDict.TryAdd(var, newValue);
         }
     }
-    public void ModifyIntAttribute(Item_SO item, ItemVars var, int newValue) // can be used for name and description
+    public static void ModifyIntAttribute(Item_SO item, ItemVars var, int newValue) // can be used for things like cost and damage (int values)
     {
         if (ItemIntMods.TryGetValue(item, out Dictionary<ItemVars, int> intModDict))
         {
@@ -50,7 +83,7 @@ public class ModdedItems
             intModDict.TryAdd(var, newValue);
         }
     }
-    public void ModifyBuffsAttribute(Item_SO item, ItemVars var, Buffs buff) // can be used for name and description
+    public static void ModifyBuffsAttribute(Item_SO item, ItemVars var, Buffs buff)
     {
         if (ItemBuffMods.TryGetValue(item, out Dictionary<ItemVars, List<Buffs>> buffModDict))
         {
@@ -66,7 +99,7 @@ public class ModdedItems
             buffModDict.TryAdd(var, new List<Buffs> { buff });
         }
     }
-    public void ModifyDebuffsAttribute(Item_SO item, ItemVars var, Debuffs debuff) // can be used for name and description
+    public static void ModifyDebuffsAttribute(Item_SO item, ItemVars var, Debuffs debuff)
     {
         if (ItemDebuffMods.TryGetValue(item, out Dictionary<ItemVars, List<Debuffs>> debuffModDict))
         {
@@ -82,7 +115,7 @@ public class ModdedItems
             debuffModDict.TryAdd(var, new List<Debuffs> { debuff });
         }
     }
-    public void ModifyResourceAttribute(Item_SO item, ItemVars var, ResourceTypes resource) // can be used for name and description
+    public static void ModifyResourceAttribute(Item_SO item, ItemVars var, ResourceTypes resource)
     {
         if (ItemResourceMods.TryGetValue(item, out Dictionary<ItemVars, ResourceTypes> resourceModDict))
         {
@@ -98,7 +131,7 @@ public class ModdedItems
             resourceModDict.TryAdd(var, resource);
         }
     }
-    public void ModifyElementAttribute(Item_SO item, ItemVars var, Elements element) // can be used for name and description
+    public static void ModifyElementAttribute(Item_SO item, ItemVars var, Elements element)
     {
         if (ItemElementMods.TryGetValue(item, out Dictionary<ItemVars, Elements> elementModDict))
         {
@@ -117,7 +150,7 @@ public class ModdedItems
     #endregion
 
     #region get modded values
-    public int GetModdedInt(Item_SO item, ItemVars var)
+    public static int GetModdedInt(Item_SO item, ItemVars var)
     {
 
         if (ItemIntMods.TryGetValue(item, out Dictionary<ItemVars, int> innerDict))
@@ -130,7 +163,7 @@ public class ModdedItems
         }
         else return 0;
     }
-    public string GetModdedString(Item_SO item, ItemVars var)
+    public static string GetModdedString(Item_SO item, ItemVars var)
     {
 
         if (ItemStringMods.TryGetValue(item, out Dictionary<ItemVars, string> innerDict))
@@ -143,7 +176,7 @@ public class ModdedItems
         }
         else return "None";
     }
-    public Elements GetModdedElement(Item_SO item, ItemVars var)
+    public static Elements GetModdedElement(Item_SO item, ItemVars var)
     {
 
         if (ItemElementMods.TryGetValue(item, out Dictionary<ItemVars, Elements> innerDict))
@@ -156,7 +189,7 @@ public class ModdedItems
         }
         else return Elements.None;
     }
-    public ResourceTypes GetModdedResource(Item_SO item, ItemVars var)
+    public static ResourceTypes GetModdedResource(Item_SO item, ItemVars var)
     {
 
         if (ItemResourceMods.TryGetValue(item, out Dictionary<ItemVars, ResourceTypes> innerDict))
@@ -169,7 +202,7 @@ public class ModdedItems
         }
         else return ResourceTypes.None;
     }
-    public List<Buffs> GetModdedBuffs(Item_SO item, ItemVars var)
+    public static List<Buffs> GetModdedBuffs(Item_SO item, ItemVars var)
     {
 
         if (ItemBuffMods.TryGetValue(item, out Dictionary<ItemVars, List<Buffs>> innerDict))
@@ -182,7 +215,7 @@ public class ModdedItems
         }
         else return new List<Buffs>();
     }
-    public List<Debuffs> GetModdedDebuffs(Item_SO item, ItemVars var)
+    public static List<Debuffs> GetModdedDebuffs(Item_SO item, ItemVars var)
     {
         if (ItemDebuffMods.TryGetValue(item, out Dictionary<ItemVars, List<Debuffs>> innerDict))
         {
@@ -195,7 +228,7 @@ public class ModdedItems
         else return new List<Debuffs>();
     }
     #endregion
-    public void LoadData()
+    public static void LoadData()
     {
         ModdedItemSaveData moddedData = SaveSystem.LoadModdedItemData();
         ItemIntMods = moddedData.ItemIntMods_SD;

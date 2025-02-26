@@ -28,8 +28,6 @@ public class DungeonMaster : MonoBehaviour
     private List<Tuple<Difficulty, Elements>> enemyCombatantTuple;
     private Inventory inventory;
     private AlchemyHandler alchemy;
-    private ModdedAbilities moddedAbilities;
-    private ModdedItems moddedItems;
 
 
     [Header("player")]
@@ -397,7 +395,7 @@ public class DungeonMaster : MonoBehaviour
         inventory.SpawnInventoryButton(buttonContainer_AO, playerStats);
         List<Directions> directions = map.directions;
         playerOptions.SpawnDirectionOptions(directions);
-        playerOptions.DisplayLoadAndSaveButtons(playerStats, map, travel, alchemy, moddedAbilities, moddedItems);
+        playerOptions.DisplayLoadAndSaveButtons(playerStats, map, travel, alchemy);
     }
 
     #endregion
@@ -559,7 +557,7 @@ public class DungeonMaster : MonoBehaviour
 
     private void LoadAllData()
     {
-        //moddedAbilities.LoadData();
+        ModdedAbilities.LoadData();
         //moddedItems.LoadData();
         playerStats.LoadStats();
         travel.LoadData();

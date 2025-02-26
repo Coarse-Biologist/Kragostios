@@ -63,12 +63,12 @@ public static class SaveSystem
         }
     }
 
-    public static void SaveModdedItemData(ModdedItems moddedItems)
+    public static void SaveModdedItemData()
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/moddedItems.data";
         FileStream stream = new FileStream(path, FileMode.Create);
-        ModdedItemSaveData saveData = new ModdedItemSaveData(moddedItems);
+        ModdedItemSaveData saveData = new ModdedItemSaveData();
         formatter.Serialize(stream, saveData);
         stream.Close();
     }
@@ -91,12 +91,12 @@ public static class SaveSystem
         }
     }
 
-    public static void SaveModdedAbilityData(ModdedAbilities moddedAbilities)
+    public static void SaveModdedAbilityData()
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/moddedAbilities.data";
         FileStream stream = new FileStream(path, FileMode.Create);
-        ModdedAbilitySaveData saveData = new ModdedAbilitySaveData(moddedAbilities);
+        ModdedAbilitySaveData saveData = new ModdedAbilitySaveData();
         formatter.Serialize(stream, saveData);
         stream.Close();
     }
@@ -203,15 +203,15 @@ public static class SaveSystem
         }
     }
 
-    public static void SaveAll(StatsHandler stats, Map map, TravelScript travelScript, AlchemyHandler alchemyHandler, ModdedAbilities moddedAbilities, ModdedItems moddedItems)
+    public static void SaveAll(StatsHandler stats, Map map, TravelScript travelScript, AlchemyHandler alchemyHandler)
     {
         SavePlayerData(stats);
         SaveEquipmentData();
         SaveMapData(map);
         SavePlayerLocationData(travelScript);
         //SaveAlchemyyData(alchemyHandler);
-        //SaveModdedAbilityData(moddedAbilities);
-        //SaveModdedItemData(moddedItems);
+        SaveModdedAbilityData();
+        SaveModdedItemData();
     }
 
 

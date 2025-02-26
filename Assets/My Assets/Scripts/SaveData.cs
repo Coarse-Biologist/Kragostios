@@ -190,14 +190,14 @@ public class ModdedItemSaveData
     public Dictionary<Item_SO, Dictionary<ItemVars, List<Buffs>>> ItemBuffMods_SD = new Dictionary<Item_SO, Dictionary<ItemVars, List<Buffs>>>();
     public Dictionary<Item_SO, Dictionary<ItemVars, List<Debuffs>>> ItemDebuffMods_SD = new Dictionary<Item_SO, Dictionary<ItemVars, List<Debuffs>>>();
 
-    public ModdedItemSaveData(ModdedItems moddedItems)
+    public ModdedItemSaveData()
     {
-        ItemIntMods_SD = moddedItems.ItemIntMods;
-        ItemStringMods_SD = moddedItems.ItemStringMods;
-        ItemResourceMods_SD = moddedItems.ItemResourceMods;
-        ItemElementMods_SD = moddedItems.ItemElementMods;
-        ItemBuffMods_SD = moddedItems.ItemBuffMods;
-        ItemDebuffMods_SD = moddedItems.ItemDebuffMods;
+        ItemIntMods_SD = ModdedItems.ItemIntMods;
+        ItemStringMods_SD = ModdedItems.ItemStringMods;
+        ItemResourceMods_SD = ModdedItems.ItemResourceMods;
+        ItemElementMods_SD = ModdedItems.ItemElementMods;
+        ItemBuffMods_SD = ModdedItems.ItemBuffMods;
+        ItemDebuffMods_SD = ModdedItems.ItemDebuffMods;
     }
 
 }

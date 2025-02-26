@@ -254,21 +254,21 @@ namespace KragostiosAllEnums
 
     public enum AbilityVars
     {
-        AbilityName,
-        Description,
-        ElementType,
-        PhysicalType,
-        AbilityCost,
-        HealValue,
-        DamageValue,
-        TurnDuration,
-        Targets,
-        Summons,
-        DamageOverTime,
+        AbilityName, // modable upon crafting, and examining in inventory
+        Description, // modable upon crafting, and examining in inventory
+        ElementType, // modable on weapons, armors and abbilities and with high knowledge of a given element 
+        PhysicalType, // modable on weapons, armors and abbilities and with high knowledge of a given element
+        AbilityCost, // modable on abilities, scaling with knowledge
+        HealValue, // modable on usable items and abilities, scaling with average knowledge, improved greatly by knowledge of ether cluster power sources
+        DamageValue, // modable on usable items and abilities, scaling with average knowledge, improved greatly by knowledge of ether cluster power sources
+        TurnDuration, // modable on usable items and abilities, scaling with average knowledge, improved greatly by knowledge of ether cluster power sources. Very hard/heavy to improve
+        Targets, // modable on usable items and abilities, scaling with average knowledge, improved greatly by knowledge of ether cluster power sources. Very hard/heavy to improve
+        Summons, // not moddable, but craftable. scales with knowledge of elements. made possible by knowledge and crafting ability. 
+        DamageOverTime, // modable on usable items and abilities, scaling with average knowledge, improved greatly by knowledge of ether cluster power sources
         SyphonPercentage,
         AbilityLevel,
-        BuffEffects,
-        DebuffEffects
+        BuffEffects, // modable on usable items and abilities, scaling with elemental knowledge. Number of addable buffs? debuffs is capped by both elemental knowledge and powersource knowledge.
+        DebuffEffects // ^^
     }
 
     public enum ItemVars
