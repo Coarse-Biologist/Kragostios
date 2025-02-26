@@ -80,8 +80,8 @@ public static class AbilityLibrary
         Ability_SO soughtAbility = allAbilities[0];
         foreach (Ability_SO ability in allAbilities)
         {
-            if (ability.AbilityName == name) ;
-            soughtAbility = ability;
+            if (ability.AbilityName == name)
+                soughtAbility = ability;
         }
         return soughtAbility;
     }
