@@ -145,7 +145,7 @@ public class Map : MonoBehaviour
         if (mapDict != null)
         {
             if (playerlocation.x <= mapSize && playerlocation.y <= mapSize
-            || playerlocation.x >= -mapSize && playerlocation.y <= -mapSize)
+            && playerlocation.x >= -mapSize && playerlocation.y <= -mapSize) //bug?
             {
                 LocationType locationType = mapDict[playerlocation];
                 return locationType;
@@ -210,7 +210,6 @@ public class Map : MonoBehaviour
         if (kingdomMapDict.Keys.ToList().Contains(vectorLocation))
         {
             kingdom = kingdomMapDict[vectorLocation];
-
         }
         return kingdom;
     }
