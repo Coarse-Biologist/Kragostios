@@ -241,14 +241,16 @@ namespace KragostiosAllEnums
         None,
         Beaker,
         AccurateWeights,
+        Thermometer,
+        Barometer,
         Pipette,
-        MicroPipette,
         Filter,
         Centrifuge,
         PressureChamber,
-        Chromatograph,
-        ArcSpring,
         OneWayValves,
+        ArcSpring,
+        Fire,
+        IceBath,
 
     }
 

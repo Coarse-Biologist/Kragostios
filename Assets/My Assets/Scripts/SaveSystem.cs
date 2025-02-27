@@ -119,12 +119,12 @@ public static class SaveSystem
         }
     }
 
-    public static void SaveAlchemyyData(AlchemyHandler alchemyHandler)
+    public static void SaveAlchemyyData()
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/alchemyData.data";
         FileStream stream = new FileStream(path, FileMode.Create);
-        AlchemyData saveData = new AlchemyData(alchemyHandler);
+        AlchemyData saveData = new AlchemyData();
         formatter.Serialize(stream, saveData);
         stream.Close();
     }
@@ -203,13 +203,13 @@ public static class SaveSystem
         }
     }
 
-    public static void SaveAll(StatsHandler stats, Map map, TravelScript travelScript, AlchemyHandler alchemyHandler)
+    public static void SaveAll(StatsHandler stats, Map map, TravelScript travelScript)
     {
         SavePlayerData(stats);
         SaveEquipmentData();
         SaveMapData(map);
         SavePlayerLocationData(travelScript);
-        //SaveAlchemyyData(alchemyHandler);
+        SaveAlchemyyData();
         SaveModdedAbilityData();
         SaveModdedItemData();
     }

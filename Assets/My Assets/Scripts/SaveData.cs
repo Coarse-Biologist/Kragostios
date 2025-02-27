@@ -233,11 +233,11 @@ public class AlchemyData
     public Dictionary<Ether_SO, int> PlayerEther_SD = new Dictionary<Ether_SO, int> { };
     public Dictionary<Elements, int> KnowledgeDict_SD = new Dictionary<Elements, int>();
 
-    public AlchemyData(AlchemyHandler alchemyHandler)
+    public AlchemyData()
     {
-        AvailableTools_SD = alchemyHandler.AvailableTools;
-        PlayerEther_SD = alchemyHandler.PlayerEther;
-        KnowledgeDict_SD = alchemyHandler.KnowledgeDict;
+        AvailableTools_SD = AlchemyHandler.AvailableTools;
+        PlayerEther_SD = AlchemyHandler.PlayerEther;
+        KnowledgeDict_SD = AlchemyHandler.KnowledgeDict;
     }
 }
 [System.Serializable]

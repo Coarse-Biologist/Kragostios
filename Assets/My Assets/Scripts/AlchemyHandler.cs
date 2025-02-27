@@ -14,41 +14,31 @@ public class Ether_SO : ScriptableObject
     [SerializeField] public bool IsPpure = false;
 }
 
-public class AlchemyHandler : MonoBehaviour
+public static class AlchemyHandler
 {
     #region class variables
-    [SerializeField] Ether_SO PureEther;
-    [SerializeField] Ether_SO ImpureEther;
+    [SerializeField] static Ether_SO PureEther;
+    [SerializeField] static Ether_SO ImpureEther;
 
-    private readonly StatsHandler PlayerStats;
-    public Dictionary<AlchemyTools, bool> AvailableTools { private set; get; } = new Dictionary<AlchemyTools, bool>();
-    public Dictionary<Ether_SO, int> PlayerEther { private set; get; } = new Dictionary<Ether_SO, int> { };
-    public Dictionary<Elements, int> KnowledgeDict { private set; get; } = new Dictionary<Elements, int>();
+    public static Dictionary<AlchemyTools, bool> AvailableTools { private set; get; } = new Dictionary<AlchemyTools, bool>();
+    public static Dictionary<Ether_SO, int> PlayerEther { private set; get; } = new Dictionary<Ether_SO, int> { };
+    public static Dictionary<Elements, int> KnowledgeDict { private set; get; } = new Dictionary<Elements, int>();
 
     #endregion
-    void Awake()
-    {
-        List<AlchemyTools> tools = GetAllEnums<AlchemyTools>();
-        foreach (AlchemyTools tool in tools)
-        {
-            AvailableTools.TryAdd(tool, false);
-        }
+    //void Awake()
 
-        List<Elements> elements = GetAllEnums<Elements>();
-        foreach (Elements element in elements)
-        {
-            KnowledgeDict.TryAdd(element, 0);
-        }
+    // make a list of all tools and add them to the dict, setting all values to false
 
-        PlayerEther.TryAdd(PureEther, 0);
-        PlayerEther.TryAdd(ImpureEther, 0);
-    }
+    // make list of all elements, setting their value to 0 to represent a start knledge of 0
+
+    // set player to have inventory of 0 pure and 0 impure ether, but containing the objects
+
     #region alchemy functions
     public static List<T> GetAllEnums<T>() where T : Enum
     {
         return Enum.GetValues(typeof(T)).Cast<T>().ToList();
     }
-    private int GetNumToolsKnown()
+    private static int GetNumToolsKnown()
     {
         int toolsKnown = 0;
         foreach (KeyValuePair<AlchemyTools, bool> kvp in AvailableTools)
@@ -60,7 +50,7 @@ public class AlchemyHandler : MonoBehaviour
         }
         return toolsKnown;
     }
-    public string GainKnowledge(Elements element)
+    public static string GainKnowledge(Elements element)
     {
         KnowledgeDict.TryGetValue(element, out int PlayerKnowledge);
         int knowledgeGain = 1;
@@ -71,7 +61,7 @@ public class AlchemyHandler : MonoBehaviour
         KnowledgeDict[element] += knowledgeGain;
         return $"You have gained {knowledgeGain} knowledge.";
     }
-    private string AttemptPurification(Ether_SO ether)
+    private static string AttemptPurification(Ether_SO ether)
     {
         string result = "";
         if (!ether.IsPpure)
@@ -95,7 +85,7 @@ public class AlchemyHandler : MonoBehaviour
         else KDebug.SeekBug("Ether is already pure brah");
         return result;
     }
-    private void PurifyEther(Ether_SO impureEther)
+    private static void PurifyEther(Ether_SO impureEther)
     {
         if (PlayerEther.TryGetValue(impureEther, out int amount))
         {
@@ -107,7 +97,7 @@ public class AlchemyHandler : MonoBehaviour
         }
     }
     #endregion
-    public void LoadData()
+    public static void LoadData()
     {
         AlchemyData alchemyData = SaveSystem.LoadAlchemyData();
         AvailableTools = alchemyData.AvailableTools_SD;

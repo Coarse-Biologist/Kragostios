@@ -27,7 +27,6 @@ public class DungeonMaster : MonoBehaviour
     private CombatFlow combat;
     private List<Tuple<Difficulty, Elements>> enemyCombatantTuple;
     private Inventory inventory;
-    private AlchemyHandler alchemy;
 
 
     [Header("player")]
@@ -395,7 +394,7 @@ public class DungeonMaster : MonoBehaviour
         inventory.SpawnInventoryButton(buttonContainer_AO, playerStats);
         List<Directions> directions = map.directions;
         playerOptions.SpawnDirectionOptions(directions);
-        playerOptions.DisplayLoadAndSaveButtons(playerStats, map, travel, alchemy);
+        playerOptions.DisplayLoadAndSaveButtons(playerStats, map, travel);
     }
 
     #endregion
