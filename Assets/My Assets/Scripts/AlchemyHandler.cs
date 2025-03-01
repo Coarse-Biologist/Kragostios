@@ -24,6 +24,7 @@ public static class AlchemyHandler
     public static Dictionary<Ether_SO, int> PlayerEther { private set; get; } = new Dictionary<Ether_SO, int> { };
     public static Dictionary<Elements, int> KnowledgeDict { private set; get; } = new Dictionary<Elements, int>();
 
+
     #endregion
     //void Awake()
 
