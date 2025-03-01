@@ -133,45 +133,45 @@ public class PlayerSaveData
 [System.Serializable]
 public class MapData
 {
-    public Dictionary<float[], LocationType> locationTypeDict_SD;
-    public Dictionary<float[], Biomes> biomeDict_SD;
-    public Dictionary<float[], Kingdoms> kingdomDict_SD;
+    public Dictionary<int[], LocationType> locationTypeDict_SD;
+    public Dictionary<int[], Biomes> biomeDict_SD;
+    public Dictionary<int[], Kingdoms> kingdomDict_SD;
     public MapData(Map mapData)
     {
-        locationTypeDict_SD = new Dictionary<float[], LocationType>();
-        Dictionary<Vector2, LocationType> mapDict = mapData.mapDict;
+        locationTypeDict_SD = new Dictionary<int[], LocationType>();
+        Dictionary<Vector2Int, LocationType> mapDict = mapData.mapDict;
         if (mapData != null)
         {
-            foreach (KeyValuePair<Vector2, LocationType> kvp in mapDict)
+            foreach (KeyValuePair<Vector2Int, LocationType> kvp in mapDict)
             {
-                float arrayX = kvp.Key.x;
-                float arrayY = kvp.Key.y;
-                float[] array = new float[] { arrayX, arrayY };
+                int arrayX = kvp.Key.x;
+                int arrayY = kvp.Key.y;
+                int[] array = new int[] { arrayX, arrayY };
                 locationTypeDict_SD.Add(array, kvp.Value);
             }
         }
-        biomeDict_SD = new Dictionary<float[], Biomes>();
-        Dictionary<Vector2, Biomes> biomeMapDict = mapData.biomesMapDict;
+        biomeDict_SD = new Dictionary<int[], Biomes>();
+        Dictionary<Vector2Int, Biomes> biomeMapDict = mapData.biomesMapDict;
         if (mapData != null)
         {
-            foreach (KeyValuePair<Vector2, Biomes> kvp in biomeMapDict)
+            foreach (KeyValuePair<Vector2Int, Biomes> kvp in biomeMapDict)
             {
-                float arrayX = kvp.Key.x;
-                float arrayY = kvp.Key.y;
-                float[] array = new float[] { arrayX, arrayY };
+                int arrayX = kvp.Key.x;
+                int arrayY = kvp.Key.y;
+                int[] array = new int[] { arrayX, arrayY };
                 biomeDict_SD.Add(array, kvp.Value);
             }
         }
 
-        kingdomDict_SD = new Dictionary<float[], Kingdoms>();
-        Dictionary<Vector2, Kingdoms> kingdomDict = mapData.kingdomMapDict;
+        kingdomDict_SD = new Dictionary<int[], Kingdoms>();
+        Dictionary<Vector2Int, Kingdoms> kingdomDict = mapData.kingdomMapDict;
         if (mapData != null)
         {
-            foreach (KeyValuePair<Vector2, Kingdoms> kvp in kingdomDict)
+            foreach (KeyValuePair<Vector2Int, Kingdoms> kvp in kingdomDict)
             {
-                float arrayX = kvp.Key.x;
-                float arrayY = kvp.Key.y;
-                float[] array = new float[] { arrayX, arrayY };
+                int arrayX = kvp.Key.x;
+                int arrayY = kvp.Key.y;
+                int[] array = new int[] { arrayX, arrayY };
                 kingdomDict_SD.Add(array, kvp.Value);
             }
         }
@@ -266,7 +266,7 @@ public class EquipmentData
 [System.Serializable]
 public class LocationData
 {
-    public float[] playerLocation_SD = new float[2] { 0, 0 };
+    public int[] playerLocation_SD = new int[2] { 0, 0 };
 
     public LocationData(TravelScript travelScript)
 

@@ -18,7 +18,8 @@ public class NarrationScript : MonoBehaviour
 
     private Dictionary<string, string> responseDictionary;
 
-    private int linesOfNarration = 0;
+    private int numLinesOfNarration = 0;
+    private List<string> stringsOfNarration = new List<string>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //private void Awake()
@@ -65,16 +66,23 @@ public class NarrationScript : MonoBehaviour
     {
         narratorWindow.style.display = DisplayStyle.Flex;
 
-        linesOfNarration++;
+        numLinesOfNarration++;
+        stringsOfNarration.Add(message);
 
-        if (linesOfNarration >= 6)
+        if (numLinesOfNarration >= 30)
         {
-            linesOfNarration = 0;
-            narratorText.text = message;
+            stringsOfNarration.RemoveRange(0, 4);
+            numLinesOfNarration -= 5;
+            string trimmedMessage = "";
+            foreach (string oldMessage in stringsOfNarration)
+            {
+                trimmedMessage += "\n \n" + oldMessage;
+            }
+            narratorText.text = trimmedMessage;
         }
         else
         {
-            narratorText.text += "\n" + message; // + message;
+            narratorText.text += "\n \n" + message; // + message;
         }
 
 

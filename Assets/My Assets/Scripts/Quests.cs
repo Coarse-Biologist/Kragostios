@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Windows.Speech;
+using System.Linq;
 
 public static class Quests
 {
@@ -10,7 +10,8 @@ public static class Quests
     public static List<QuestName> boolQuests;
     public static List<QuestName> repeatableQuests;
     public static List<QuestName> questOrder = new List<QuestName> { QuestName.DefeatEnemies };
-    public static Dictionary<QuestName, Tuple<List<QuestName>, Dictionary<QuestName, int>>> RequisiteDict;
+    public static Dictionary<QuestName, ValueTuple<List<QuestName>, Dictionary<QuestName, int>>> RequisiteDict;
+    public static List<ValueTuple<QuestName, int>> QuestsInOrder = new List<ValueTuple<QuestName, int>>();
 
     //track progress method. stores and sets progress in different skillsand knowledges
 
@@ -20,21 +21,38 @@ public static class Quests
 
     // when should i check whether a quest is complete?
 
-    public static void SetRequisiteDict()
+    public static void SetOrderOfQuests()
     {
-        List<QuestName> boolAccolpishment1 = new List<QuestName> { QuestName.PerformCoreExtraction, QuestName.PerformEtherPurification };
-        Dictionary<QuestName, int> intAccolpishment1 = new Dictionary<QuestName, int>();
+        QuestsInOrder = new List<ValueTuple<QuestName, int>>()
+        {
+            (QuestName.DefeatEnemies, 3),
+            (QuestName.ExamineBodies, 5),
+            (QuestName.AttemptCoreExtraction, 1),
+            (QuestName.FindAKnife, 1),
+            (QuestName.ExamineCores, 5),
+            (QuestName.PracticalExperiments, 1 ),
+            (QuestName.LearnGlassMaking, 1)
 
-        var reqTuple1 = new Tuple<List<QuestName>, Dictionary<QuestName, int>>(boolAccolpishment1, intAccolpishment1);
+        };
 
-        RequisiteDict.Add(QuestName.LearnGlassMaking, reqTuple1);
+
     }
+
+    public static string PresentQuest_DefeatEnemies()
+    {
+        string questIntro = "";
+        return questIntro;
+    }
+
+
+
 
     public static void IncrementIntQuests(QuestName quest, int increments = 1)
     {
+
         if (IntAccomplishments.TryGetValue(quest, out int num))
         {
-            num += increments;
+            IntAccomplishments[quest] += increments;
         }
     }
 
@@ -42,7 +60,7 @@ public static class Quests
     {
         if (BoolAccomplishments.TryGetValue(quest, out bool complete))
         {
-            complete = true;
+            BoolAccomplishments[quest] = true;
         }
     }
 
@@ -81,6 +99,13 @@ public static class Quests
     public enum QuestName
     {
         DefeatEnemies,
+        ExamineBodies,
+        AttemptCoreExtraction,
+        FindAKnife,
+        ExamineCores,
+        PracticalExperiments, // this will be a step in which the player is asked to use cores and attempt purification
+        UseCores,
+        AttemptPurifications,
         UsePotions,
         UseAbilities,
         UseHealAbilities,
@@ -91,7 +116,6 @@ public static class Quests
         LearnSewing,
         LearnAlchemy,
         LearnChemistry,
-        LearnCoreExtractiion,
         LearnPotionCrafting,
         LearnArrowCrafting,
         LearnArmorCrafting,
@@ -101,3 +125,26 @@ public static class Quests
 
     }
 }
+
+
+
+
+//public static void SetRequisiteDict()
+//{
+//    // get all quests and add them with req dicts to the RequisiteDict
+//    List<QuestName> allQuests = Enum.GetValues(typeof(QuestName)).Cast<QuestName>().ToList();
+//    foreach (QuestName questName in allQuests)
+//    {
+//        List<QuestName> boolAccomplishmentDict = new List<QuestName>();
+//        Dictionary<QuestName, int> intAccolpishmentDict = new Dictionary<QuestName, int>();
+//
+//        var reqValueTuple = new ValueTuple<List<QuestName>, Dictionary<QuestName, int>>(boolAccomplishmentDict, intAccolpishmentDict);
+//
+//        RequisiteDict.Add(questName, reqValueTuple);
+//    }
+//    RequisiteDict.TryGetValue(QuestName.LearnAlchemy, out ValueTuple<List<QuestName>, Dictionary<QuestName, int>> reqs); // important for later
+//    //List<QuestName>
+//    reqs.Item1.Add(QuestName.PerformEtherPurification);
+//
+//
+//}

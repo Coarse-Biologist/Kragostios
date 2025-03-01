@@ -254,6 +254,15 @@ namespace KragostiosAllEnums
 
     }
 
+    public enum AutopsyTools
+    {
+        Microscope, // 1-6
+        Knife, // 1- 5
+        Suction,
+        Tongs, // 1-3
+
+    }
+
     public enum AbilityVars
     {
         AbilityName, // modable upon crafting, and examining in inventory
