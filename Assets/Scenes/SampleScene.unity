@@ -640,8 +640,9 @@ MonoBehaviour:
   impassableTerrainDensity: 1
   healerDensity: 1
   barrenDensity: 1
-  BiomeIterations: 60
-  KingdomIterations: 60
+  BiomeIterations: 7
+  KingdomIterations: 5
+  BiomeNumber: 3
 --- !u!114 &1889742914
 MonoBehaviour:
   m_ObjectHideFlags: 0

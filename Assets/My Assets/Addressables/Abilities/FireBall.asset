@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
   m_Name: FireBall
   m_EditorClassIdentifier: 
-  abilityName: Fireaball
+  abilityName: Fireball
   abilityEnum: 1
   description: Throws a ball of intense fire
   resource: 1

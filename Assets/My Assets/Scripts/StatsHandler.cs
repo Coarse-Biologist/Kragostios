@@ -614,14 +614,16 @@ public class StatsHandler : MonoBehaviour
     }
     public void LearnAbility(Abilities newAbility)
     {
-        if (AbilityLibrary.abilityDict.ContainsKey(newAbility))
-        {
-            if (!knownAbilities.Contains(AbilityLibrary.abilityDict[newAbility]))
-            {
-                knownAbilities.Add(AbilityLibrary.abilityDict[newAbility]);
-            }
-            SetKnownAbilities_Save();
-        }
+        //if (AbilityLibrary.abilityDict.ContainsKey(newAbility))
+        //{
+        //    if (!knownAbilities.Contains(AbilityLibrary.abilityDict[newAbility]))
+        //    {
+        knownAbilities.Add(AbilityLibrary.abilityDict[newAbility]);
+        //        Debug.Log($"{newAbility} added to your known abilities list");
+        //    }
+        //    //SetKnownAbilities_Save();
+        //}
+        //else Debug.Log($"{newAbility} does not exist in the AbilityLibrary and can therefore not be added to your known abilities list");
 
     }
     #region // inventory
@@ -799,9 +801,7 @@ public class StatsHandler : MonoBehaviour
         MaxXp = 30;
         rewards = new List<Rewards>();
         characterGold = 100;
-        LearnAbility(Abilities.Melee);
-        LearnAbility(Abilities.HealingTouch);
-        LearnAbility(Abilities.Fireball);
+
 
 
         return gameObject;
@@ -817,7 +817,12 @@ public class StatsHandler : MonoBehaviour
         ManaRegen = scaleFactor;
         StaminaRegen = scaleFactor;
         characterLevel = scaleFactor;
-        knownAbilities = AbilityLibrary.GetAbilities(scaleFactor);
+        foreach (Ability_SO ability in AbilityLibrary.GetAbilities(scaleFactor))
+        {
+            Debug.Log($"abilities to add: {AbilityLibrary.GetAbilities(scaleFactor).Count}");
+            knownAbilities.Add(ability);
+            Debug.Log($"known abilities ; {knownAbilities.Count}");
+        }
     }
 
     private Elements GetRandomCreatureElement()

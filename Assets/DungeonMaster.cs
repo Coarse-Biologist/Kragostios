@@ -46,9 +46,9 @@ public class DungeonMaster : MonoBehaviour
     #region // SetUp
     private void Awake()
     {
-        root = UIDocument.rootVisualElement;
+        AbilityLibrary.SetAbilityDict();
         AbilityLibrary.LoadAbilities(AbilityLibrary.allAddresses, AbilityLibrary.allAbilities);
-        Player = MakePlayer();
+        root = UIDocument.rootVisualElement;
         // Initialize component references
         playerOptions = GetComponent<PlayerOptions>();
         EquipmentHandler.placeHolderItem = emptyItem;
@@ -57,10 +57,13 @@ public class DungeonMaster : MonoBehaviour
         travel = GetComponent<TravelScript>();
         combat = GetComponent<CombatFlow>();
         inventory = GetComponent<Inventory>();
+
+
     }
     private void Start()
     {
         WorldChest.LoadItems(WorldChest.allAddresses);
+        Quests.Setup();
 
         CharacterCreation();
     }
@@ -239,6 +242,7 @@ public class DungeonMaster : MonoBehaviour
     private void HandleCombatEnd()
     {
         HandleLoot();
+        Quests.IncrementIntQuests(Quests.QuestName.DefeatEnemies, enemyCombatantTuple.Count);
         List<Directions> directions = map.directions;
         Invoke("ShowMainMenu", 5);
     }
@@ -302,7 +306,6 @@ public class DungeonMaster : MonoBehaviour
             foreach (Item_SO item in items)
             {
                 narrator.DisplayNarrationText($"{playerStats.characterName} looted {item.ItemName}!");
-                //playerStats.AddToInventory(item);
             }
         }
     }
@@ -318,7 +321,7 @@ public class DungeonMaster : MonoBehaviour
         Kingdoms kingdom = map.GetKingdom(playerLocation);
         Biomes biome = map.GetBiome(playerLocation);
         narrator.DisplayNarrationText($"You are in the kingdom: {kingdom}. The surrounding biome is: {biome}");
-        locationType = LocationType.Trader;
+        locationType = LocationType.Hostile;
         KDebug.SeekBug(playerStats.GetInventoryString());
 
         switch (locationType)
@@ -395,6 +398,7 @@ public class DungeonMaster : MonoBehaviour
         List<Directions> directions = map.directions;
         playerOptions.SpawnDirectionOptions(directions);
         playerOptions.DisplayLoadAndSaveButtons(playerStats, map, travel);
+        DisplayNarration(Quests.GetCurrentQuestString());
     }
 
     #endregion
@@ -430,6 +434,7 @@ public class DungeonMaster : MonoBehaviour
     #region // char creation
     private void CharacterCreation()
     {
+        Player = MakePlayer();
         playerOptions.DisplayCharacterCreationScreen(playerStats);
     }
     private void HandleStatIncremented(string stat)
@@ -549,6 +554,9 @@ public class DungeonMaster : MonoBehaviour
         List<Directions> directions = map.directions;
         playerOptions.ClearCharCreation();
         playerOptions.ShowCombatScreen();
+        playerStats.LearnAbility(AbilityEnums.Abilities.Melee);
+        playerStats.LearnAbility(AbilityEnums.Abilities.HealingTouch);
+        playerStats.LearnAbility(AbilityEnums.Abilities.Melee);
         ShowMainMenu();
 
     }

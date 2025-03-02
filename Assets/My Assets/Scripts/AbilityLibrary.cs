@@ -49,6 +49,7 @@ public static class AbilityLibrary
         //adds melee by default if empty
         if (abilities.Count == 0)
         {
+            Debug.Log($"combatant had 0 abilities and will therfore be given an complimentary main hand attack.");
             abilities.Add(Melee);
         }
         return abilities;
@@ -58,8 +59,9 @@ public static class AbilityLibrary
     {
         foreach (Ability_SO ability in allAbilities)
         {
-            abilityDict.Add(ability.AbilityEnum, ability);
-            reverseAbilityDict.Add(ability, ability.AbilityEnum);
+            abilityDict.TryAdd(ability.AbilityEnum, ability);
+            reverseAbilityDict.TryAdd(ability, ability.AbilityEnum);
+            Debug.Log($"Adding {ability.AbilityName} to dicts");
         }
     }
     // returns a string describing the ability
@@ -90,6 +92,7 @@ public static class AbilityLibrary
         if (abilityEnum != Abilities.None)
         {
             abilityDict.Add(abilityEnum, loadedSO);
+            Debug.Log($"enum {abilityEnum} added with the value {loadedSO.AbilityName}");
             reverseAbilityDict.Add(loadedSO, abilityEnum);
         }
         else Debug.Log("oops those had no Ability Enum and couldnt be added to the dicts");
@@ -117,6 +120,7 @@ public static class AbilityLibrary
                     Debug.LogError($"Failed to load ScriptableObject at address: {address}");
                 }
             };
+            SetAbilityDict();
 
         }
 

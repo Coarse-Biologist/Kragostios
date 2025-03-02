@@ -5,6 +5,7 @@ using System.Linq;
 
 public static class Quests
 {
+    #region class vars
     public static Dictionary<QuestName, bool> BoolAccomplishments;
     public static Dictionary<QuestName, int> IntAccomplishments;
     public static List<QuestName> boolQuests;
@@ -12,6 +13,10 @@ public static class Quests
     public static List<QuestName> questOrder = new List<QuestName> { QuestName.DefeatEnemies };
     public static Dictionary<QuestName, ValueTuple<List<QuestName>, Dictionary<QuestName, int>>> RequisiteDict;
     public static List<ValueTuple<QuestName, int>> QuestsInOrder = new List<ValueTuple<QuestName, int>>();
+
+    public static Dictionary<QuestName, string> QuestStringDict = new Dictionary<QuestName, string>();
+
+    #endregion
 
     //track progress method. stores and sets progress in different skillsand knowledges
 
@@ -21,7 +26,7 @@ public static class Quests
 
     // when should i check whether a quest is complete?
 
-    public static void SetOrderOfQuests()
+    public static void SetStartOrderOfQuests()
     {
         QuestsInOrder = new List<ValueTuple<QuestName, int>>()
         {
@@ -34,26 +39,39 @@ public static class Quests
             (QuestName.LearnGlassMaking, 1)
 
         };
-
-
     }
-
-    public static string PresentQuest_DefeatEnemies()
+    public static void Setup()
     {
-        string questIntro = "";
-        return questIntro;
+        SetStartOrderOfQuests();
+        SetQuestStringDict();
     }
 
+    public static void SetQuestStringDict()
+    {
+        string defeatEnemiesString = "You've spent long enough watching these horrible monsters from afar, and have witnessed enough death and suffering while you peered on from a distance. You may be able to understand better if you can get a closer look. To inspect monsters up close... you'll probably have to kill some.";
 
+        QuestStringDict.Add(QuestName.DefeatEnemies, defeatEnemiesString);
+
+        string examineBodiesString = "$Button$ Examine the bodies.$ What is wrong with these things?! Once you get over the smell and disgust, you should take a closer look.";
+
+        QuestStringDict.Add(QuestName.ExamineBodies, examineBodiesString);
+    }
+
+    public static string GetCurrentQuestString()
+    {
+        QuestName currentQuest = QuestsInOrder[0].Item1;
+        QuestStringDict.TryGetValue(currentQuest, out string questString);
+        return questString;
+    }
 
 
     public static void IncrementIntQuests(QuestName quest, int increments = 1)
     {
-
         if (IntAccomplishments.TryGetValue(quest, out int num))
         {
             IntAccomplishments[quest] += increments;
         }
+        Debug.Log($"Quest: {quest} accomplishment value increased by {increments}!");
     }
 
     public static void CompleteQuest(QuestName quest)

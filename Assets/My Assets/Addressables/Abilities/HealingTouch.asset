@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: HealingTouch
   m_EditorClassIdentifier: 
   abilityName: Healing Touch
+  abilityEnum: 3
   description: Heals target
   resource: 1
   type: 0
