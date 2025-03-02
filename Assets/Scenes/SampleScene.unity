@@ -630,7 +630,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dce1948cf3d80a44ba531f786ebf76cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapSize: 15
+  mapSize: 60
   hostileDensity: 1
   traderDensity: 1
   cityDensity: 1
@@ -640,6 +640,8 @@ MonoBehaviour:
   impassableTerrainDensity: 1
   healerDensity: 1
   barrenDensity: 1
+  BiomeIterations: 60
+  KingdomIterations: 60
 --- !u!114 &1889742914
 MonoBehaviour:
   m_ObjectHideFlags: 0

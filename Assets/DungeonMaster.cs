@@ -313,7 +313,7 @@ public class DungeonMaster : MonoBehaviour
     public void HandlePlayerTraveled(Directions direction)
     {
         travel.TravelInDirection(direction);
-        Vector2 playerLocation = travel.playerLocation;
+        Vector2Int playerLocation = travel.playerLocation;
         LocationType locationType = map.GetLocationType(playerLocation);
         Kingdoms kingdom = map.GetKingdom(playerLocation);
         Biomes biome = map.GetBiome(playerLocation);

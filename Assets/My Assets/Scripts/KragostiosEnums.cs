@@ -162,7 +162,10 @@ namespace KragostiosAllEnums
         Glaciers,
         EverGreenForest,
         PerenialForest,
-        Desert
+        Desert,
+        River,
+        VolcanicTerritory,
+
     }
 
     public enum Buffs

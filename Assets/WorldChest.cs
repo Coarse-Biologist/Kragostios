@@ -30,7 +30,7 @@ public static class WorldChest
                     {
                         allItems.Add(loadedSO.ItemName, loadedSO);
 
-                        Debug.Log($"Loaded: {address} which has name {loadedSO.ItemName} -----");
+                        //Debug.Log($"Loaded: {address} which has name {loadedSO.ItemName} -----");
                     }
                     if (!allItemsList.Contains(loadedSO))
                     {
@@ -54,12 +54,12 @@ public static class WorldChest
     {
         if (allItems.TryGetValue(itemName, out Item_SO item))
         {
-            Debug.Log($"{itemName} has return item: {item}");
+            //Debug.Log($"{itemName} has return item: {item}");
             return item;
         }
         else
         {
-            Debug.Log($"item: {itemName} not in allItems dict");
+            //Debug.Log($"item: {itemName} not in allItems dict");
             return null;
         }
     }
