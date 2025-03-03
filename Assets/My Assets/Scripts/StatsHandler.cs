@@ -807,7 +807,7 @@ public class StatsHandler : MonoBehaviour
         return gameObject;
 
     }
-    private void AlterStats(int scaleFactor, Combatants combatantType, Difficulty difficultyLevel)
+    private void AlterStats(int scaleFactor, Combatants combatantType, Difficulty difficultyLevel, Elements element)
     {
         MaxHealth = UnityEngine.Random.Range(1, 10) * scaleFactor;
         MaxMana = UnityEngine.Random.Range(1, 10) * scaleFactor;
@@ -817,12 +817,16 @@ public class StatsHandler : MonoBehaviour
         ManaRegen = scaleFactor;
         StaminaRegen = scaleFactor;
         characterLevel = scaleFactor;
-        foreach (Ability_SO ability in AbilityLibrary.GetAbilities(scaleFactor))
+        foreach (Abilities ability in AbilityLibrary.GetAbilities(scaleFactor, element))
         {
-            Debug.Log($"abilities to add: {AbilityLibrary.GetAbilities(scaleFactor).Count}");
-            //LearnAbility(Abilities.Melee); // bug?
+            Debug.Log($"abilities to add: {ability}");
+
             LearnAbility(Abilities.Melee);
-            //knownAbilities.Add(ability);
+            if (AbilityLibrary.reverseAbilityDict != null && AbilityLibrary.allAbilities.Contains(AbilityLibrary.abilityDict[ability]))
+            {
+                LearnAbility(ability);
+            }
+            else Debug.Log("either the reverse dict doesnt exist or it doesnt contain the ability given");
             Debug.Log($"known abilities ; {knownAbilities.Count}");
         }
     }
@@ -1004,11 +1008,12 @@ public class StatsHandler : MonoBehaviour
     {
         Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel}");
         difficulty = difficultyLevel;
+        Elements element = Elements.None;
         switch (combatantType)
         {
             case Combatants.Enemy:
                 charType = Combatants.Enemy;
-                Elements element = GetRandomCreatureElement();
+                element = GetRandomCreatureElement();
                 characterName = GetElementRelatedName(element, difficultyLevel);
                 SetCreatureAffinities(element, difficultyLevel);
                 break;
@@ -1026,24 +1031,24 @@ public class StatsHandler : MonoBehaviour
         {
             case Difficulty.Easy:
 
-                AlterStats(easyScaleFactor, combatantType, difficultyLevel);
+                AlterStats(easyScaleFactor, combatantType, difficultyLevel, element);
                 break;
 
             case Difficulty.Medium:
-                AlterStats(mediumScaleFactor, combatantType, difficultyLevel);
+                AlterStats(mediumScaleFactor, combatantType, difficultyLevel, element);
 
 
                 break;
             case Difficulty.Hard:
-                AlterStats(hardScaleFactor, combatantType, difficultyLevel);
+                AlterStats(hardScaleFactor, combatantType, difficultyLevel, element);
                 break;
 
             case Difficulty.Brutal:
-                AlterStats(brutalScaleFactor, combatantType, difficultyLevel);
+                AlterStats(brutalScaleFactor, combatantType, difficultyLevel, element);
                 break;
 
             case Difficulty.Nightmare:
-                AlterStats(nightmareScaleFactor, combatantType, difficultyLevel);
+                AlterStats(nightmareScaleFactor, combatantType, difficultyLevel, element);
                 break;
 
         }
