@@ -614,16 +614,16 @@ public class StatsHandler : MonoBehaviour
     }
     public void LearnAbility(Abilities newAbility)
     {
-        //if (AbilityLibrary.abilityDict.ContainsKey(newAbility))
-        //{
-        //    if (!knownAbilities.Contains(AbilityLibrary.abilityDict[newAbility]))
-        //    {
-        knownAbilities.Add(AbilityLibrary.abilityDict[newAbility]);
-        //        Debug.Log($"{newAbility} added to your known abilities list");
-        //    }
-        //    //SetKnownAbilities_Save();
-        //}
-        //else Debug.Log($"{newAbility} does not exist in the AbilityLibrary and can therefore not be added to your known abilities list");
+        if (AbilityLibrary.abilityDict.ContainsKey(newAbility))
+        {
+            if (!knownAbilities.Contains(AbilityLibrary.abilityDict[newAbility]))
+            {
+                knownAbilities.Add(AbilityLibrary.abilityDict[newAbility]);
+                Debug.Log($"{newAbility} added to your known abilities list");
+            }
+            //SetKnownAbilities_Save();
+        }
+        else Debug.Log($"{newAbility} does not exist in the AbilityLibrary and can therefore not be added to your known abilities list");
 
     }
     #region // inventory
@@ -820,7 +820,9 @@ public class StatsHandler : MonoBehaviour
         foreach (Ability_SO ability in AbilityLibrary.GetAbilities(scaleFactor))
         {
             Debug.Log($"abilities to add: {AbilityLibrary.GetAbilities(scaleFactor).Count}");
-            knownAbilities.Add(ability);
+            //LearnAbility(Abilities.Melee); // bug?
+            LearnAbility(Abilities.Melee);
+            //knownAbilities.Add(ability);
             Debug.Log($"known abilities ; {knownAbilities.Count}");
         }
     }

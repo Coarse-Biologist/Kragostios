@@ -42,6 +42,7 @@ public static class AbilityLibrary
                 if (UnityEngine.Random.Range(0, 1) > .5)
                 {
                     abilities.Add(kvp.Value);
+                    Debug.Log($"Adding ability {kvp.Value}");
                 }
             }
         }
@@ -49,7 +50,7 @@ public static class AbilityLibrary
         //adds melee by default if empty
         if (abilities.Count == 0)
         {
-            Debug.Log($"combatant had 0 abilities and will therfore be given an complimentary main hand attack.");
+            Debug.Log($"combatant had 0 abilities and will therfore be given a complimentary main hand attack.");
             abilities.Add(Melee);
         }
         return abilities;
@@ -120,7 +121,7 @@ public static class AbilityLibrary
                     Debug.LogError($"Failed to load ScriptableObject at address: {address}");
                 }
             };
-            SetAbilityDict();
+            //SetAbilityDict();
 
         }
 

@@ -554,7 +554,7 @@ public class DungeonMaster : MonoBehaviour
         List<Directions> directions = map.directions;
         playerOptions.ClearCharCreation();
         playerOptions.ShowCombatScreen();
-        playerStats.LearnAbility(AbilityEnums.Abilities.Melee);
+        playerStats.LearnAbility(AbilityEnums.Abilities.Fireball);
         playerStats.LearnAbility(AbilityEnums.Abilities.HealingTouch);
         playerStats.LearnAbility(AbilityEnums.Abilities.Melee);
         ShowMainMenu();

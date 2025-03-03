@@ -6,8 +6,8 @@ using System.Linq;
 public static class Quests
 {
     #region class vars
-    public static Dictionary<QuestName, bool> BoolAccomplishments;
-    public static Dictionary<QuestName, int> IntAccomplishments;
+    public static Dictionary<QuestName, bool> BoolAccomplishments = new Dictionary<QuestName, bool>();
+    public static Dictionary<QuestName, int> IntAccomplishments = new Dictionary<QuestName, int>();
     public static List<QuestName> boolQuests;
     public static List<QuestName> repeatableQuests;
     public static List<QuestName> questOrder = new List<QuestName> { QuestName.DefeatEnemies };
@@ -71,6 +71,7 @@ public static class Quests
         {
             IntAccomplishments[quest] += increments;
         }
+        else IntAccomplishments.Add(quest, increments);
         Debug.Log($"Quest: {quest} accomplishment value increased by {increments}!");
     }
 
@@ -80,6 +81,7 @@ public static class Quests
         {
             BoolAccomplishments[quest] = true;
         }
+        else BoolAccomplishments.Add(quest, true);
     }
 
     public static bool CheckQualification(QuestName questName)
