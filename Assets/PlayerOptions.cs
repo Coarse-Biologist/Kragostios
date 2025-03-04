@@ -248,6 +248,8 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_AO.style.display = DisplayStyle.Flex;
         buttonContainer_CO.style.display = DisplayStyle.Flex;
         narratorWindow.style.display = DisplayStyle.Flex;
+        //narratorWindow.style.width = new Length(50, LengthUnit.Percent);
+
 
     }
 

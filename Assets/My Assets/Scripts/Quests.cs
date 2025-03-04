@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using KragostiosAllEnums;
 
 public static class Quests
 {
@@ -15,6 +16,9 @@ public static class Quests
     public static List<ValueTuple<QuestName, int>> QuestsInOrder = new List<ValueTuple<QuestName, int>>();
 
     public static Dictionary<QuestName, string> QuestStringDict = new Dictionary<QuestName, string>();
+
+    public static Dictionary<QuestName, LocationType> QuestLocationDict = new Dictionary<QuestName, LocationType>();
+    public static Dictionary<QuestName, Biomes> QuestBiomeDict = new Dictionary<QuestName, Biomes>();
 
     #endregion
 
@@ -35,8 +39,14 @@ public static class Quests
             (QuestName.AttemptCoreExtraction, 1),
             (QuestName.FindAKnife, 1),
             (QuestName.ExamineCores, 5),
-            (QuestName.PracticalExperiments, 1 ),
-            (QuestName.LearnGlassMaking, 1)
+            (QuestName.PracticalExperiments, 3),
+            (QuestName.LearnGlassMaking, 1),
+            (QuestName.CollectFireCores, 5),
+            (QuestName.MakeFurnace, 5),
+            (QuestName.CollectSand, 1),
+            (QuestName.MakeGlass, 5),
+            (QuestName.UseCores, 5),
+            (QuestName.AttemptPurifications, 5),
 
         };
     }
@@ -56,12 +66,55 @@ public static class Quests
 
         QuestStringDict.Add(QuestName.ExamineBodies, examineBodiesString);
     }
+    public static void SetQuestLocationDict()
+    {
+        QuestLocationDict = new Dictionary<QuestName, LocationType>
+        {
+            {QuestName.DefeatEnemies, LocationType.Hostile},
+            {QuestName.ExamineBodies, LocationType.Hostile},
+            {QuestName.AttemptCoreExtraction, LocationType.Hostile},
+            {QuestName.FindAKnife, LocationType.Trader},
+            {QuestName.ExamineCores, LocationType.Hostile},
+            {QuestName.PracticalExperiments, LocationType.Campsite},
+            {QuestName.LearnGlassMaking, LocationType.Trader},
+            {QuestName.CollectFireCores, LocationType.Hostile},
+            {QuestName.MakeFurnace, LocationType.Campsite},
+            {QuestName.CollectSand, LocationType.Trader},
+            {QuestName.MakeGlass, LocationType.Campsite},
+            {QuestName.UseCores, LocationType.Hostile},
+            {QuestName.AttemptPurifications, LocationType.Campsite},
+
+        };
+
+    }
+
+    public static void SetQuestBiomeDict()
+    {
+        QuestBiomeDict = new Dictionary<QuestName, Biomes>
+        {
+
+            {QuestName.CollectSand, Biomes.Desert},
+        };
+
+    }
+
 
     public static string GetCurrentQuestString()
     {
         QuestName currentQuest = QuestsInOrder[0].Item1;
         QuestStringDict.TryGetValue(currentQuest, out string questString);
         return questString;
+    }
+
+    public static void RemoveQuestFromOrderDict(QuestName quest)
+    {
+        foreach (ValueTuple<QuestName, int> touplee in QuestsInOrder)
+        {
+            if (touplee.Item1 == quest)
+            {
+                QuestsInOrder.Remove(touplee);
+            }
+        }
     }
 
 
@@ -75,38 +128,17 @@ public static class Quests
         Debug.Log($"Quest: {quest} accomplishment value increased by {increments}!");
     }
 
-    public static void CompleteQuest(QuestName quest)
+    public static void CompleteBoolQuest(QuestName quest)
     {
         if (BoolAccomplishments.TryGetValue(quest, out bool complete))
         {
             BoolAccomplishments[quest] = true;
+            Debug.Log($"Quest: {quest} has been completed!");
         }
         else BoolAccomplishments.Add(quest, true);
     }
 
-    public static bool CheckQualification(QuestName questName)
-    {
-        bool qualified = false;
-        if (boolQuests.Contains(questName))
-        {
-            if (BoolAccomplishments[questName] == true)
-            {
-                qualified = true;
-            }
-            else return false;
-        }
-        else if (repeatableQuests.Contains(questName))
-        {
-            if (BoolAccomplishments[questName] == true)
-            {
-                qualified = true;
-            }
-            else return false;
-        }
 
-
-        return qualified;
-    }
     public enum Skills
     {
         Welding,
@@ -124,6 +156,11 @@ public static class Quests
         FindAKnife,
         ExamineCores,
         PracticalExperiments, // this will be a step in which the player is asked to use cores and attempt purification
+        LearnGlassMaking,
+        CollectFireCores,
+        MakeFurnace,
+        CollectSand,
+        MakeGlass,
         UseCores,
         AttemptPurifications,
         UsePotions,
@@ -131,7 +168,6 @@ public static class Quests
         UseHealAbilities,
         PerformCoreExtraction,
         PerformEtherPurification,
-        LearnGlassMaking,
         LearnWelding,
         LearnSewing,
         LearnAlchemy,
@@ -168,3 +204,27 @@ public static class Quests
 //
 //
 //}
+
+//public static bool CheckQualification(QuestName questName)
+//{
+//    bool qualified = false;
+//    if (boolQuests.Contains(questName))
+//    {
+//        if (BoolAccomplishments[questName] == true)
+//        {
+//            qualified = true;
+//        }
+//        else return false;
+//    }
+//    else if (repeatableQuests.Contains(questName))
+//    {
+//        if (BoolAccomplishments[questName] == true)
+//        {
+//            qualified = true;
+//        }
+//        else return false;
+//    }
+//}
+//
+//    return qualified;
+// Tuple<string, LocationType> 
