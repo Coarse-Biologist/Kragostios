@@ -27,7 +27,7 @@ namespace KragostiosAllEnums
 
     public enum LocationType
     {
-        Barren,
+        None,
         Hostile,
         City,
         Village,

@@ -16,8 +16,6 @@ public class DungeonMaster : MonoBehaviour
     [Header("UI Interface")]
     [SerializeField] UIDocument UIDocument;
     private VisualElement root;
-    private VisualElement narratorWindow;
-    private Label narratorText;
 
     [Header("scripts")]
     private PlayerOptions playerOptions;
@@ -366,7 +364,7 @@ public class DungeonMaster : MonoBehaviour
                 ShowMainMenu();
                 break;
 
-            case LocationType.Barren:
+            case LocationType.None:
                 narrator.DisplayNarrationText("You find yourself in a rather barren wasteland. Nothing but dry futility for you here. It is likely time to journey on.");
                 ShowMainMenu();
                 break;
@@ -545,6 +543,7 @@ public class DungeonMaster : MonoBehaviour
 
     }
     #endregion
+
     #region // Character Creation Complete
     private void CharacterCreationComplete()
     {
@@ -560,6 +559,14 @@ public class DungeonMaster : MonoBehaviour
         ShowMainMenu();
 
     }
+    #endregion
+
+    #region handle story
+    private void PresentPrologue()
+    {
+
+    }
+
     #endregion
 
     private void LoadAllData()

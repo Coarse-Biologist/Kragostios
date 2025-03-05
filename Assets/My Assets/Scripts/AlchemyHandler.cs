@@ -5,6 +5,7 @@ using KragostiosAllEnums;
 using System.Linq;
 using System;
 using System.Runtime.CompilerServices;
+using System.Globalization;
 
 [CreateAssetMenu(fileName = "Item", menuName = "CrewObject/ Item")]
 public class Ether_SO : ScriptableObject
@@ -23,6 +24,8 @@ public static class AlchemyHandler
     public static Dictionary<AlchemyTools, bool> AvailableTools { private set; get; } = new Dictionary<AlchemyTools, bool>();
     public static Dictionary<Ether_SO, int> PlayerEther { private set; get; } = new Dictionary<Ether_SO, int> { };
     public static Dictionary<Elements, int> KnowledgeDict { private set; get; } = new Dictionary<Elements, int>();
+    public static Dictionary<Elements, int> ElementalCoresDict { private set; get; } = new Dictionary<Elements, int>();
+
 
 
     #endregion
@@ -35,10 +38,7 @@ public static class AlchemyHandler
     // set player to have inventory of 0 pure and 0 impure ether, but containing the objects
 
     #region alchemy functions
-    public static List<T> GetAllEnums<T>() where T : Enum
-    {
-        return Enum.GetValues(typeof(T)).Cast<T>().ToList();
-    }
+
     private static int GetNumToolsKnown()
     {
         int toolsKnown = 0;
@@ -62,6 +62,17 @@ public static class AlchemyHandler
         KnowledgeDict[element] += knowledgeGain;
         return $"You have gained {knowledgeGain} knowledge.";
     }
+    public static void AlterCoreAmount(Elements element, int num = 1)
+    {
+        bool hasCores = ElementalCoresDict.TryGetValue(element, out int coresOwned);
+        if (hasCores)
+        {
+            if (coresOwned + num > 0) ElementalCoresDict[element] += num;
+        }
+        else if (num > 0) ElementalCoresDict.Add(element, num);
+        Debug.Log($"Player now has {coresOwned} cores of type {element}");
+    }
+
     private static string AttemptPurification(Ether_SO ether)
     {
         string result = "";
@@ -108,5 +119,6 @@ public static class AlchemyHandler
 }
 
 // playerEther must be replaced with non-scriptable object data types
+
 
 

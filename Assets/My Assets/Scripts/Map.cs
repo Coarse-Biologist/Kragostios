@@ -109,7 +109,7 @@ public class Map : MonoBehaviour
         {LocationType.Campsite, campsiteDensity},
         {LocationType.ImpassableTerrain, impassableTerrainDensity},
         {LocationType.Healer, healerDensity},
-        {LocationType.Barren, barrenDensity}
+        {LocationType.None, barrenDensity}
     };
         return LocationDensityDict;
     }
@@ -158,7 +158,7 @@ public class Map : MonoBehaviour
             else return LocationType.EdgeOfTheWorld;
 
         }
-        else return LocationType.Barren;
+        else return LocationType.None;
     }
 
 
@@ -229,21 +229,17 @@ public class Map : MonoBehaviour
 
     private Biomes GetRandomBiome()
     {
-        biomesList = GetAllEnums<Biomes>();
+        biomesList = GeneralFunctions.GetAllEnums<Biomes>();
         int biomeNum = biomesList.Count;
         int randomBiomeIndex = UnityEngine.Random.Range(0, biomeNum - 1);
         Biomes randomBiome = biomesList[randomBiomeIndex];
         return randomBiome;
     }
 
-    public static List<T> GetAllEnums<T>() where T : Enum
-    {
-        return Enum.GetValues(typeof(T)).Cast<T>().ToList();
-    }
 
     private Dictionary<Vector2Int, Kingdoms> KingdomStartPoints()
     {
-        List<Kingdoms> domainType = GetAllEnums<Kingdoms>();
+        List<Kingdoms> domainType = GeneralFunctions.GetAllEnums<Kingdoms>();
         kingdomMapDict = new Dictionary<Vector2Int, Kingdoms>();
 
         // Store the keys from mapDict into a list once for efficiency
@@ -350,7 +346,7 @@ public class Map : MonoBehaviour
     }
     private Dictionary<Vector2Int, Biomes> BiomeStartPoints()
     {
-        List<Biomes> domainType = GetAllEnums<Biomes>(); // gets list of all biomes
+        List<Biomes> domainType = GeneralFunctions.GetAllEnums<Biomes>(); // gets list of all biomes
         //Debug.Log($"Domain types is {domainType.Count} long");
         for (int i = 0; i < BiomeNumber; i++)
         {

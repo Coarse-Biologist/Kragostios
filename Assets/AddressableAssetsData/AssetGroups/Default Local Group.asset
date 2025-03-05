@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1301dc9788c291a4f91a285a2ba9a928
+    m_Address: Assets/My Assets/Addressables/Quests/Prologue.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1e41466a68556ff469ecac4f8ce32688
     m_Address: Assets/My Assets/Addressables/Items/Sword 5.asset
     m_ReadOnly: 0
@@ -32,6 +37,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1f90b3517e98f6340b6e573c443368ef
     m_Address: Assets/My Assets/Addressables/Items/PlaceHolder.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28762240e03beb34581a395ae35c82b7
+    m_Address: Assets/My Assets/Addressables/Quests/AcquireWeapon.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -50,6 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48e58fc45361c214dbb5fb1bea41b37f
+    m_Address: Assets/My Assets/Addressables/Quests/DefeatEnemies.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56d1b22e67f7f0040887ef997c5ec5cf
     m_Address: Assets/My Assets/Addressables/Items/Sword 2.asset
     m_ReadOnly: 0
@@ -62,6 +77,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6aae2fdb4ad0d3a498f59b10581184c6
     m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bd65ef54caeb79418c45203aa830c7b
+    m_Address: Assets/My Assets/Addressables/Quests/ExamineBodies.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70bc407a59d4c5940af8d7aef7f9df5a
+    m_Address: Assets/My Assets/Addressables/Quests/AttemptCoreExtraction.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7471c918db5a47647af10e64b68032f6
+    m_Address: Assets/My Assets/Addressables/Quests/ExamineCores.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -127,6 +157,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e3682d3b773b518409e00476831aaa8b
     m_Address: Assets/My Assets/Addressables/Abilities/DivineSmite.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8986061ed58af6489fcef2d6f9091c6
+    m_Address: Assets/My Assets/Addressables/Quests/LearnGlassMaking.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0674225b5a7cd94992ba758705ae82a, type: 3}
+  m_Name: ExamineBodies
+  m_EditorClassIdentifier: 
+  Name: Examine fallen enemies.
+  Repeatable: 1
+  LocationIndependent: 1
+  QuestEnum: 1
+  Kingdom: 0
+  StartLocation: 1
+  CompletionLocation: 1
+  Biome: 0
+  StartString: 
+  ProgressString: 
+  CompletionString: 
+  XP_Reward: 0
+  ItemReward: {fileID: 11400000, guid: 1f90b3517e98f6340b6e573c443368ef, type: 2}
+  GoldReward: 1

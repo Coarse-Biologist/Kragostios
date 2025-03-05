@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor.Build.Pipeline;
 using AbilityEnums;
+using System;
+using System.Linq;
+
 
 
 public static class GeneralFunctions
@@ -42,6 +45,11 @@ public static class GeneralFunctions
             }
         }
         return abilityEnum;
+    }
+
+    public static List<T> GetAllEnums<T>() where T : Enum
+    {
+        return Enum.GetValues(typeof(T)).Cast<T>().ToList();
     }
 
 

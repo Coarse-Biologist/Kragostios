@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using KragostiosAllEnums;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public static class Quests
 {
     #region class vars
     public static Dictionary<QuestName, bool> BoolAccomplishments = new Dictionary<QuestName, bool>();
     public static Dictionary<QuestName, int> IntAccomplishments = new Dictionary<QuestName, int>();
-    public static List<QuestName> boolQuests;
-    public static List<QuestName> repeatableQuests;
+    public static List<QuestName> boolQuests = new List<QuestName>();
+    public static List<QuestName> repeatableQuests = new List<QuestName>();
     public static List<QuestName> questOrder = new List<QuestName> { QuestName.DefeatEnemies };
     public static Dictionary<QuestName, ValueTuple<List<QuestName>, Dictionary<QuestName, int>>> RequisiteDict;
     public static List<ValueTuple<QuestName, int>> QuestsInOrder = new List<ValueTuple<QuestName, int>>();
@@ -19,6 +21,8 @@ public static class Quests
 
     public static Dictionary<QuestName, LocationType> QuestLocationDict = new Dictionary<QuestName, LocationType>();
     public static Dictionary<QuestName, Biomes> QuestBiomeDict = new Dictionary<QuestName, Biomes>();
+
+    public static List<Quest_SO> AllQuest_SOs = new List<Quest_SO>();
 
     #endregion
 
@@ -37,66 +41,37 @@ public static class Quests
             (QuestName.DefeatEnemies, 3),
             (QuestName.ExamineBodies, 5),
             (QuestName.AttemptCoreExtraction, 1),
-            (QuestName.FindAKnife, 1),
-            (QuestName.ExamineCores, 5),
-            (QuestName.PracticalExperiments, 3),
-            (QuestName.LearnGlassMaking, 1),
-            (QuestName.CollectFireCores, 5),
-            (QuestName.MakeFurnace, 5),
-            (QuestName.CollectSand, 1),
-            (QuestName.MakeGlass, 5),
-            (QuestName.UseCores, 5),
-            (QuestName.AttemptPurifications, 5),
+            (QuestName.AcquireWeapon, 1),
+            //(QuestName.ExamineCores, 5),
+            //(QuestName.PracticalExperiments, 3),
+            //(QuestName.LearnGlassMaking, 1),
+            //(QuestName.CollectFireCores, 5),
+            //(QuestName.MakeFurnace, 5),
+            //(QuestName.CollectSand, 1),
+            //(QuestName.MakeGlass, 1),
+            //(QuestName.UseCores, 5),
+            //(QuestName.AttemptPurifications, 5),
 
         };
     }
     public static void Setup()
     {
+        LoadAllQuest_Sos(AllQuest_SOs);
         SetStartOrderOfQuests();
         SetQuestStringDict();
     }
 
     public static void SetQuestStringDict()
     {
-        string defeatEnemiesString = "You've spent long enough watching these horrible monsters from afar, and have witnessed enough death and suffering while you peered on from a distance. You may be able to understand better if you can get a closer look. To inspect monsters up close... you'll probably have to kill some.";
+        //string defeatEnemiesString = "You've spent long enough watching these horrible monsters from afar, and have witnessed enough death and suffering while you peered on from a distance. You may be able to understand better if you can get a closer look. To inspect monsters up close... you'll probably have to kill some.";
+        //
+        //QuestStringDict.Add(QuestName.DefeatEnemies, defeatEnemiesString);
+        //
+        //string examineBodiesString = "$Button$ Examine the bodies.$ What is wrong with these things?! Once you get over the smell and disgust, you should take a closer look.";
 
-        QuestStringDict.Add(QuestName.DefeatEnemies, defeatEnemiesString);
-
-        string examineBodiesString = "$Button$ Examine the bodies.$ What is wrong with these things?! Once you get over the smell and disgust, you should take a closer look.";
-
-        QuestStringDict.Add(QuestName.ExamineBodies, examineBodiesString);
-    }
-    public static void SetQuestLocationDict()
-    {
-        QuestLocationDict = new Dictionary<QuestName, LocationType>
-        {
-            {QuestName.DefeatEnemies, LocationType.Hostile},
-            {QuestName.ExamineBodies, LocationType.Hostile},
-            {QuestName.AttemptCoreExtraction, LocationType.Hostile},
-            {QuestName.FindAKnife, LocationType.Trader},
-            {QuestName.ExamineCores, LocationType.Hostile},
-            {QuestName.PracticalExperiments, LocationType.Campsite},
-            {QuestName.LearnGlassMaking, LocationType.Trader},
-            {QuestName.CollectFireCores, LocationType.Hostile},
-            {QuestName.MakeFurnace, LocationType.Campsite},
-            {QuestName.CollectSand, LocationType.Trader},
-            {QuestName.MakeGlass, LocationType.Campsite},
-            {QuestName.UseCores, LocationType.Hostile},
-            {QuestName.AttemptPurifications, LocationType.Campsite},
-
-        };
-
+        //QuestStringDict.Add(QuestName.ExamineBodies, examineBodiesString);
     }
 
-    public static void SetQuestBiomeDict()
-    {
-        QuestBiomeDict = new Dictionary<QuestName, Biomes>
-        {
-
-            {QuestName.CollectSand, Biomes.Desert},
-        };
-
-    }
 
 
     public static string GetCurrentQuestString()
@@ -105,7 +80,17 @@ public static class Quests
         QuestStringDict.TryGetValue(currentQuest, out string questString);
         return questString;
     }
+    public static Quest_SO GetQuest_SO(QuestName questname)
+    {
+        Quest_SO soughtQuest = null;
+        foreach (Quest_SO quest in AllQuest_SOs)
+        {
+            if (quest.QuestEnum == questname) soughtQuest = quest;
+        }
+        return soughtQuest;
 
+    }
+    #region progress on quests
     public static void RemoveQuestFromOrderDict(QuestName quest)
     {
         foreach (ValueTuple<QuestName, int> touplee in QuestsInOrder)
@@ -137,7 +122,42 @@ public static class Quests
         }
         else BoolAccomplishments.Add(quest, true);
     }
+    #endregion
 
+
+    public static void LoadAllQuest_Sos(List<Quest_SO> destination)
+    {
+        List<QuestName> allQuestEnums = GeneralFunctions.GetAllEnums<QuestName>();
+
+        foreach (QuestName questEnum in allQuestEnums)
+        {
+            string address = questEnum.ToString();
+            Addressables.LoadAssetAsync<Quest_SO>("Assets/My Assets/Addressables/Quests/" + address + ".asset").Completed += handle =>
+            {
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    Quest_SO loadedSO = handle.Result;
+                    if (loadedSO.Repeatable)
+                    {
+                        repeatableQuests.Add(loadedSO.QuestEnum);
+                    }
+                    else boolQuests.Add(loadedSO.QuestEnum);
+
+                    if (!destination.Contains(loadedSO))
+                    {
+                        destination.Add(loadedSO);
+                        Debug.Log($"Loaded: {address}");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load ScriptableObject at address: {address}");
+                }
+            };
+
+        }
+    }
+    #region enums
 
     public enum Skills
     {
@@ -150,37 +170,130 @@ public static class Quests
     }
     public enum QuestName
     {
+
         DefeatEnemies,
         ExamineBodies,
         AttemptCoreExtraction,
-        FindAKnife,
+        AcquireWeapon,
         ExamineCores,
-        PracticalExperiments, // this will be a step in which the player is asked to use cores and attempt purification
+        //PracticalExperiments, // this will be a step in which the player is asked to use cores and attempt purification
         LearnGlassMaking,
-        CollectFireCores,
-        MakeFurnace,
-        CollectSand,
-        MakeGlass,
-        UseCores,
-        AttemptPurifications,
-        UsePotions,
-        UseAbilities,
-        UseHealAbilities,
-        PerformCoreExtraction,
-        PerformEtherPurification,
-        LearnWelding,
-        LearnSewing,
-        LearnAlchemy,
-        LearnChemistry,
-        LearnPotionCrafting,
-        LearnArrowCrafting,
-        LearnArmorCrafting,
-        LearnWeaponCrafting,
-        AchieveKnowledge,
-
-
+        //CollectFireCores,
+        //MakeFurnace,
+        //CollectSand,
+        //MakeGlass,
+        //UseCores,
+        //AttemptPurifications,
+        //UsePotions,
+        //UseAbilities,
+        //UseHealAbilities,
+        //PerformCoreExtraction,
+        //PerformEtherPurification,
+        //LearnWelding,
+        //LearnSewing,
+        //LearnAlchemy,
+        //LearnChemistry,
+        //LearnPotionCrafting,
+        //LearnArrowCrafting,
+        //LearnArmorCrafting,
+        //LearnWeaponCrafting,
+        //AchieveKnowledge,
     }
+    #endregion
+
+    #region prologue functions
+    public static Dictionary<Elements, List<string>> SetColorWordsDict()
+    {
+        Dictionary<Elements, List<string>> colorWords = new Dictionary<Elements, List<string>>();
+        List<Elements> allElements = GeneralFunctions.GetAllEnums<Elements>();
+        foreach (Elements element in allElements)
+        {
+            colorWords.Add(element, new List<string>());
+        }
+        colorWords[Elements.Cold] = new List<string> { "icy blue", "glacial turquoise", "shredded and replaced by an icy pit" };
+        colorWords[Elements.Water] = new List<string> { "deep, dark blue", "ocean blue", "eroded and erased, becoming a drenched, wave-pummeled pit" };
+        colorWords[Elements.Acid] = new List<string> { "semi-transparent green", "toxic greeeeeen", "melted into a green, sludge pit" };
+        colorWords[Elements.Heat] = new List<string> { "warm red", "glowing reeeeeeeeed", "has been broiled into charcoaled, ash pit" };
+        colorWords[Elements.Fire] = new List<string> { "firey red and orange", "red inferno", "has been incinerated and left a scorched pit" };
+        colorWords[Elements.Electricity] = new List<string> { "shocking, yellow-white", "yellow flash", "struck violently, cahnged into a vibrating, electrified pit" };
+        colorWords[Elements.Bacteria] = new List<string> { "scattered, living green", "putrid, dark green", "covered in a slimy, horrifying mucous" };
+        colorWords[Elements.Air] = new List<string> { "transparent, flowing swirl", "pressurized gas", "whiped away, leaving an empty, windblown pit" };
+        colorWords[Elements.Virus] = new List<string> { "viscous fluid of light blue and green", "", "ice pit" };
+        colorWords[Elements.Earth] = new List<string> { "rich, soil-brown", "earthy chocolate", "eviscerated into a meteoric pit" };
+        colorWords[Elements.Poison] = new List<string> { "cloud of venomous green", "toxic greeeeeen", "tainted, blasted pit" };
+        colorWords[Elements.Fungi] = new List<string> { "mass of yellow-green tendrils", "cloud of sporey particles", "covered in a thick dust of menacingly orange dust" };
+        colorWords[Elements.Plant] = new List<string> { "tangle of forest-green veins", "mass of vines and leaves", "transformed into a treacherous patch of jungle" };
+        colorWords[Elements.Radiation] = new List<string> { "radiant, warm, yellow-orange", "suncore", "scorched and mutated into a dry, foreign surface" };
+        colorWords[Elements.Light] = new List<string> { "radiant, pleasant, yellow-white", "beam of heaven", "warmly alighted and transformed as though by years in the most powerful sunshine" };
+        colorWords[Elements.Psychic] = new List<string> { "galaxy of warping purples", "spiraling, orchestra of hypnotizing colors and thoughts", "replaced by?... the impossible?  a mirage? an illusion? but to you, somehow completely comprehensible" };
+
+
+        return colorWords;
+    }
+
+    public static string ParsePrologueString(string prologueItem, Elements elementalColor)
+    {
+        Dictionary<Elements, List<string>> colorWords = SetColorWordsDict();
+
+        colorWords.TryGetValue(elementalColor, out List<string> items);
+
+        string item1 = items[0];
+        string item2 = items[1];
+        string item3 = items[2];
+
+        prologueItem.Replace("$COLOR$", item1);
+        prologueItem.Replace("$ELONGATEDCOLOR$", item2);
+        prologueItem.Replace("$CRATERDESCRIPTION$", item3);
+
+        return prologueItem;
+    }
+
+    public static List<string> GetPrologue()
+    {
+        return new List<string> { "Pain... Screaming pain... You look about yourself. Where are you? Your arm throbs with insatiable pain and your vision is blurred with a confusion and nausea as from a nightmare. Were you sleeping? Just a little more... Impossible, you groan hoarsely as you exert yourself to sit up. Noticing nothing familiar in your environment you take to examining your body. Whence comes this evil pain? Your vision focuses and you behold the state of your hands, feet, ankles... Your feet and ankles are bruised wretchedly. It appears as though you had run and walked a great distance barefoot. Your ankles have hard, regularly shaped bruising all around their circumference as though you had been restrained. The same is true of your wrists. Your fingers and nails show signs of having clawed at something unfavorable beyong them on the Mohs Hardness scale. A sudden intense stab originating from your shoulder draws your attention. it is not at all normally colored. What color do you see?", "Rising more and more you can see that a strangely beautiful, $COLOR$ is inflating from deep within your right shoulder and the lateral cavity of your chest. What in the devils has happened? Are you poisoned?", "Again a terrible pain thrashes at your body and skull like a caged animal from within. You stretch and extend your arms and back to somehow alleviate the pain and feel in elated frenzy that the tortuous sensation in your chest, shoulder and arm are being unspeakably, marvelously transformed into a glowing $ELONGATEDCOLOR$! You are again thrust forcefully onto your back - but the pain is entirely gone. Lifting your head you percieve the effects of what you only beheld in a flash. The ground at your feet has been $CRATERDESCRIPTION$. It seems all of the tortured energy of your body has found a new victim.", "You rise again to get your bearings, relieved but pregnant with questions, uncertainty, curiosity." };
+    }
+    #endregion
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -228,3 +341,5 @@ public static class Quests
 //
 //    return qualified;
 // Tuple<string, LocationType> 
+
+
