@@ -87,7 +87,9 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.IntroOptionSelected.AddListener(NarratorResponseToPlayer);
         //playerOptions.PlayertextInput.AddListener(HandlePlayerTextInput);
 
-        playerOptions.StatIncrented.AddListener(HandleStatIncremented);
+        playerOptions.StatIncremented.AddListener(HandleStatIncremented);
+        playerOptions.StringInputGiven.AddListener(HandleStringInput);
+
         playerOptions.CharacterCreationConfirmed.AddListener(CharacterCreationComplete);
         playerOptions.requestLoad.AddListener(LoadAllData);
 
@@ -109,7 +111,8 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.ContinueSelected.RemoveListener(HandleContinuePressed);
         playerOptions.IntroOptionSelected.RemoveListener(NarratorResponseToPlayer);
 
-        playerOptions.StatIncrented.RemoveListener(HandleStatIncremented);
+        playerOptions.StatIncremented.RemoveListener(HandleStatIncremented);
+        playerOptions.StringInputGiven.RemoveListener(HandleStringInput);
         playerOptions.CharacterCreationConfirmed.RemoveListener(CharacterCreationComplete);
         playerOptions.requestLoad.RemoveListener(LoadAllData);
 
@@ -431,7 +434,6 @@ public class DungeonMaster : MonoBehaviour
                 {
                     Debug.Log($"players affinity to {element} will be increased");
                     playerStats.SetElement(element);
-                    playerStats.IncrementAffinity(25, element);
                     PresentPrologue();
                 }
             }
@@ -470,105 +472,16 @@ public class DungeonMaster : MonoBehaviour
     {
         playerOptions.DisplayCharacterCreationScreen(playerStats);
     }
-    private void HandleStatIncremented(string stat)
+    private void HandleStatIncremented(StatType stat)
     {
-
-        if (playerStats.availableStatPoints > 0)
+        if (playerStats.availableStatPoints > playerStats.StatCostandIncDict[stat].Item1)
         {
-            switch (stat)
-            {
+            playerStats.IncrementAttribute(stat, playerStats.StatCostandIncDict[stat].Item1, playerStats.StatCostandIncDict[stat].Item2);
 
-                case "Max Mana":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddMaxMana(5, 1);
-                    break;
-                case "Max Health":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddMaxHealth(5, 1);
-                    break;
-                case "Max Stamina":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddMaxStamina(5, 1);
-                    break;
-                case "Health Regeneration":
-                    if (playerStats.availableStatPoints >= 3) playerStats.AddHealthRegen(1, 3);
-                    break;
-                case "Mana Regeneration":
-                    if (playerStats.availableStatPoints >= 3) playerStats.AddManaRegen(1, 3);
-                    break;
-                case "Stamina Regeneration":
-                    if (playerStats.availableStatPoints >= 3) playerStats.AddStaminaRegen(1, 3);
-                    break;
-                case "Max Action Points":
-                    if (playerStats.availableStatPoints >= 20) playerStats.AddActionPoint(1, 20);
-                    break;
-                case "Action Point Regeneration":
-                    if (playerStats.availableStatPoints >= 20) playerStats.AddActionPointRegen(1, 20);
-                    break;
-                case "Ice Affinity":
-                //if (playerStats.availableStatPoints >= 1) playerStats.AddIceAffinity(5, 1);
-                //    break;
-                case "Cold Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddColdAffinity(5, 1);
-                    break;
-                case "Water Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddWaterAffinity(5, 1);
-                    break;
-                case "Earth Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddEarthAffinity(5, 1);
-                    break;
-                case "Fire Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddFireAffinity(5, 1);
-                    break;
-                case "Lava Affinity":
-                //if (playerStats.availableStatPoints >= 1) playerStats.AddLavaAffinity(5, 1);
-                //    break;
-                case "Heat Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddHeatAffinity(5, 1);
-                    break;
-                case "Air Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddAirAffinity(5, 1);
-                    break;
-                case "Electricity Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddElectricityAffinity(5, 1);
-                    break;
-                case "Light Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddLightAffinity(5, 1);
-                    break;
-                case "Poison Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddPoisonAffinity(5, 1);
-                    break;
-                case "Acid Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddAcidAffinity(5, 1);
-                    break;
-                case "Bacteria Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddBacteriaAffinity(5, 1);
-                    break;
-                case "Virus Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddVirusAffinity(5, 1);
-                    break;
-                case "Fungi Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddFungiAffinity(5, 1);
-                    break;
-                case "Plant Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddPlantAffinity(5, 1);
-                    break;
-                case "Radiation Affinity":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddRadiationAffinity(5, 1);
-                    break;
-                case "Bludgeoning Resistance":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddBludgeoningResist(5, 1);
-                    break;
-                case "Slashing Resistance":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddSlashingResist(5, 1);
-                    break;
-                case "Piercing Resistance":
-                    if (playerStats.availableStatPoints >= 1) playerStats.AddPiercingResist(5, 1);
-                    break;
-                default:
-                    break;
-            }
-            if (stat.EndsWith("charName")) playerStats.SetName(stat.Replace("charName", ""));
-            if (stat.EndsWith("charDescription")) playerStats.SetDescription(stat.Replace("charDescription", ""));
-            playerOptions.DisplayeIncrementEffect(stat, playerStats);
+            playerOptions.DisplayeIncrementEffect(stat.ToString(), playerStats);
+            Debug.Log($"HandleStatIncremented is happening");
         }
+
         else
 
         {
@@ -576,6 +489,11 @@ public class DungeonMaster : MonoBehaviour
             //SpawnContinueButton();
         }
 
+    }
+    private void HandleStringInput(string input)
+    {
+        if (input.EndsWith("charName")) playerStats.SetName(input.Replace("charName", ""));
+        if (input.EndsWith("charDescription")) playerStats.SetDescription(input.Replace("charDescription", ""));
     }
     #endregion
 
@@ -638,3 +556,95 @@ public class DungeonMaster : MonoBehaviour
 
 
 
+
+
+//switch (stat)
+//{
+//
+//    case "Max Mana":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddMaxMana(5, 1);
+//        break;
+//    case "Max Health":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddMaxHealth(5, 1);
+//        break;
+//    case "Max Stamina":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddMaxStamina(5, 1);
+//        break;
+//    case "Health Regeneration":
+//        if (playerStats.availableStatPoints >= 3) playerStats.AddHealthRegen(1, 3);
+//        break;
+//    case "Mana Regeneration":
+//        if (playerStats.availableStatPoints >= 3) playerStats.AddManaRegen(1, 3);
+//        break;
+//    case "Stamina Regeneration":
+//        if (playerStats.availableStatPoints >= 3) playerStats.AddStaminaRegen(1, 3);
+//        break;
+//    case "Max Action Points":
+//        if (playerStats.availableStatPoints >= 20) playerStats.AddActionPoint(1, 20);
+//        break;
+//    case "Action Point Regeneration":
+//        if (playerStats.availableStatPoints >= 20) playerStats.AddActionPointRegen(1, 20);
+//        break;
+//    case "Ice Affinity":
+//    //if (playerStats.availableStatPoints >= 1) playerStats.AddIceAffinity(5, 1);
+//    //    break;
+//    case "Cold Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddColdAffinity(5, 1);
+//        break;
+//    case "Water Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddWaterAffinity(5, 1);
+//        break;
+//    case "Earth Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddEarthAffinity(5, 1);
+//        break;
+//    case "Fire Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddFireAffinity(5, 1);
+//        break;
+//    case "Lava Affinity":
+//    //if (playerStats.availableStatPoints >= 1) playerStats.AddLavaAffinity(5, 1);
+//    //    break;
+//    case "Heat Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddHeatAffinity(5, 1);
+//        break;
+//    case "Air Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddAirAffinity(5, 1);
+//        break;
+//    case "Electricity Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddElectricityAffinity(5, 1);
+//        break;
+//    case "Light Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddLightAffinity(5, 1);
+//        break;
+//    case "Poison Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddPoisonAffinity(5, 1);
+//        break;
+//    case "Acid Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddAcidAffinity(5, 1);
+//        break;
+//    case "Bacteria Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddBacteriaAffinity(5, 1);
+//        break;
+//    case "Virus Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddVirusAffinity(5, 1);
+//        break;
+//    case "Fungi Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddFungiAffinity(5, 1);
+//        break;
+//    case "Plant Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddPlantAffinity(5, 1);
+//        break;
+//    case "Radiation Affinity":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddRadiationAffinity(5, 1);
+//        break;
+//    case "Bludgeoning Resistance":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddBludgeoningResist(5, 1);
+//        break;
+//    case "Slashing Resistance":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddSlashingResist(5, 1);
+//        break;
+//    case "Piercing Resistance":
+//        if (playerStats.availableStatPoints >= 1) playerStats.AddPiercingResist(5, 1);
+//        break;
+//    default:
+//        break;
+//}

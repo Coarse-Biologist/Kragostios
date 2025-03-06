@@ -43,7 +43,8 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent ContinueSelected;
     public UnityEvent<string> IntroOptionSelected;
     public UnityEvent<string> PlayertextInput;
-    public UnityEvent<string> StatIncrented;
+    public UnityEvent<StatType> StatIncremented;
+    public UnityEvent<string> StringInputGiven;
 
     public UnityEvent requestLoad;
 
@@ -374,51 +375,13 @@ public class PlayerOptions : MonoBehaviour
         buttonContainer_AO.style.display = DisplayStyle.None;
 
         LeftCreationPanel.style.display = DisplayStyle.Flex;
-
-        var buttonConfigs = new Dictionary<string, string>
-    {
-        // Resource buttons
-        { "healthButton", "Max Health" },
-        { "manaButton", "Max Mana" },
-        { "staminaButton", "Max Stamina" },
-        { "healthRegenButton", "Health Regeneration" },
-        { "manaRegenButton", "Mana Regeneration" },
-        { "staminaRegenButton", "Stamina Regeneration" },
-
-        // Action points
-        { "actionButton", "Max Action Points" },
-        { "actionRegenButton", "Action Point Regeneration" },
-
-        // Elemental affinities
-        
-        { "coldAffinityButton", "Cold Affinity" },
-        { "waterAffinityButton", "Water Affinity" },
-        { "earthAffinityButton", "Earth Affinity" },
-        { "fireAffinityButton", "Fire Affinity" },
-        { "heatAffinityButton", "Heat Affinity" },
-        { "airAffinityButton", "Air Affinity" },
-        { "electricityAffinityButton", "Electricity Affinity" },
-        { "lightAffinityButton", "Light Affinity" },
-        { "poisonAffinityButton", "Poison Affinity" },
-        { "acidAffinityButton", "Acid Affinity" },
-        { "bacteriaAffinityButton", "Bacteria Affinity" },
-        { "virusAffinityButton", "Virus Affinity" },
-        { "fungiAffinityButton", "Fungi Affinity" },
-        { "plantAffinityButton", "Plant Affinity" },
-        { "radiationAffinityButton", "Radiation Affinity" },
-
-        // Physical resistance
-        { "bludgeoningResistanceButton", "Bludgeoning Resistance" },
-        { "slashingResistanceButton", "Slashing Resistance" },
-        { "piercingResistanceButton", "Piercing Resistance" }
-    };
-
-        // Create and configure buttons
-        foreach (var config in buttonConfigs)
+        //Dictionary<StatType, string> configDict = new Dictionary<StatType, string>();
+        foreach (StatType stat in GeneralFunctions.GetAllEnums<StatType>())
         {
-            Button button = new Button { text = config.Value };
+
+            Button button = new Button { text = stat.ToString() };
             button.style.position = Position.Relative;
-            button.RegisterCallback<ClickEvent>(e => StatIncrement(config.Value));
+            button.RegisterCallback<ClickEvent>(e => StatIncrement(stat));
             //leftPanelButtonContainer.Add(button);
             LeftCreationPanel.Add(button);
             button.MarkDirtyRepaint();
@@ -441,9 +404,9 @@ public class PlayerOptions : MonoBehaviour
         LeftCreationPanel.MarkDirtyRepaint();
 
         charNameField.RegisterValueChangedCallback(evt =>
-        StatIncrement(charNameField.text + "charName"));
+        StringInput(charNameField.text + "charName"));
         charDescriptionField.RegisterValueChangedCallback(evt =>
-        StatIncrement(charDescriptionField.text + "charDescription"));
+        StringInput(charDescriptionField.text + "charDescription"));
     }
 
     private void CharStatsConfirmed()
@@ -451,9 +414,13 @@ public class PlayerOptions : MonoBehaviour
         CharacterCreationConfirmed?.Invoke();
     }
 
-    private void StatIncrement(string stat)
+    private void StatIncrement(StatType stat)
     {
-        StatIncrented?.Invoke(stat);
+        StatIncremented?.Invoke(stat);
+    }
+    private void StringInput(string stat)
+    {
+        StringInputGiven?.Invoke(stat);
     }
     private void ConfigureAndAddScrollView(Label label, VisualElement container = null)
     {
@@ -477,3 +444,53 @@ public class PlayerOptions : MonoBehaviour
 
 
 }
+
+
+
+
+//configDict.add
+//        }
+//
+//
+//        // Create and configure buttons
+//        foreach (var config in buttonConfigs)
+//{
+
+
+//Dictionary<StatType, string> buttonConfigs = stats.CharVarsDict;
+//{
+//    // Resource buttons
+//    { "healthButton", "Max Health" },
+//    { "manaButton", "Max Mana" },
+//    { "staminaButton", "Max Stamina" },
+//    { "healthRegenButton", "Health Regeneration" },
+//    { "manaRegenButton", "Mana Regeneration" },
+//    { "staminaRegenButton", "Stamina Regeneration" },
+//
+//    // Action points
+//    { "actionButton", "Max Action Points" },
+//    { "actionRegenButton", "Action Point Regeneration" },
+//
+//    // Elemental affinities
+//    
+//    { "coldAffinityButton", "Cold Affinity" },
+//    { "waterAffinityButton", "Water Affinity" },
+//    { "earthAffinityButton", "Earth Affinity" },
+//    { "fireAffinityButton", "Fire Affinity" },
+//    { "heatAffinityButton", "Heat Affinity" },
+//    { "airAffinityButton", "Air Affinity" },
+//    { "electricityAffinityButton", "Electricity Affinity" },
+//    { "lightAffinityButton", "Light Affinity" },
+//    { "poisonAffinityButton", "Poison Affinity" },
+//    { "acidAffinityButton", "Acid Affinity" },
+//    { "bacteriaAffinityButton", "Bacteria Affinity" },
+//    { "virusAffinityButton", "Virus Affinity" },
+//    { "fungiAffinityButton", "Fungi Affinity" },
+//    { "plantAffinityButton", "Plant Affinity" },
+//    { "radiationAffinityButton", "Radiation Affinity" },
+//
+//    // Physical resistance
+//    { "bludgeoningResistanceButton", "Bludgeoning Resistance" },
+//    { "slashingResistanceButton", "Slashing Resistance" },
+//    { "piercingResistanceButton", "Piercing Resistance" }
+//};

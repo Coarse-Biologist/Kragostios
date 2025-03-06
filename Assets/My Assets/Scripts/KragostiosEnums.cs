@@ -88,6 +88,7 @@ namespace KragostiosAllEnums
         FungiAffinity,
         PlantAffinity,
         RadiationAffinity,
+        PsychicAffinity,
 
         BludgeoningResistance,
         SlashingResistance,
