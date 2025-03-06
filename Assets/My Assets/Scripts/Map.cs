@@ -94,7 +94,7 @@ public class Map : MonoBehaviour
             }
         }
         mapDimensions = new Vector2Int(mapSize, mapSize);
-        UnityEngine.Debug.Log($"map dict has {mapDict.Keys.Count} vectors");
+        //UnityEngine.Debug.Log($"map dict has {mapDict.Keys.Count} vectors");
         return mapDict;
     }
     private Dictionary<LocationType, int> MakeLocationDensityDict()
@@ -269,7 +269,7 @@ public class Map : MonoBehaviour
 
                     // Optional: Remove the assigned point from availablePoints to prevent reassignment
                     availablePoints.RemoveAt(randomIndex);
-                    UnityEngine.Debug.Log($"{kingdom} start point found at {startPoint}");
+                    //UnityEngine.Debug.Log($"{kingdom} start point found at {startPoint}");
                 }
             }
         }

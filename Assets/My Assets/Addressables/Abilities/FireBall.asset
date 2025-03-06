@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: Fireball
   abilityEnum: 1
   description: Throws a ball of intense fire
-  resource: 1
+  resource: 2
   type: 1
   elementType: 4
   physicalType: 0

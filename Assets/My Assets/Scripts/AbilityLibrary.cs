@@ -44,6 +44,8 @@ public static class AbilityLibrary
                 abilities.Add(ability.AbilityEnum);
             }
         }
+
+        abilities.Add(Abilities.Melee);
         return abilities;
     }
 

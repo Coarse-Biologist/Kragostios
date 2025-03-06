@@ -5,6 +5,8 @@ using System.Linq;
 using KragostiosAllEnums;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 
 public static class Quests
 {
@@ -24,6 +26,11 @@ public static class Quests
 
     public static List<Quest_SO> AllQuest_SOs = new List<Quest_SO>();
 
+    #endregion
+
+    #region prologue vars
+    public static Dictionary<Elements, List<string>> colorWords = new Dictionary<Elements, List<string>>();
+    public static int prologueStep { private set; get; } = 0;
     #endregion
 
     //track progress method. stores and sets progress in different skillsand knowledges
@@ -59,6 +66,7 @@ public static class Quests
         LoadAllQuest_Sos(AllQuest_SOs);
         SetStartOrderOfQuests();
         SetQuestStringDict();
+        SetColorWordsDict();
     }
 
     public static void SetQuestStringDict()
@@ -90,6 +98,8 @@ public static class Quests
         return soughtQuest;
 
     }
+
+
     #region progress on quests
     public static void RemoveQuestFromOrderDict(QuestName quest)
     {
@@ -101,7 +111,6 @@ public static class Quests
             }
         }
     }
-
 
     public static void IncrementIntQuests(QuestName quest, int increments = 1)
     {
@@ -204,28 +213,27 @@ public static class Quests
     #region prologue functions
     public static Dictionary<Elements, List<string>> SetColorWordsDict()
     {
-        Dictionary<Elements, List<string>> colorWords = new Dictionary<Elements, List<string>>();
         List<Elements> allElements = GeneralFunctions.GetAllEnums<Elements>();
-        foreach (Elements element in allElements)
-        {
-            colorWords.Add(element, new List<string>());
-        }
-        colorWords[Elements.Cold] = new List<string> { "icy blue", "glacial turquoise", "shredded and replaced by an icy pit" };
-        colorWords[Elements.Water] = new List<string> { "deep, dark blue", "ocean blue", "eroded and erased, becoming a drenched, wave-pummeled pit" };
-        colorWords[Elements.Acid] = new List<string> { "semi-transparent green", "toxic greeeeeen", "melted into a green, sludge pit" };
-        colorWords[Elements.Heat] = new List<string> { "warm red", "glowing reeeeeeeeed", "has been broiled into charcoaled, ash pit" };
-        colorWords[Elements.Fire] = new List<string> { "firey red and orange", "red inferno", "has been incinerated and left a scorched pit" };
-        colorWords[Elements.Electricity] = new List<string> { "shocking, yellow-white", "yellow flash", "struck violently, cahnged into a vibrating, electrified pit" };
-        colorWords[Elements.Bacteria] = new List<string> { "scattered, living green", "putrid, dark green", "covered in a slimy, horrifying mucous" };
-        colorWords[Elements.Air] = new List<string> { "transparent, flowing swirl", "pressurized gas", "whiped away, leaving an empty, windblown pit" };
-        colorWords[Elements.Virus] = new List<string> { "viscous fluid of light blue and green", "", "ice pit" };
-        colorWords[Elements.Earth] = new List<string> { "rich, soil-brown", "earthy chocolate", "eviscerated into a meteoric pit" };
-        colorWords[Elements.Poison] = new List<string> { "cloud of venomous green", "toxic greeeeeen", "tainted, blasted pit" };
-        colorWords[Elements.Fungi] = new List<string> { "mass of yellow-green tendrils", "cloud of sporey particles", "covered in a thick dust of menacingly orange dust" };
-        colorWords[Elements.Plant] = new List<string> { "tangle of forest-green veins", "mass of vines and leaves", "transformed into a treacherous patch of jungle" };
-        colorWords[Elements.Radiation] = new List<string> { "radiant, warm, yellow-orange", "suncore", "scorched and mutated into a dry, foreign surface" };
-        colorWords[Elements.Light] = new List<string> { "radiant, pleasant, yellow-white", "beam of heaven", "warmly alighted and transformed as though by years in the most powerful sunshine" };
-        colorWords[Elements.Psychic] = new List<string> { "galaxy of warping purples", "spiraling, orchestra of hypnotizing colors and thoughts", "replaced by?... the impossible?  a mirage? an illusion? but to you, somehow completely comprehensible" };
+        //foreach (Elements element in allElements)
+        //{
+        //    colorWords.Add(element, new List<string>());
+        //}
+        colorWords.Add(Elements.Cold, new List<string> { "icy blue", "glacial turquoise", "shredded and replaced by an icy pit" });
+        colorWords.Add(Elements.Water, new List<string> { "deep, dark blue", "ocean blue", "eroded and erased, becoming a drenched, wave-pummeled pit" });
+        colorWords.Add(Elements.Acid, new List<string> { "semi-transparent green", "toxic greeeeeen", "melted into a green, sludge pit" });
+        colorWords.Add(Elements.Heat, new List<string> { "warm red", "glowing reeeeeeeeed", "has been broiled into charcoaled, ash pit" });
+        colorWords.Add(Elements.Fire, new List<string> { "firey red and orange", "red inferno", "has been incinerated and left a scorched pit" });
+        colorWords.Add(Elements.Electricity, new List<string> { "shocking, yellow-white", "yellow flash", "struck violently, cahnged into a vibrating, electrified pit" });
+        colorWords.Add(Elements.Bacteria, new List<string> { "scattered, living green", "putrid, dark green", "covered in a slimy, horrifying mucous" });
+        colorWords.Add(Elements.Air, new List<string> { "transparent, flowing swirl", "pressurized gas", "whiped away, leaving an empty, windblown pit" });
+        colorWords.Add(Elements.Virus, new List<string> { "viscous fluid of light blue and green", "vile, pool of sickening cyan fluid", "ice pit" });
+        colorWords.Add(Elements.Earth, new List<string> { "rich, soil-brown", "earthy chocolate", "eviscerated into a meteoric pit" });
+        colorWords.Add(Elements.Poison, new List<string> { "cloud of venomous green", "toxic greeeeeen", "tainted, blasted pit" });
+        colorWords.Add(Elements.Fungi, new List<string> { "mass of yellow-green tendrils", "cloud of sporey particles", "covered in a thick dust of menacingly orange dust" });
+        colorWords.Add(Elements.Plant, new List<string> { "tangle of forest-green veins", "mass of vines and leaves", "transformed into a treacherous patch of jungle" });
+        colorWords.Add(Elements.Radiation, new List<string> { "radiant, warm, yellow-orange", "suncore", "scorched and mutated into a dry, foreign surface" });
+        colorWords.Add(Elements.Light, new List<string> { "radiant, pleasant, yellow-white", "beam of heaven", "warmly alighted and transformed as though by years in the most powerful sunshine" });
+        colorWords.Add(Elements.Psychic, new List<string> { "galaxy of warping purples", "spiraling, orchestra of hypnotizing colors and thoughts", "replaced by?... the impossible?  a mirage? an illusion? but to you, somehow completely comprehensible" });
 
 
         return colorWords;
@@ -233,24 +241,36 @@ public static class Quests
 
     public static string ParsePrologueString(string prologueItem, Elements elementalColor)
     {
-        Dictionary<Elements, List<string>> colorWords = SetColorWordsDict();
+        Debug.Log($"{prologueItem}");
+        if (colorWords.TryGetValue(elementalColor, out List<string> items))
+        {
+            foreach (KeyValuePair<Elements, List<string>> kvp in colorWords)
+            {
+                foreach (string stroge in kvp.Value)
+                {
+                    Debug.Log($"{stroge}");
+                }
+            }
+            if (items.Count >= 3)
+            {
+                string item1 = items[0];
+                string item2 = items[1];
+                string item3 = items[2];
 
-        colorWords.TryGetValue(elementalColor, out List<string> items);
+                prologueItem = prologueItem.Replace("$COLOR$", item1);
+                prologueItem = prologueItem.Replace("$ELONGATEDCOLOR$", item2);
+                prologueItem = prologueItem.Replace("$CRATERDESCRIPTION$", item3);
 
-        string item1 = items[0];
-        string item2 = items[1];
-        string item3 = items[2];
+            }
 
-        prologueItem.Replace("$COLOR$", item1);
-        prologueItem.Replace("$ELONGATEDCOLOR$", item2);
-        prologueItem.Replace("$CRATERDESCRIPTION$", item3);
-
+            prologueStep++; // increments the number of times ive parsed every time i use it. hopefully this is right
+        }
         return prologueItem;
     }
 
     public static List<string> GetPrologue()
     {
-        return new List<string> { "Pain... Screaming pain... You look about yourself. Where are you? Your arm throbs with insatiable pain and your vision is blurred with a confusion and nausea as from a nightmare. Were you sleeping? Just a little more... Impossible, you groan hoarsely as you exert yourself to sit up. Noticing nothing familiar in your environment you take to examining your body. Whence comes this evil pain? Your vision focuses and you behold the state of your hands, feet, ankles... Your feet and ankles are bruised wretchedly. It appears as though you had run and walked a great distance barefoot. Your ankles have hard, regularly shaped bruising all around their circumference as though you had been restrained. The same is true of your wrists. Your fingers and nails show signs of having clawed at something unfavorable beyong them on the Mohs Hardness scale. A sudden intense stab originating from your shoulder draws your attention. it is not at all normally colored. What color do you see?", "Rising more and more you can see that a strangely beautiful, $COLOR$ is inflating from deep within your right shoulder and the lateral cavity of your chest. What in the devils has happened? Are you poisoned?", "Again a terrible pain thrashes at your body and skull like a caged animal from within. You stretch and extend your arms and back to somehow alleviate the pain and feel in elated frenzy that the tortuous sensation in your chest, shoulder and arm are being unspeakably, marvelously transformed into a glowing $ELONGATEDCOLOR$! You are again thrust forcefully onto your back - but the pain is entirely gone. Lifting your head you percieve the effects of what you only beheld in a flash. The ground at your feet has been $CRATERDESCRIPTION$. It seems all of the tortured energy of your body has found a new victim.", "You rise again to get your bearings, relieved but pregnant with questions, uncertainty, curiosity." };
+        return new List<string> { "Pain... Screaming pain... You look about yourself. Where are you? Your arm throbs with insatiable pain and your vision is blurred with a confusion and nausea as from a nightmare. Were you sleeping? Just a little more... Impossible, you groan hoarsely as you exert yourself to sit up. Noticing nothing familiar in your environment you take to examining your body. Whence comes this evil pain? Your vision focuses and you behold the state of your hands, feet, ankles... Your feet and ankles are bruised wretchedly. It appears as though you had run and walked a great distance barefoot. Your ankles have hard, regularly shaped bruising all around their circumference as though you had been restrained. The same is true of your wrists. Your fingers and nails show signs of having clawed at something unfavorable beyong them on the Mohs Hardness scale. A sudden intense stab originating from your shoulder draws your attention. it is not at all how you remembered, and the alteration is hard to describe. Perhaps you can only give ONE WORD or impression even to describe that which you percieve. What is the one word?", "Rising more and more you can see that a strangely beautiful, $COLOR$ is inflating from deep within your right shoulder and the lateral cavity of your chest. What in the devils has happened? Are you poisoned?", "Again a terrible pain thrashes at your body and skull like a caged animal from within. You stretch and extend your arms and back to somehow alleviate the pain and feel in elated frenzy that the tortuous sensation in your chest, shoulder and arm are being unspeakably, marvelously transformed into a glowing $ELONGATEDCOLOR$! You are again thrust forcefully onto your back - but the pain is entirely gone. Lifting your head you percieve the effects of what you only beheld in a flash. The ground at your feet has been $CRATERDESCRIPTION$. It seems all of the tortured energy of your body has found a new victim.", "You rise again to get your bearings, relieved but pregnant with questions, uncertainty, curiosity." };
     }
     #endregion
 }

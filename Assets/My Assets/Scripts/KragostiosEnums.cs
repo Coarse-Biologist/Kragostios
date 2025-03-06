@@ -61,6 +61,39 @@ namespace KragostiosAllEnums
         Light,
         Psychic
     }
+    public enum StatType
+    {
+        Health,
+        Mana,
+        Stamina,
+        HealthRegen,
+        ManaRegen,
+        StaminaRegen,
+
+        ActionPoints,
+        ActionRegen,
+
+        ColdAffinity,
+        WaterAffinity,
+        EarthAffinity,
+        FireAffinity,
+        HeatAffinity,
+        AirAffinity,
+        ElectricityAffinity,
+        LightAffinity,
+        PoisonAffinity,
+        AcidAffinity,
+        BacteriaAffinity,
+        VirusAffinity,
+        FungiAffinity,
+        PlantAffinity,
+        RadiationAffinity,
+
+        BludgeoningResistance,
+        SlashingResistance,
+        PiercingResistance
+    }
+
 
     public enum PhysicalDamage
     {

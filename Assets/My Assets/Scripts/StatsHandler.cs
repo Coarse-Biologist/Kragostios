@@ -60,10 +60,12 @@ public class StatsHandler : MonoBehaviour
     public List<int> affinityList;
     public Dictionary<string, int> AffinityDict;
     public Dictionary<Elements, int> ElementAffinityDict;
+    Dictionary<StatType, int> CharVarsDict = new Dictionary<StatType, int>();
 
     public void Awake()
     {
         AffinityDict = GetAffinityDict();
+        CharVarsDict = GetCharVarDict();
     }
 
 
@@ -222,7 +224,18 @@ public class StatsHandler : MonoBehaviour
         return AffinityDict;
 
     }
-
+    public void IncrementAffinity(int increment, Elements element)
+    {
+        Dictionary<Elements, int> ElementAffinityDict = GetElementAffinityDict();
+        Debug.Log($"your affinity for {element} is {ElementAffinityDict[element]}");
+        ElementAffinityDict[element] += 25;
+        Debug.Log($"your affinity for {element} is {ElementAffinityDict[element]}");
+    }
+    public void IncrementAttribute(int increment, StatType stat)
+    {
+        CharVarsDict[stat] += 25;
+        Debug.Log($"your attribute ({stat}) is {CharVarsDict[stat]}");
+    }
     private Dictionary<Elements, int> GetElementAffinityDict()
     {
         ElementAffinityDict = new Dictionary<Elements, int>
@@ -246,6 +259,44 @@ public class StatsHandler : MonoBehaviour
 
         };
         return ElementAffinityDict;
+    }
+
+    private Dictionary<StatType, int> GetCharVarDict()
+    {
+        Dictionary<StatType, int> CharVarsDict = new Dictionary<StatType, int>
+        {
+            { StatType.Health, MaxHealth },
+            { StatType.Mana, MaxMana },
+            { StatType.Stamina, MaxStamina },
+
+            { StatType.HealthRegen, HealthRegen }, // Initiative might not fit here; check if it should be HealthRegen
+            { StatType.ManaRegen, ManaRegen }, // Same concern, should it be something else?
+            { StatType.StaminaRegen, StaminaRegen },
+
+            { StatType.ActionPoints, ActionPoints },
+            { StatType.ActionRegen, ActionPointRegen },
+
+            { StatType.ColdAffinity, ColdAffinity },
+            { StatType.WaterAffinity, WaterAffinity },
+            { StatType.EarthAffinity, EarthAffinity },
+            { StatType.HeatAffinity, HeatAffinity },
+            { StatType.FireAffinity, FireAffinity },
+            { StatType.AirAffinity, AirAffinity },
+            { StatType.ElectricityAffinity, ElectricityAffinity },
+            { StatType.LightAffinity, LightAffinity },
+            { StatType.FungiAffinity, FungiAffinity },
+            { StatType.PlantAffinity, PlantAffinity },
+            { StatType.PoisonAffinity, PoisonAffinity },
+            { StatType.AcidAffinity, AcidAffinity },
+            { StatType.RadiationAffinity, RadiationAffinity },
+            { StatType.BacteriaAffinity, BacteriaAffinity },
+            { StatType.VirusAffinity, VirusAffinity },
+
+            { StatType.BludgeoningResistance, BludgeoningResist },
+            { StatType.SlashingResistance, SlashingResist },
+            { StatType.PiercingResistance, PiercingResist }
+        };
+        return CharVarsDict;
     }
 
     private Dictionary<PhysicalDamage, int> GetPhysicalResistDict()
@@ -307,6 +358,11 @@ public class StatsHandler : MonoBehaviour
         }
 
         return value;
+    }
+    public void SetElement(Elements element)
+    {
+        Element = element;
+        Debug.Log($"creatures element has been set to {element}");
     }
 
 
@@ -621,6 +677,7 @@ public class StatsHandler : MonoBehaviour
                 knownAbilities.Add(AbilityLibrary.abilityDict[newAbility]);
                 Debug.Log($"{newAbility} added to your known abilities list");
             }
+            else Debug.Log($"You already know {newAbility}?");
             //SetKnownAbilities_Save();
         }
         else Debug.Log($"{newAbility} does not exist in the AbilityLibrary and can therefore not be added to your known abilities list");
@@ -836,7 +893,7 @@ public class StatsHandler : MonoBehaviour
         Array elements = Enum.GetValues(typeof(Elements));
         System.Random random = new System.Random();
         Elements randomElement = (Elements)elements.GetValue(random.Next(elements.Length));
-        Element = randomElement;
+        SetElement(randomElement);
         return randomElement;
     }
     private string GetElementRelatedName(Elements element, Difficulty difficultyLevel)
@@ -1123,3 +1180,39 @@ public class StatsHandler : MonoBehaviour
 }
 
 //replace known abilities and inventory with correct data types
+
+
+//MaxHealth
+//MaxMana
+//MaxStamina
+//initiative
+//ActionPoints
+//ActionPointRegen
+//currentHealth
+//
+//ColdAffinity
+//WaterAffinity
+//EarthAffinity
+//HeatAffinity
+//FireAffinity
+//AirAffinity
+//ElectricityAffinity
+//LightAffinity
+//PsychicAffinity
+//FungiAffinity
+//PlantAffinity
+//PoisonAffinity
+//AcidAffinity
+//RadiationAffinity
+//BacteriaAffinity
+//VirusAffinity
+//  BludgeoningResist
+//SlashingResist
+//PiercingResist
+//
+//
+//
+
+
+
+

@@ -41,6 +41,12 @@ public class DungeonMaster : MonoBehaviour
 
     #endregion
 
+    #region management bools
+    private bool inCombat = false;
+    private bool presentingQuests = false;
+
+    #endregion
+
     #region // SetUp
     private void Awake()
     {
@@ -62,8 +68,9 @@ public class DungeonMaster : MonoBehaviour
     {
         WorldChest.LoadItems(WorldChest.allAddresses);
         Quests.Setup();
-
+        Player = MakePlayer();
         CharacterCreation();
+        //PresentPrologue();
     }
 
     private void OnEnable()
@@ -76,7 +83,7 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.AbilitySelected.AddListener(HandleAbilitySelected);
         playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
         playerOptions.TargetSelected.AddListener(HandleTargetSelected);
-        playerOptions.ContinueSelected.AddListener(HandleCombatContinuePressed);
+        playerOptions.ContinueSelected.AddListener(HandleContinuePressed);
         playerOptions.IntroOptionSelected.AddListener(NarratorResponseToPlayer);
         //playerOptions.PlayertextInput.AddListener(HandlePlayerTextInput);
 
@@ -99,7 +106,7 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.AbilitySelected.RemoveListener(HandleAbilitySelected);
         playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
         playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
-        playerOptions.ContinueSelected.RemoveListener(HandleCombatContinuePressed);
+        playerOptions.ContinueSelected.RemoveListener(HandleContinuePressed);
         playerOptions.IntroOptionSelected.RemoveListener(NarratorResponseToPlayer);
 
         playerOptions.StatIncrented.RemoveListener(HandleStatIncremented);
@@ -180,6 +187,17 @@ public class DungeonMaster : MonoBehaviour
 
     }
 
+    private void HandleContinuePressed()
+    {
+        if (inCombat)
+        {
+            HandleCombatContinuePressed();
+        }
+        if (presentingQuests)
+        {
+            PresentPrologue();
+        }
+    }
     private void HandleCombatContinuePressed()
     {
         bool enemiesRemaining = combat.CheckEnemiesRemaining();
@@ -241,11 +259,12 @@ public class DungeonMaster : MonoBehaviour
     {
         HandleLoot();
         Quests.IncrementIntQuests(Quests.QuestName.DefeatEnemies, enemyCombatantTuple.Count);
-        List<Directions> directions = map.directions;
+        inCombat = false;
         Invoke("ShowMainMenu", 5);
     }
     private void InitiateCombat()
     {
+        inCombat = true;
         List<GameObject> combatants = new List<GameObject>();
         enemyCombatantTuple = new List<Tuple<Difficulty, Elements>>();
         int numberofEnemies = UnityEngine.Random.Range(1, 3);
@@ -404,8 +423,25 @@ public class DungeonMaster : MonoBehaviour
     #region // player narrator/npc dialogue
     private void NarratorResponseToPlayer(string playerChoice)
     {
-        string narratorResponse = playerToNarratorDict[playerChoice];
-        narrator.DisplayNarrationText(narratorResponse);
+        if (presentingQuests)
+        {
+            foreach (Elements element in GeneralFunctions.GetAllEnums<Elements>())
+            {
+                if (element.ToString() == playerChoice)
+                {
+                    Debug.Log($"players affinity to {element} will be increased");
+                    playerStats.SetElement(element);
+                    playerStats.IncrementAffinity(25, element);
+                    PresentPrologue();
+                }
+            }
+        }
+        else
+        {
+            string narratorResponse = playerToNarratorDict[playerChoice];
+            narrator.DisplayNarrationText(narratorResponse);
+        }
+
     }
 
     private void PresentPlayerOptions(string narratorPromt)
@@ -432,7 +468,6 @@ public class DungeonMaster : MonoBehaviour
     #region // char creation
     private void CharacterCreation()
     {
-        Player = MakePlayer();
         playerOptions.DisplayCharacterCreationScreen(playerStats);
     }
     private void HandleStatIncremented(string stat)
@@ -550,7 +585,7 @@ public class DungeonMaster : MonoBehaviour
         playerStats.RestoreResources();
         playerOptions.HideCreationScreen();
         narrator.DisplayNarrationText("The Story begins.");
-        List<Directions> directions = map.directions;
+        //List<Directions> directions = map.directions;
         playerOptions.ClearCharCreation();
         playerOptions.ShowCombatScreen();
         playerStats.LearnAbility(AbilityEnums.Abilities.Fireball);
@@ -564,7 +599,26 @@ public class DungeonMaster : MonoBehaviour
     #region handle story
     private void PresentPrologue()
     {
+        playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
+        presentingQuests = true;
+        if (Quests.prologueStep == 0)
+        {
+            narrator.DisplayNarrationText(Quests.ParsePrologueString(Quests.GetPrologue()[0], Elements.None));
+            playerOptions.SpawnOptionButtons(new List<string>
+        {
+            Elements.Acid.ToString(), Elements.Poison.ToString(), Elements.Heat.ToString(), Elements.Virus.ToString(), Elements.Plant.ToString(), Elements.Radiation.ToString(), Elements.Fire.ToString(), Elements.Earth.ToString(), Elements.Air.ToString(), Elements.Psychic.ToString(), Elements.Electricity.ToString(), Elements.Radiation.ToString(), Elements.Water.ToString(), Elements.Bacteria.ToString(), Elements.Fungi.ToString()
+        });
 
+        }
+        if (Quests.prologueStep > 0 && Quests.prologueStep < 3)
+        {
+            string parsedString = Quests.GetPrologue()[Quests.prologueStep];
+            narrator.DisplayNarrationText(Quests.ParsePrologueString(parsedString, Elements.Cold));
+        }
+        if (Quests.prologueStep >= 3)
+        {
+            CharacterCreation();
+        }
     }
 
     #endregion
