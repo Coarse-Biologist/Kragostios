@@ -41,7 +41,7 @@ public class PlayerOptions : MonoBehaviour
     public UnityEvent<GameObject> TargetSelected;
     public UnityEvent<Directions> JourneyDirectionSelected;
     public UnityEvent ContinueSelected;
-    public UnityEvent<string> IntroOptionSelected;
+    public UnityEvent<string> OptionIsSelected;
     public UnityEvent<string> PlayertextInput;
     public UnityEvent<StatType> StatIncremented;
     public UnityEvent<string> StringInputGiven;
@@ -285,12 +285,12 @@ public class PlayerOptions : MonoBehaviour
         //KDebug.SeekBug("Not hovering over button!");    
     }
 
-    public void HideCreationScreen()
-    {
-        LeftCreationPanel.style.display = DisplayStyle.None;
-        RightCreationPanel.style.display = DisplayStyle.None;
-
-    }
+    //public void HideCreationScreen()
+    //{
+    //    LeftCreationPanel.style.display = DisplayStyle.None;
+    //    RightCreationPanel.style.display = DisplayStyle.None;
+    //
+    //}
     private void OnContinueSelected()
     {
         ClearTargetContainer();
@@ -351,35 +351,38 @@ public class PlayerOptions : MonoBehaviour
     }
     public void SpawnOptionButtons(List<string> playerOptions)
     {
-        TemplateContainer newButtonContainer = templateButton.Instantiate();
         foreach (string option in playerOptions)
         {
+            TemplateContainer newButtonContainer = templateButton.Instantiate();
             Button newButton = newButtonContainer.Q<Button>();
             newButton.text = option;
             buttonContainer_AO.Add(newButtonContainer);
             newButtonContainer.Add(newButton);
             newButton.RegisterCallback<ClickEvent>(e => OptionSelected(option));
-            //newButton.RegisterCallback<PointerEnterEvent>(evt => ());
+            newButton.RegisterCallback<ClickEvent>(e => newButtonContainer.Remove(newButton));
 
         }
     }
 
     private void OptionSelected(string playerChoice)
     {
-        IntroOptionSelected?.Invoke(playerChoice);
+        OptionIsSelected?.Invoke(playerChoice);
     }
 
     public void DisplayCharacterCreationScreen(StatsHandler stats)
     {
         charCreationText.text = stats.getAvailableStatPoints() + "/n" + stats.GetStatCosts();
-        buttonContainer_AO.style.display = DisplayStyle.None;
+        ChangeScreen(new List<VisualElement> { LeftCreationPanel, RightCreationPanel });
 
-        LeftCreationPanel.style.display = DisplayStyle.Flex;
+        //buttonContainer_AO.style.display = DisplayStyle.None; //Change
+        //narratorWindow.style.display = DisplayStyle.None;
+        //LeftCreationPanel.style.display = DisplayStyle.Flex;
+
         //Dictionary<StatType, string> configDict = new Dictionary<StatType, string>();
         foreach (StatType stat in GeneralFunctions.GetAllEnums<StatType>())
         {
 
-            Button button = new Button { text = stat.ToString() };
+            Button button = new Button { text = GeneralFunctions.AddSpaceToEnum(stat) };
             button.style.position = Position.Relative;
             button.RegisterCallback<ClickEvent>(e => StatIncrement(stat));
             //leftPanelButtonContainer.Add(button);

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using KragostiosAllEnums;
 using UnityEngine;
 
@@ -44,6 +45,7 @@ public class Quest_SO : ScriptableObject
     [Header("Rewards")]
     public int XP_Reward;
     public Item_SO ItemReward;
+    public Item_SO QuestItem;
 
     public int GoldReward = 1;
     #endregion

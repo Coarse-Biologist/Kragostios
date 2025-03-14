@@ -7,6 +7,7 @@ using System.Collections.Generic;
 //using UnityEditor.VersionControl;
 //using UnityEngine.UI;
 using System;
+using Unity.VisualScripting;
 
 
 public class DungeonMaster : MonoBehaviour
@@ -23,7 +24,7 @@ public class DungeonMaster : MonoBehaviour
     private NarrationScript narrator;
     private TravelScript travel;
     private CombatFlow combat;
-    private List<Tuple<Difficulty, Elements>> enemyCombatantTuple;
+    private List<Tuple<Difficulty, Elements, string>> enemyCombatantTuple;
     private Inventory inventory;
 
 
@@ -44,6 +45,7 @@ public class DungeonMaster : MonoBehaviour
     #region management bools
     private bool inCombat = false;
     private bool presentingQuests = false;
+    private bool presentingAlchemy = false;
 
     #endregion
 
@@ -69,8 +71,8 @@ public class DungeonMaster : MonoBehaviour
         WorldChest.LoadItems(WorldChest.allAddresses);
         Quests.Setup();
         Player = MakePlayer();
-        CharacterCreation();
-        //PresentPrologue();
+        //CharacterCreation();
+        PresentPrologue();
     }
 
     private void OnEnable()
@@ -84,7 +86,7 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.JourneyDirectionSelected.AddListener(HandlePlayerTraveled);
         playerOptions.TargetSelected.AddListener(HandleTargetSelected);
         playerOptions.ContinueSelected.AddListener(HandleContinuePressed);
-        playerOptions.IntroOptionSelected.AddListener(NarratorResponseToPlayer);
+        playerOptions.OptionIsSelected.AddListener(NarratorResponseToPlayer);
         //playerOptions.PlayertextInput.AddListener(HandlePlayerTextInput);
 
         playerOptions.StatIncremented.AddListener(HandleStatIncremented);
@@ -109,7 +111,7 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.JourneyDirectionSelected.RemoveListener(HandlePlayerTraveled);
         playerOptions.TargetSelected.RemoveListener(HandleTargetSelected);
         playerOptions.ContinueSelected.RemoveListener(HandleContinuePressed);
-        playerOptions.IntroOptionSelected.RemoveListener(NarratorResponseToPlayer);
+        playerOptions.OptionIsSelected.RemoveListener(NarratorResponseToPlayer);
 
         playerOptions.StatIncremented.RemoveListener(HandleStatIncremented);
         playerOptions.StringInputGiven.RemoveListener(HandleStringInput);
@@ -150,6 +152,13 @@ public class DungeonMaster : MonoBehaviour
     private void ShowInventoryScreen()
     {
         playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.LeftCreationPanel, playerOptions.RightCreationPanel });
+        Item_SO questItem = Quests.QuestItemAtTrader();
+        List<Item_SO> traderItems = WorldChest.GetTraderItems(playerStats);
+        if (questItem != emptyItem && questItem != null)
+        {
+            traderItems.Add(questItem);
+        }
+        inventory.DisplayTraderScreen(playerStats, traderItems);
     }
 
     private void ExitInventoryScreen()
@@ -231,6 +240,7 @@ public class DungeonMaster : MonoBehaviour
     {
         GameObject creature = Instantiate(creaturePrefab);
         playerStats = creature.GetComponent<StatsHandler>();
+        //Debug.Log($"{playerStats} = player stats");
         Player = playerStats.MakePlayer();
         return Player;
     }
@@ -263,13 +273,17 @@ public class DungeonMaster : MonoBehaviour
         HandleLoot();
         Quests.IncrementIntQuests(Quests.QuestName.DefeatEnemies, enemyCombatantTuple.Count);
         inCombat = false;
-        Invoke("ShowMainMenu", 5);
+        HandlePostCombatAlchemy();
+        //Invoke("ShowMainMenu", 5); // Extract 
     }
     private void InitiateCombat()
     {
+
+        playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_CO, playerOptions.buttonContainer_AO });
+
         inCombat = true;
         List<GameObject> combatants = new List<GameObject>();
-        enemyCombatantTuple = new List<Tuple<Difficulty, Elements>>();
+        enemyCombatantTuple = new List<Tuple<Difficulty, Elements, string>>();
         int numberofEnemies = UnityEngine.Random.Range(1, 3);
         while (numberofEnemies > 0)
         {
@@ -277,21 +291,35 @@ public class DungeonMaster : MonoBehaviour
             StatsHandler stats = enemy.GetComponent<StatsHandler>();
             numberofEnemies--;
             combatants.Add(enemy);
-            enemyCombatantTuple.Add(new Tuple<Difficulty, Elements>(stats.difficulty, stats.Element));
+            enemyCombatantTuple.Add(new Tuple<Difficulty, Elements, string>(stats.difficulty, stats.Element, stats.characterName));
         }
         //Debug.Log($"{playerStats.GetKnownAbilitiesString()} = player known abilities");
-        playerOptions.HideCreationScreen();
-        playerOptions.ShowCombatScreen();
+        //playerOptions.HideCreationScreen(); // change
+        //playerOptions.ShowCombatScreen();
         combatants.Add(Player);
         combat.SetCombatants(combatants);
         combat.DecideTurnOrder();
-        combat.CombatCycle();//combatants);
+        combat.CombatCycle();
+    }
+    private void HandlePostCombatAlchemy()
+    {
+        presentingAlchemy = true;
+        PresentExamExtract(enemyCombatantTuple);
+    }
+    private void PresentExamExtract(List<Tuple<Difficulty, Elements, string>> combatantTuple)
+    {
+        List<string> enemiesToExam = new List<string>();
+        foreach (Tuple<Difficulty, Elements, string> tripleTuple in combatantTuple)
+        {
+            enemiesToExam.Add($"Examine {tripleTuple.Item3}");
+        }
+        playerOptions.SpawnOptionButtons(enemiesToExam);
     }
 
     private void HandleLoot()
     {
         KDebug.SeekBug($"HandleLoot function: {enemyCombatantTuple.Count}");
-        foreach (Tuple<Difficulty, Elements> tuple in enemyCombatantTuple)
+        foreach (Tuple<Difficulty, Elements, string> tuple in enemyCombatantTuple)
         {
             Difficulty difficulty = tuple.Item1;
             Elements element = tuple.Item2;
@@ -377,7 +405,7 @@ public class DungeonMaster : MonoBehaviour
                 ShowMainMenu();
                 VisualElement buttonContainer_AO = root.Q<VisualElement>("PlayerOptions");
                 List<Item_SO> traderItems = WorldChest.GetAllItems();
-                inventory.SpawnTraderButton(playerStats, buttonContainer_AO, traderItems);
+                inventory.SpawnTraderButton(buttonContainer_AO);
                 break;
 
 
@@ -414,7 +442,7 @@ public class DungeonMaster : MonoBehaviour
         root = UIDocument.rootVisualElement;
         VisualElement buttonContainer_AO = root.Q<VisualElement>("PlayerOptions");
         playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
-        inventory.SpawnInventoryButton(buttonContainer_AO, playerStats);
+        inventory.SpawnInventoryButton(buttonContainer_AO);
         List<Directions> directions = map.directions;
         playerOptions.SpawnDirectionOptions(directions);
         playerOptions.DisplayLoadAndSaveButtons(playerStats, map, travel);
@@ -438,7 +466,19 @@ public class DungeonMaster : MonoBehaviour
                 }
             }
         }
-        else
+        if (presentingAlchemy)
+        {
+            foreach (Tuple<Difficulty, Elements, string> combatantTuple in enemyCombatantTuple)
+            {
+                //string parsedString = playerChoice.Replace("Examine ", "");
+                //Debug.Log($"{parsedString}");
+                if (playerChoice.EndsWith(combatantTuple.Item3))
+                {
+                    DisplayNarration(AlchemyHandler.HandleExtraction(combatantTuple));
+                }
+            }
+        }
+        else if (!presentingQuests && !presentingAlchemy)
         {
             string narratorResponse = playerToNarratorDict[playerChoice];
             narrator.DisplayNarrationText(narratorResponse);
@@ -476,19 +516,12 @@ public class DungeonMaster : MonoBehaviour
     {
         if (playerStats.availableStatPoints > playerStats.StatCostandIncDict[stat].Item1)
         {
-            playerStats.IncrementAttribute(stat, playerStats.StatCostandIncDict[stat].Item1, playerStats.StatCostandIncDict[stat].Item2);
+            playerStats.IncrementAttribute(stat, playerStats.StatCostandIncDict[stat].Item2, playerStats.StatCostandIncDict[stat].Item2);
 
             playerOptions.DisplayeIncrementEffect(stat.ToString(), playerStats);
             Debug.Log($"HandleStatIncremented is happening");
         }
-
-        else
-
-        {
-            Debug.Log("Insufficient statpoints");
-            //SpawnContinueButton();
-        }
-
+        else Debug.Log("Insufficient statpoints");
     }
     private void HandleStringInput(string input)
     {
@@ -501,11 +534,15 @@ public class DungeonMaster : MonoBehaviour
     private void CharacterCreationComplete()
     {
         playerStats.RestoreResources();
-        playerOptions.HideCreationScreen();
-        narrator.DisplayNarrationText("The Story begins.");
+        playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
+
+        //playerOptions.HideCreationScreen(); // change
+
+        //narrator.DisplayNarrationText("The Story begins.");
         //List<Directions> directions = map.directions;
-        playerOptions.ClearCharCreation();
-        playerOptions.ShowCombatScreen();
+        //playerOptions.ClearCharCreation();
+        //playerOptions.ShowCombatScreen();
+
         playerStats.LearnAbility(AbilityEnums.Abilities.Fireball);
         playerStats.LearnAbility(AbilityEnums.Abilities.HealingTouch);
         playerStats.LearnAbility(AbilityEnums.Abilities.Melee);
@@ -517,24 +554,28 @@ public class DungeonMaster : MonoBehaviour
     #region handle story
     private void PresentPrologue()
     {
-        playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
         presentingQuests = true;
+
+        playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
         if (Quests.prologueStep == 0)
         {
             narrator.DisplayNarrationText(Quests.ParsePrologueString(Quests.GetPrologue()[0], Elements.None));
-            playerOptions.SpawnOptionButtons(new List<string>
-        {
+            List<string> elements = new List<string> {
             Elements.Acid.ToString(), Elements.Poison.ToString(), Elements.Heat.ToString(), Elements.Virus.ToString(), Elements.Plant.ToString(), Elements.Radiation.ToString(), Elements.Fire.ToString(), Elements.Earth.ToString(), Elements.Air.ToString(), Elements.Psychic.ToString(), Elements.Electricity.ToString(), Elements.Radiation.ToString(), Elements.Water.ToString(), Elements.Bacteria.ToString(), Elements.Fungi.ToString()
-        });
+        };
+            playerOptions.SpawnOptionButtons(elements);
 
         }
-        if (Quests.prologueStep > 0 && Quests.prologueStep < 3)
+        if (Quests.prologueStep > 0 && Quests.prologueStep < 4)
         {
             string parsedString = Quests.GetPrologue()[Quests.prologueStep];
-            narrator.DisplayNarrationText(Quests.ParsePrologueString(parsedString, Elements.Cold));
+            narrator.DisplayNarrationText(Quests.ParsePrologueString(parsedString, playerStats.Element));
+            playerOptions.SpawnContinueButton();
         }
-        if (Quests.prologueStep >= 3)
+        Quests.IncrementPrologueStep();
+        if (Quests.prologueStep > 4)
         {
+            presentingQuests = false;
             CharacterCreation();
         }
     }
@@ -554,97 +595,3 @@ public class DungeonMaster : MonoBehaviour
     }
 }
 
-
-
-
-
-//switch (stat)
-//{
-//
-//    case "Max Mana":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddMaxMana(5, 1);
-//        break;
-//    case "Max Health":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddMaxHealth(5, 1);
-//        break;
-//    case "Max Stamina":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddMaxStamina(5, 1);
-//        break;
-//    case "Health Regeneration":
-//        if (playerStats.availableStatPoints >= 3) playerStats.AddHealthRegen(1, 3);
-//        break;
-//    case "Mana Regeneration":
-//        if (playerStats.availableStatPoints >= 3) playerStats.AddManaRegen(1, 3);
-//        break;
-//    case "Stamina Regeneration":
-//        if (playerStats.availableStatPoints >= 3) playerStats.AddStaminaRegen(1, 3);
-//        break;
-//    case "Max Action Points":
-//        if (playerStats.availableStatPoints >= 20) playerStats.AddActionPoint(1, 20);
-//        break;
-//    case "Action Point Regeneration":
-//        if (playerStats.availableStatPoints >= 20) playerStats.AddActionPointRegen(1, 20);
-//        break;
-//    case "Ice Affinity":
-//    //if (playerStats.availableStatPoints >= 1) playerStats.AddIceAffinity(5, 1);
-//    //    break;
-//    case "Cold Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddColdAffinity(5, 1);
-//        break;
-//    case "Water Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddWaterAffinity(5, 1);
-//        break;
-//    case "Earth Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddEarthAffinity(5, 1);
-//        break;
-//    case "Fire Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddFireAffinity(5, 1);
-//        break;
-//    case "Lava Affinity":
-//    //if (playerStats.availableStatPoints >= 1) playerStats.AddLavaAffinity(5, 1);
-//    //    break;
-//    case "Heat Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddHeatAffinity(5, 1);
-//        break;
-//    case "Air Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddAirAffinity(5, 1);
-//        break;
-//    case "Electricity Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddElectricityAffinity(5, 1);
-//        break;
-//    case "Light Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddLightAffinity(5, 1);
-//        break;
-//    case "Poison Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddPoisonAffinity(5, 1);
-//        break;
-//    case "Acid Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddAcidAffinity(5, 1);
-//        break;
-//    case "Bacteria Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddBacteriaAffinity(5, 1);
-//        break;
-//    case "Virus Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddVirusAffinity(5, 1);
-//        break;
-//    case "Fungi Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddFungiAffinity(5, 1);
-//        break;
-//    case "Plant Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddPlantAffinity(5, 1);
-//        break;
-//    case "Radiation Affinity":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddRadiationAffinity(5, 1);
-//        break;
-//    case "Bludgeoning Resistance":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddBludgeoningResist(5, 1);
-//        break;
-//    case "Slashing Resistance":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddSlashingResist(5, 1);
-//        break;
-//    case "Piercing Resistance":
-//        if (playerStats.availableStatPoints >= 1) playerStats.AddPiercingResist(5, 1);
-//        break;
-//    default:
-//        break;
-//}

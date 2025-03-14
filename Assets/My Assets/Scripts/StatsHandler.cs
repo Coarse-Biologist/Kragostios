@@ -4,6 +4,8 @@ using KragostiosAllEnums;
 using AbilityEnums;
 using System;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 
 
 
@@ -60,14 +62,14 @@ public class StatsHandler : MonoBehaviour
     public List<int> affinityList;
     public Dictionary<string, int> AffinityDict;
     public Dictionary<Elements, int> ElementAffinityDict;
-    public Dictionary<StatType, int> CharVarsDict = new Dictionary<StatType, int>();
+    public Dictionary<StatType, (Func<int> Get, Action<int> Set)> CharVarsDict = new Dictionary<StatType, (Func<int> Get, Action<int> Set)>();
     //spublic Dictionary<StatType, int> StatCostDict = new Dictionary<StatType, int>();
     //spublic Dictionary<StatType, int> StatIncrementDict = new Dictionary<StatType, int>();
     public Dictionary<StatType, Tuple<int, int>> StatCostandIncDict = new Dictionary<StatType, Tuple<int, int>>();
 
     public void Awake()
     {
-        AffinityDict = GetAffinityDict();
+        //AffinityDict = GetAffinityDict();
         CharVarsDict = GetCharVarDict();
         StatCostandIncDict = SetCostAndIncrementDict();
         ElementAffinityDict = GetElementAffinityDict();
@@ -204,32 +206,32 @@ public class StatsHandler : MonoBehaviour
     #endregion
 
     #region // GetDictionaries
-    public Dictionary<string, int> GetAffinityDict()
-    {
-        // Create a new dictionary with string keys and int values
-        AffinityDict = new Dictionary<string, int>
-        {
-            { "Cold Affinity", ColdAffinity },
-            { "Water Affinity", WaterAffinity },
-            { "Earth Affinity", EarthAffinity },
-            { "Heat Affinity", HeatAffinity },
-            { "Fire Affinity", FireAffinity },
-            { "Air Affinity", AirAffinity },
-            { "Electricity Affinity", ElectricityAffinity },
-            { "Light Affinity", LightAffinity },
-            { "Psychic Affinity", PsychicAffinity },
-            { "Fungi Affinity", FungiAffinity },
-            { "Plant Affinity", PlantAffinity },
-            { "Poison Affinity", PoisonAffinity },
-            { "Acid Affinity", AcidAffinity },
-            { "Radiation Affinity", RadiationAffinity },
-            { "Bacteria Affinity", BacteriaAffinity },
-            { "Virus Affinity", VirusAffinity }
-        };
-        return AffinityDict;
-
-    }
-
+    //public Dictionary<string, int> GetAffinityDict()
+    //{
+    //    // Create a new dictionary with string keys and int values
+    //    AffinityDict = new Dictionary<string, int>
+    //    {
+    //        { "Cold Affinity", ColdAffinity },
+    //        { "Water Affinity", WaterAffinity },
+    //        { "Earth Affinity", EarthAffinity },
+    //        { "Heat Affinity", HeatAffinity },
+    //        { "Fire Affinity", FireAffinity },
+    //        { "Air Affinity", AirAffinity },
+    //        { "Electricity Affinity", ElectricityAffinity },
+    //        { "Light Affinity", LightAffinity },
+    //        { "Psychic Affinity", PsychicAffinity },
+    //        { "Fungi Affinity", FungiAffinity },
+    //        { "Plant Affinity", PlantAffinity },
+    //        { "Poison Affinity", PoisonAffinity },
+    //        { "Acid Affinity", AcidAffinity },
+    //        { "Radiation Affinity", RadiationAffinity },
+    //        { "Bacteria Affinity", BacteriaAffinity },
+    //        { "Virus Affinity", VirusAffinity }
+    //    };
+    //    return AffinityDict;
+    //
+    //}
+    //
     public void IncrementAttribute(StatType stat, int increment, int cost, bool overrideCost = false)
     {
         if (availableStatPoints > cost || overrideCost)
@@ -238,12 +240,13 @@ public class StatsHandler : MonoBehaviour
             {
                 availableStatPoints -= StatCostandIncDict[stat].Item1;
             }
-            CharVarsDict[stat] += increment;
+            int currentStatValue = CharVarsDict[stat].Get();
+            int newValue = currentStatValue + increment;
+            CharVarsDict[stat].Set(newValue);
             Debug.Log($"your attribute ({stat}) is {CharVarsDict[stat]}");
-            Debug.Log($"Where as your cold affinity is {ColdAffinity}");
+            //Debug.Log($"Where as your cold affinity is {ColdAffinity}");
         }
         else Debug.Log("the increment attribute function while the target lacked sufficent talent points or there was no override for the increment");
-        ApplyDictionaryToVariables();
     }
     private Dictionary<Elements, int> GetElementAffinityDict()
     {
@@ -310,77 +313,45 @@ public class StatsHandler : MonoBehaviour
 
     }
 
-    private Dictionary<StatType, int> GetCharVarDict()
+    private Dictionary<StatType, (Func<int> Get, Action<int> Set)> GetCharVarDict()
     {
-        Dictionary<StatType, int> CharVarsDict = new Dictionary<StatType, int>
+        Dictionary<StatType, (Func<int> Get, Action<int> Set)> CharVarsDict = new Dictionary<StatType, (Func<int> Get, Action<int> Set)>
         {
-            { StatType.Health, MaxHealth },
-            { StatType.Mana, MaxMana },
-            { StatType.Stamina, MaxStamina },
+            { StatType.Health, (() => MaxHealth, v => MaxHealth = v)},
+            { StatType.Mana, (() => MaxMana, v => MaxMana = v) },
+            { StatType.Stamina, (() => MaxStamina, v => MaxStamina = v) },
 
-            { StatType.HealthRegen, HealthRegen }, // Initiative might not fit here; check if it should be HealthRegen
-            { StatType.ManaRegen, ManaRegen }, // Same concern, should it be something else?
-            { StatType.StaminaRegen, StaminaRegen },
+            { StatType.HealthRegen, (() => HealthRegen, v => HealthRegen = v) }, // Initiative might not fit here; check if it should be HealthRegen
+            { StatType.ManaRegen, (() => ManaRegen, v => ManaRegen = v) }, // Same concern, should it be something else?
+            { StatType.StaminaRegen, (() => StaminaRegen, v => StaminaRegen = v) },
 
-            { StatType.ActionPoints, ActionPoints },
-            { StatType.ActionRegen, ActionPointRegen },
+            { StatType.ActionPoints, (() => ActionPoints, v => ActionPoints = v) },
+            { StatType.ActionRegen, (() => ActionPointRegen, v => ActionPointRegen = v) },
 
-            { StatType.ColdAffinity, ColdAffinity },
-            { StatType.WaterAffinity, WaterAffinity },
-            { StatType.EarthAffinity, EarthAffinity },
-            { StatType.HeatAffinity, HeatAffinity },
-            { StatType.FireAffinity, FireAffinity },
-            { StatType.AirAffinity, AirAffinity },
-            { StatType.ElectricityAffinity, ElectricityAffinity },
-            { StatType.LightAffinity, LightAffinity },
-            { StatType.FungiAffinity, FungiAffinity },
-            { StatType.PlantAffinity, PlantAffinity },
-            { StatType.PoisonAffinity, PoisonAffinity },
-            { StatType.AcidAffinity, AcidAffinity },
-            { StatType.RadiationAffinity, RadiationAffinity },
-            { StatType.BacteriaAffinity, BacteriaAffinity },
-            { StatType.VirusAffinity, VirusAffinity },
-            { StatType.PsychicAffinity, PsychicAffinity },
+            { StatType.ColdAffinity, (() => ColdAffinity, v => ColdAffinity = v) },
+            { StatType.WaterAffinity, (() => WaterAffinity, v => WaterAffinity = v) },
+            { StatType.EarthAffinity, (() => EarthAffinity, v => EarthAffinity = v) },
+            { StatType.HeatAffinity, (() => HeatAffinity, v => HeatAffinity = v) },
+            { StatType.FireAffinity, (() => FireAffinity, v => FireAffinity = v) },
+            { StatType.AirAffinity, (() => AirAffinity, v => AirAffinity = v) },
+            { StatType.ElectricityAffinity, (() => ElectricityAffinity, v => ElectricityAffinity = v) },
+            { StatType.LightAffinity, (() => LightAffinity, v => LightAffinity = v) },
+            { StatType.FungiAffinity, (() => FungiAffinity, v => FungiAffinity = v) },
+            { StatType.PlantAffinity, (() => PlantAffinity, v => PlantAffinity = v) },
+            { StatType.PoisonAffinity, (() => PoisonAffinity, v => PoisonAffinity = v) },
+            { StatType.AcidAffinity, (() => AcidAffinity, v => AcidAffinity = v) },
+            { StatType.RadiationAffinity, (() => RadiationAffinity, v => RadiationAffinity = v) },
+            { StatType.BacteriaAffinity, (() => BacteriaAffinity, v => BacteriaAffinity = v) },
+            { StatType.VirusAffinity, (() => VirusAffinity, v => VirusAffinity = v) },
+            { StatType.PsychicAffinity, (() => PsychicAffinity, v => PsychicAffinity = v) },
 
-            { StatType.BludgeoningResistance, BludgeoningResist },
-            { StatType.SlashingResistance, SlashingResist },
-            { StatType.PiercingResistance, PiercingResist }
+            { StatType.BludgeoningResistance, (() => BludgeoningResist, v => BludgeoningResist = v) },
+            { StatType.SlashingResistance, (() => SlashingResist, v => SlashingResist = v) },
+            { StatType.PiercingResistance, (() => PiercingResist, v => PiercingResist = v) }
         };
         return CharVarsDict;
     }
-    public void ApplyDictionaryToVariables()
-    {
-        MaxHealth = CharVarsDict[StatType.Health];
-        MaxMana = CharVarsDict[StatType.Mana];
-        MaxStamina = CharVarsDict[StatType.Stamina];
 
-        HealthRegen = CharVarsDict[StatType.HealthRegen];
-        ManaRegen = CharVarsDict[StatType.ManaRegen];
-        StaminaRegen = CharVarsDict[StatType.StaminaRegen];
-
-        ActionPoints = CharVarsDict[StatType.ActionPoints];
-        ActionPointRegen = CharVarsDict[StatType.ActionRegen];
-
-        ColdAffinity = CharVarsDict[StatType.ColdAffinity];
-        WaterAffinity = CharVarsDict[StatType.WaterAffinity];
-        EarthAffinity = CharVarsDict[StatType.EarthAffinity];
-        HeatAffinity = CharVarsDict[StatType.HeatAffinity];
-        FireAffinity = CharVarsDict[StatType.FireAffinity];
-        AirAffinity = CharVarsDict[StatType.AirAffinity];
-        ElectricityAffinity = CharVarsDict[StatType.ElectricityAffinity];
-        LightAffinity = CharVarsDict[StatType.LightAffinity];
-        FungiAffinity = CharVarsDict[StatType.FungiAffinity];
-        PlantAffinity = CharVarsDict[StatType.PlantAffinity];
-        PoisonAffinity = CharVarsDict[StatType.PoisonAffinity];
-        AcidAffinity = CharVarsDict[StatType.AcidAffinity];
-        RadiationAffinity = CharVarsDict[StatType.RadiationAffinity];
-        BacteriaAffinity = CharVarsDict[StatType.BacteriaAffinity];
-        VirusAffinity = CharVarsDict[StatType.VirusAffinity];
-
-        BludgeoningResist = CharVarsDict[StatType.BludgeoningResistance];
-        SlashingResist = CharVarsDict[StatType.SlashingResistance];
-        PiercingResist = CharVarsDict[StatType.PiercingResistance];
-    }
 
     private Dictionary<PhysicalDamage, int> GetPhysicalResistDict()
     {
@@ -444,8 +415,17 @@ public class StatsHandler : MonoBehaviour
     }
     public void SetElement(Elements element)
     {
-        ElementAffinityDict[element] += 25;
-        Element = element;
+        foreach (StatType stat in GeneralFunctions.GetAllEnums<StatType>())
+        {
+            if (stat.ToString().Contains(element.ToString()))
+            {
+                CharVarsDict[stat].Set(25);
+                Debug.Log($"creatures element {element} has been raised to {CharVarsDict[stat].Get()}");
+
+                Element = element;
+            }
+        }
+
         Debug.Log($"creatures element has been set to {element}");
     }
 
@@ -454,11 +434,14 @@ public class StatsHandler : MonoBehaviour
     {
 
         string affinityString = "";
-        AffinityDict = GetAffinityDict();
+        //AffinityDict = GetAffinityDict();
 
-        foreach (KeyValuePair<string, int> kvp in AffinityDict)
+        foreach (KeyValuePair<StatType, (Func<int> Get, Action<int> Set)> kvp in CharVarsDict)
         {
-            affinityString += $"{kvp.Key}: {kvp.Value} \n";
+            if (kvp.Key.ToString().Contains("Affinity"))// || kvp.Key.ToString().Contains("Resistence"))
+            {
+                affinityString += $"{GeneralFunctions.AddSpaceToEnum(kvp.Key)}: {kvp.Value.Get()} \n";
+            }
         }
         return affinityString;
     }
@@ -1299,4 +1282,36 @@ public class StatsHandler : MonoBehaviour
 
 
 
-
+//public void ApplyDictionaryToVariables()
+//{
+//    MaxHealth = CharVarsDict[StatType.Health];
+//    MaxMana = CharVarsDict[StatType.Mana];
+//    MaxStamina = CharVarsDict[StatType.Stamina];
+//
+//    HealthRegen = CharVarsDict[StatType.HealthRegen];
+//    ManaRegen = CharVarsDict[StatType.ManaRegen];
+//    StaminaRegen = CharVarsDict[StatType.StaminaRegen];
+//
+//    ActionPoints = CharVarsDict[StatType.ActionPoints];
+//    ActionPointRegen = CharVarsDict[StatType.ActionRegen];
+//
+//    ColdAffinity = CharVarsDict[StatType.ColdAffinity];
+//    WaterAffinity = CharVarsDict[StatType.WaterAffinity];
+//    EarthAffinity = CharVarsDict[StatType.EarthAffinity];
+//    HeatAffinity = CharVarsDict[StatType.HeatAffinity];
+//    FireAffinity = CharVarsDict[StatType.FireAffinity];
+//    AirAffinity = CharVarsDict[StatType.AirAffinity];
+//    ElectricityAffinity = CharVarsDict[StatType.ElectricityAffinity];
+//    LightAffinity = CharVarsDict[StatType.LightAffinity];
+//    FungiAffinity = CharVarsDict[StatType.FungiAffinity];
+//    PlantAffinity = CharVarsDict[StatType.PlantAffinity];
+//    PoisonAffinity = CharVarsDict[StatType.PoisonAffinity];
+//    AcidAffinity = CharVarsDict[StatType.AcidAffinity];
+//    RadiationAffinity = CharVarsDict[StatType.RadiationAffinity];
+//    BacteriaAffinity = CharVarsDict[StatType.BacteriaAffinity];
+//    VirusAffinity = CharVarsDict[StatType.VirusAffinity];
+//
+//    BludgeoningResist = CharVarsDict[StatType.BludgeoningResistance];
+//    SlashingResist = CharVarsDict[StatType.SlashingResistance];
+//    PiercingResist = CharVarsDict[StatType.PiercingResistance];
+//}

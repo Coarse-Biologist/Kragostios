@@ -38,6 +38,7 @@ public static class EquipmentHandler
     private static void AddCharToEquipmentDict(StatsHandler stats)
     {
         Dictionary<ItemSlot, Item_SO> charEquipment = new Dictionary<ItemSlot, Item_SO>();
+        UnityEngine.Debug.Log($"{stats}");
         allEquipmentDicts.TryAdd(stats, charEquipment);
 
         foreach (ItemSlot slot in allItemSlots)

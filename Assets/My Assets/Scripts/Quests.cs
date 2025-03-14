@@ -31,6 +31,9 @@ public static class Quests
     #region prologue vars
     public static Dictionary<Elements, List<string>> colorWords = new Dictionary<Elements, List<string>>();
     public static int prologueStep { private set; get; } = 0;
+
+    public static int questIndex { private set; get; } = 0;
+    [SerializeField] public static List<Quest_SO> Quest_SO_OrderList { private set; get; } = new List<Quest_SO>();
     #endregion
 
     //track progress method. stores and sets progress in different skillsand knowledges
@@ -80,6 +83,19 @@ public static class Quests
         //QuestStringDict.Add(QuestName.ExamineBodies, examineBodiesString);
     }
 
+    public static Quest_SO GetCurrentQuest()
+    {
+        if (Quest_SO_OrderList[questIndex] != null) return Quest_SO_OrderList[questIndex];
+        else return AllQuest_SOs[1];
+        //return null;
+    }
+
+    public static Item_SO QuestItemAtTrader()
+    {
+        Quest_SO currentQuest = GetCurrentQuest();
+        return currentQuest.QuestItem;
+        //return WorldChest.allItemsList[1];
+    }
 
 
     public static string GetCurrentQuestString()
@@ -119,7 +135,31 @@ public static class Quests
             IntAccomplishments[quest] += increments;
         }
         else IntAccomplishments.Add(quest, increments);
+
+        EnableEarnedAlchemy();
+
         Debug.Log($"Quest: {quest} accomplishment value increased by {increments}!");
+    }
+
+    private static void EnableEarnedAlchemy()
+    {
+        if (IntAccomplishments.TryGetValue(QuestName.ExamineBodies, out int value))
+        {
+            if (AlchemyHandler.CanExtractCores != true && value > 3)
+            {
+                AlchemyHandler.EnableExtraction();
+            }
+        }
+        else IntAccomplishments.Add(QuestName.ExamineBodies, 0);
+        if (BoolAccomplishments.TryGetValue(QuestName.LearnGlassMaking, out bool isTrue))
+        {
+            if (AlchemyHandler.CanPurifyEther != true && isTrue)
+            {
+                AlchemyHandler.EnablePurification();
+            }
+        }
+        else BoolAccomplishments.Add(QuestName.LearnGlassMaking, false);
+
     }
 
     public static void CompleteBoolQuest(QuestName quest)
@@ -130,6 +170,8 @@ public static class Quests
             Debug.Log($"Quest: {quest} has been completed!");
         }
         else BoolAccomplishments.Add(quest, true);
+
+        EnableEarnedAlchemy();
     }
     #endregion
 
@@ -145,10 +187,13 @@ public static class Quests
             {
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
+
                     Quest_SO loadedSO = handle.Result;
                     if (loadedSO.Repeatable)
                     {
                         repeatableQuests.Add(loadedSO.QuestEnum);
+                        IntAccomplishments.Add(loadedSO.QuestEnum, 0);
+
                     }
                     else boolQuests.Add(loadedSO.QuestEnum);
 
@@ -157,8 +202,14 @@ public static class Quests
                         destination.Add(loadedSO);
                         Debug.Log($"Loaded: {address}");
                     }
+
+                    Quest_SO_OrderList.Add(loadedSO);
+                    Debug.Log($"Quest order list = {Quest_SO_OrderList.Count}");
+
                 }
+
                 else
+
                 {
                     Debug.LogError($"Failed to load ScriptableObject at address: {address}");
                 }
@@ -244,13 +295,13 @@ public static class Quests
         Debug.Log($"{prologueItem}");
         if (colorWords.TryGetValue(elementalColor, out List<string> items))
         {
-            foreach (KeyValuePair<Elements, List<string>> kvp in colorWords)
-            {
-                foreach (string stroge in kvp.Value)
-                {
-                    Debug.Log($"{stroge}");
-                }
-            }
+            //foreach (KeyValuePair<Elements, List<string>> kvp in colorWords)
+            //{
+            //    foreach (string stroge in kvp.Value)
+            //    {
+            //        Debug.Log($"{stroge}");
+            //    }
+            //}
             if (items.Count >= 3)
             {
                 string item1 = items[0];
@@ -263,9 +314,17 @@ public static class Quests
 
             }
 
-            prologueStep++; // increments the number of times ive parsed every time i use it. hopefully this is right
+            // increments the number of times ive parsed every time i use it. hopefully this is right
+            Debug.Log($"step = {prologueStep}");
+
         }
+
         return prologueItem;
+    }
+    public static void IncrementPrologueStep()
+    {
+        prologueStep++;
+
     }
 
     public static List<string> GetPrologue()

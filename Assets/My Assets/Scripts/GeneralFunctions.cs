@@ -52,5 +52,20 @@ public static class GeneralFunctions
         return Enum.GetValues(typeof(T)).Cast<T>().ToList();
     }
 
+    public static string AddSpaceToEnum(Enum enumString)
+    {
+        string spacedEnum = enumString.ToString();
+
+        foreach (char letter in spacedEnum)
+        {
+            if (char.IsUpper(letter))//Contains(letter.ToString()))
+            {
+                int index = spacedEnum.IndexOf(letter);
+                spacedEnum = spacedEnum.Insert(index, " ");
+            }
+        }
+        return spacedEnum;
+    }
+
 
 }

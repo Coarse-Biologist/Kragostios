@@ -44,29 +44,29 @@ public class Inventory : MonoBehaviour
         rightCreationPanel = root.Q<VisualElement>("RightCreationPanel");
         itemInfo = new UnityEngine.UIElements.Label("");
     }
-    public void SpawnTraderButton(StatsHandler stats, VisualElement panel, List<Item_SO> traderItems)
+    public void SpawnTraderButton(VisualElement panel)//StatsHandler stats, , List<Item_SO> traderItems)
     {
-        playerStats = stats;
+        //playerStats = stats;
         TemplateContainer container = templateButton.Instantiate();
         Button button = container.Query<Button>();
         button.text = "Trader";
-        button.RegisterCallback<ClickEvent>(evt => DisplayTraderScreen(stats, traderItems, leftCreationPanel, rightCreationPanel));
+        button.RegisterCallback<ClickEvent>(evt => RequestTraderScreen());
         panel.Add(button);
     }
-    public void SpawnInventoryButton(VisualElement panel, StatsHandler stats)
+    public void SpawnInventoryButton(VisualElement panel)
     {
-        playerStats = stats;
+        //playerStats = stats;
         TemplateContainer container = templateButton.Instantiate();
         Button button = container.Query<Button>();
         button.text = "Inventory";
-        button.RegisterCallback<ClickEvent>(evt => DisplayInventoryItems(stats, leftCreationPanel));
+        button.RegisterCallback<ClickEvent>(evt => RequestInventoryScreen());
         panel.Add(button);
     }
     public void DisplayInventoryItems(StatsHandler stats, VisualElement panel) // Show nventory items in the panel i pass w]for the character who 
     {
-        EquipmentHandler.SetPlayerStats(playerStats);
+        Debug.Log($"{stats} = stats. player stats = {playerStats}");
+        EquipmentHandler.SetPlayerStats(stats);
         panel.Clear();
-        RequestInventoryScreen();
         foreach (KeyValuePair<Item_SO, int> kvp in stats.Inventory)
         {
             Item_SO item = kvp.Key;
@@ -93,21 +93,21 @@ public class Inventory : MonoBehaviour
 
 
     }
-    public void DisplayTraderScreen(StatsHandler stats, List<Item_SO> traderItems, VisualElement playerInv, VisualElement traderInv)
+    public void DisplayTraderScreen(StatsHandler stats, List<Item_SO> traderItems)
     {
         //foreach (TemplateContainer container in traderButtons)
         //{
         //    rightCreationPanel.Remove(container);
         //}
-        traderInv.Clear();
-        DisplayInventoryItems(stats, playerInv);
-        RequestInventoryScreen();
+        rightCreationPanel.Clear();
+        DisplayInventoryItems(stats, leftCreationPanel);
+        //RequestInventoryScreen();
         foreach (Item_SO item in traderItems)
         {
             TemplateContainer container = templateButton.Instantiate();
             Button button = container.Q<Button>();
             button.text = item.ItemName + $" || Cost: {item.ItemValue} Gold ||";
-            traderInv.Add(container);
+            rightCreationPanel.Add(container);
             container.Add(button);
             button.RegisterCallback<ClickEvent>(e => ShowItemInfo(item, true));
             button.RegisterCallback<ClickEvent>(e => AlterColor(button));
@@ -122,21 +122,21 @@ public class Inventory : MonoBehaviour
         Button buyButton = buyContainer.Q<Button>();
         buyButton.text = "Buy";
         buyButton.RegisterCallback<ClickEvent>(e => RequestTransaction(selectedBuyableItem, true));
-        traderInv.Add(sellButton);
-        traderInv.Add(buyButton);
+        rightCreationPanel.Add(sellButton);
+        rightCreationPanel.Add(buyButton);
 
     }
 
     public void RequestInventoryScreen()
     {
-        leftCreationPanel.style.display = DisplayStyle.Flex;
-        rightCreationPanel.style.display = DisplayStyle.Flex;
+        //leftCreationPanel.style.display = DisplayStyle.Flex;
+        //rightCreationPanel.style.display = DisplayStyle.Flex;
         requestInventoryScreen?.Invoke();
     }
     public void RequestTraderScreen()
     {
-        leftCreationPanel.style.display = DisplayStyle.Flex;
-        rightCreationPanel.style.display = DisplayStyle.Flex;
+        //leftCreationPanel.style.display = DisplayStyle.Flex;
+        //rightCreationPanel.style.display = DisplayStyle.Flex;
         requestTraderScreen?.Invoke();
     }
 
@@ -228,8 +228,8 @@ public class Inventory : MonoBehaviour
     private void ExitInventory()
     {
         //Label itemText = rightCreationPanel.Q<Label>("CharCreationText");
-        rightCreationPanel.Clear();
-        leftCreationPanel.Clear();
+        //rightCreationPanel.Clear(); change
+        //leftCreationPanel.Clear();
         exitInventoryScreen?.Invoke();
     }
     private void AlterColor(Button button)

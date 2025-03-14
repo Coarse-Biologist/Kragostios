@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using KragostiosAllEnums;
+using System;
 
 public static class WorldChest
 {
@@ -94,6 +95,23 @@ public static class WorldChest
             }
         }
         return new List<Item_SO>(items);
+    }
+
+
+    public static List<Item_SO> GetTraderItems(StatsHandler playerStats)
+    {
+        List<Item_SO> traderItems = new List<Item_SO>();
+        foreach (Item_SO item in allItemsList)
+        {
+            //int c = Array.IndexOf.Enum.GetValues(typeof(Rarity), item.ItemRarity);
+            //playerStats.characterLevel > 
+            if (playerStats.characterLevel > (Convert.ToInt32(item.ItemRarity) * 3) || item.ItemRarity == Rarity.Common)
+            {
+                traderItems.Add(item);
+            }
+        }
+
+        return traderItems;
     }
 }
 

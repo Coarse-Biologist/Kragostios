@@ -235,7 +235,7 @@ public class AlchemyData
 
     public AlchemyData()
     {
-        AvailableTools_SD = AlchemyHandler.AvailableTools;
+        AvailableTools_SD = AlchemyHandler.AvailableAlchemyTools;
         PlayerEther_SD = AlchemyHandler.PlayerEther;
         KnowledgeDict_SD = AlchemyHandler.KnowledgeDict;
     }
