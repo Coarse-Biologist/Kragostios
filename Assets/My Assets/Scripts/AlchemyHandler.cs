@@ -152,12 +152,23 @@ public static class AlchemyHandler
         string knowledgeGained = GainKnowledge(enemyCombatantTuple.Item2);
         if (result)
         {
-            stringResult = $"With {numToolsKnown} at your disposal, you succeeded in extracting the {enemyCombatantTuple.Item2} core from the {enemyCombatantTuple.Item3}. {knowledgeGained}";
+            stringResult = $"With {numToolsKnown} extraction tools at your disposal, you succeeded in extracting the {enemyCombatantTuple.Item2} core from the {enemyCombatantTuple.Item3}. {knowledgeGained}";
         }
         else
         {
-            stringResult = $"HAving {numToolsKnown} at your disposal, you falied in extracting the {enemyCombatantTuple.Item2} core from the {enemyCombatantTuple.Item3}. {knowledgeGained}";
+            stringResult = $"Having {numToolsKnown} extraction tools at your disposal, you failed in extracting the {enemyCombatantTuple.Item2} core from the {enemyCombatantTuple.Item3}. {knowledgeGained}";
         }
+        return stringResult;
+    }
+
+    public static string HandleExamination(Tuple<Difficulty, Elements, string> enemyCombatantTuple)
+    {
+        string stringResult = "";
+        //bool result = AttemptExtractions(enemyCombatantTuple);
+        int numToolsKnown = GetNumAutopsyToolsKnown();
+        string knowledgeGained = GainKnowledge(enemyCombatantTuple.Item2);
+        stringResult = $"Having {numToolsKnown} examination tools at your disposal, you examined the {enemyCombatantTuple.Item3}. {knowledgeGained}";
+
         return stringResult;
     }
 

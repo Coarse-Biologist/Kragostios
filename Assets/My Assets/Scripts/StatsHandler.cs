@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
+using System.ComponentModel;
 
 
 
@@ -62,6 +63,7 @@ public class StatsHandler : MonoBehaviour
     public List<int> affinityList;
     public Dictionary<string, int> AffinityDict;
     public Dictionary<Elements, int> ElementAffinityDict;
+    public Dictionary<Elements, StatType> ElementStatDict = new Dictionary<Elements, StatType>();
     public Dictionary<StatType, (Func<int> Get, Action<int> Set)> CharVarsDict = new Dictionary<StatType, (Func<int> Get, Action<int> Set)>();
     //spublic Dictionary<StatType, int> StatCostDict = new Dictionary<StatType, int>();
     //spublic Dictionary<StatType, int> StatIncrementDict = new Dictionary<StatType, int>();
@@ -73,6 +75,7 @@ public class StatsHandler : MonoBehaviour
         CharVarsDict = GetCharVarDict();
         StatCostandIncDict = SetCostAndIncrementDict();
         ElementAffinityDict = GetElementAffinityDict();
+        ElementStatDict = GetElementToStatDict();
     }
 
 
@@ -206,31 +209,7 @@ public class StatsHandler : MonoBehaviour
     #endregion
 
     #region // GetDictionaries
-    //public Dictionary<string, int> GetAffinityDict()
-    //{
-    //    // Create a new dictionary with string keys and int values
-    //    AffinityDict = new Dictionary<string, int>
-    //    {
-    //        { "Cold Affinity", ColdAffinity },
-    //        { "Water Affinity", WaterAffinity },
-    //        { "Earth Affinity", EarthAffinity },
-    //        { "Heat Affinity", HeatAffinity },
-    //        { "Fire Affinity", FireAffinity },
-    //        { "Air Affinity", AirAffinity },
-    //        { "Electricity Affinity", ElectricityAffinity },
-    //        { "Light Affinity", LightAffinity },
-    //        { "Psychic Affinity", PsychicAffinity },
-    //        { "Fungi Affinity", FungiAffinity },
-    //        { "Plant Affinity", PlantAffinity },
-    //        { "Poison Affinity", PoisonAffinity },
-    //        { "Acid Affinity", AcidAffinity },
-    //        { "Radiation Affinity", RadiationAffinity },
-    //        { "Bacteria Affinity", BacteriaAffinity },
-    //        { "Virus Affinity", VirusAffinity }
-    //    };
-    //    return AffinityDict;
-    //
-    //}
+
     //
     public void IncrementAttribute(StatType stat, int increment, int cost, bool overrideCost = false)
     {
@@ -271,6 +250,30 @@ public class StatsHandler : MonoBehaviour
 
         };
         return ElementAffinityDict;
+    }
+    private Dictionary<Elements, StatType> GetElementToStatDict()
+    {
+        ElementStatDict = new Dictionary<Elements, StatType>
+        {
+            { Elements.Cold, StatType.ColdAffinity },
+            { Elements.Water, StatType.WaterAffinity },
+            { Elements.Earth, StatType.EarthAffinity },
+            { Elements.Heat, StatType.HeatAffinity },
+            { Elements.Fire, StatType.FireAffinity },
+            { Elements.Air, StatType.AirAffinity },
+            { Elements.Electricity, StatType.ElectricityAffinity },
+            { Elements.Light, StatType.LightAffinity },
+            { Elements.Psychic, StatType.PsychicAffinity },
+            { Elements.Fungi, StatType.FungiAffinity },
+            { Elements.Plant, StatType.PlantAffinity },
+            { Elements.Poison, StatType.PoisonAffinity },
+            { Elements.Acid, StatType.AcidAffinity },
+            { Elements.Radiation, StatType.RadiationAffinity },
+            { Elements.Bacteria, StatType.BacteriaAffinity },
+            { Elements.Virus, StatType.VirusAffinity }
+
+        };
+        return ElementStatDict;
     }
 
     private Dictionary<StatType, Tuple<int, int>> SetCostAndIncrementDict()
@@ -415,19 +418,17 @@ public class StatsHandler : MonoBehaviour
     }
     public void SetElement(Elements element)
     {
-        foreach (StatType stat in GeneralFunctions.GetAllEnums<StatType>())
-        {
-            if (stat.ToString().Contains(element.ToString()))
-            {
-                CharVarsDict[stat].Set(25);
-                Debug.Log($"creatures element {element} has been raised to {CharVarsDict[stat].Get()}");
+        //foreach (StatType stat in GeneralFunctions.GetAllEnums<StatType>())
+        //{
+        //    if (stat.ToString().Contains(element.ToString()))
+        //    {
+        StatType stat = ElementStatDict[element];
+        CharVarsDict[stat].Set(25);
+        Debug.Log($"creatures element {element} has been raised to {CharVarsDict[stat].Get()}");
 
-                Element = element;
-            }
-        }
-
-        Debug.Log($"creatures element has been set to {element}");
+        Element = element;
     }
+
 
 
     public string GetAffinityString()
@@ -438,19 +439,27 @@ public class StatsHandler : MonoBehaviour
 
         foreach (KeyValuePair<StatType, (Func<int> Get, Action<int> Set)> kvp in CharVarsDict)
         {
-            if (kvp.Key.ToString().Contains("Affinity"))// || kvp.Key.ToString().Contains("Resistence"))
+            if (kvp.Key.ToString().Contains("Affinity") || kvp.Key.ToString().Contains("Resistance"))// || kvp.Key.ToString().Contains("Resistence"))
             {
-                affinityString += $"{GeneralFunctions.AddSpaceToEnum(kvp.Key)}: {kvp.Value.Get()} \n";
+                if (kvp.Value.Get() > 0)
+                {
+                    affinityString += $"{GeneralFunctions.AddSpaceToEnum(kvp.Key)}: {kvp.Value.Get()} \n";
+                }
             }
         }
         return affinityString;
     }
-    public string GetResistString()
-    {
-        string resistString = $"Bludgeoning resistance: {BludgeoningResist} \n Slashing resistance: {SlashingResist} \n Piercing resistance: {PiercingResist}";
-
-        return resistString;
-    }
+    //public string GetResistString()
+    //{
+    //    string returnString = "";
+    //    List<string> resistStrings = new List<string>{$"Bludgeoning resistance: {BludgeoningResist}",
+    //    $"Slashing resistance: {SlashingResist}",
+    //    $"Piercing resistance: {PiercingResist}"};
+    //    if (SlashingResist > 0)
+    //    {
+    //        returnString += resistStrings
+    //    }
+    //}
 
 
     #endregion
@@ -472,247 +481,7 @@ public class StatsHandler : MonoBehaviour
         currentStamina = MaxStamina;
         currentActionPoints = ActionPoints;
     }
-    public void AddMaxHealth(int incrementValue, int cost = 0)
-    {
-        MaxHealth += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void AddMaxMana(int incrementValue, int cost = 0)
-    {
-        MaxMana += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void AddMaxStamina(int incrementValue, int cost = 0)
-    {
-        MaxStamina += incrementValue;
-        availableStatPoints -= cost;
-    }
 
-    public void AddActionPoint(int incrementValue, int cost = 0)
-    {
-        ActionPoints += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void RegenActionPoints()
-    {
-        currentActionPoints += ActionPointRegen;
-        if (currentActionPoints > ActionPoints) currentActionPoints = ActionPoints;
-    }
-    public void SpendActionPoints()
-    {
-        currentActionPoints -= 1;
-    }
-
-    public void AddActionPointRegen(int incrementValue, int cost = 0)
-    {
-        ActionPointRegen += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void AddHealthRegen(int incrementValue, int cost = 0)
-    {
-        HealthRegen += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void AddManaRegen(int incrementValue, int cost = 0)
-    {
-        ManaRegen += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void AddStaminaRegen(int incrementValue, int cost = 0)
-    {
-        StaminaRegen += incrementValue;
-        availableStatPoints -= cost;
-    }
-
-    public void AddColdAffinity(int incrementValue, int cost = 0)
-    {
-        ColdAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-
-        availableStatPoints -= cost;
-    }
-
-    public void AddWaterAffinity(int incrementValue, int cost = 0)
-    {
-        WaterAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-        ColdAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-    public void AddEarthAffinity(int incrementValue, int cost = 0)
-    {
-        EarthAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-        PlantAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-    public void AddHeatAffinity(int incrementValue, int cost = 0)
-    {
-        HeatAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-        FireAffinity += (int)Math.Round(splashIncrement, 2);
-
-        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
-
-
-
-        availableStatPoints -= cost;
-    }
-
-    public void AddFireAffinity(int incrementValue, int cost = 0)
-    {
-        FireAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-        HeatAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-    public void AddAirAffinity(int incrementValue, int cost = 0)
-    {
-        AirAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-        ElectricityAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-    public void AddElectricityAffinity(int incrementValue, int cost = 0)
-    {
-        ElectricityAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-        AirAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-    public void AddLightAffinity(int incrementValue, int cost = 0)
-    {
-        LightAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-
-        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
-
-        HeatAffinity += (int)Math.Round(splashIncrement, 2);
-
-
-        availableStatPoints -= cost;
-    }
-
-    public void AddRadiationAffinity(int incrementValue, int cost = 0)
-    {
-        RadiationAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-
-        AirAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-
-    public void AddPsychicAffinity(int incrementValue, int cost = 0)
-    {
-        PsychicAffinity += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void AddFungiAffinity(int incrementValue, int cost = 0)
-    {
-        FungiAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-
-        PlantAffinity += (int)Math.Round(splashIncrement, 2);
-
-        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-
-
-        availableStatPoints -= cost;
-    }
-    public void AddPlantAffinity(int incrementValue, int cost = 0)
-    {
-        PlantAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-
-        FungiAffinity += (int)Math.Round(splashIncrement, 2);
-
-        WaterAffinity += (int)Math.Round(splashIncrement, 2);
-
-        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-    public void AddPoisonAffinity(int incrementValue, int cost = 0)
-    {
-        PoisonAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-
-        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-
-        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-
-
-        availableStatPoints -= cost;
-    }
-    public void AddAcidAffinity(int incrementValue, int cost = 0)
-    {
-        AcidAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-
-        HeatAffinity += (int)Math.Round(splashIncrement, 2);
-
-        RadiationAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-
-    public void AddBacteriaAffinity(int incrementValue, int cost = 0)
-    {
-        BacteriaAffinity += incrementValue;
-
-        decimal splashIncrement = incrementValue / 2;
-
-        VirusAffinity += (int)Math.Round(splashIncrement, 2);
-
-        PoisonAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-    public void AddVirusAffinity(int incrementValue, int cost = 0)
-    {
-        VirusAffinity += incrementValue;
-        decimal splashIncrement = incrementValue / 2;
-
-        BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-
-        PoisonAffinity += (int)Math.Round(splashIncrement, 2);
-
-        availableStatPoints -= cost;
-    }
-    public void AddBludgeoningResist(int incrementValue, int cost = 0)
-    {
-        BludgeoningResist += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void AddSlashingResist(int incrementValue, int cost = 0)
-    {
-        SlashingResist += incrementValue;
-        availableStatPoints -= cost;
-    }
-    public void AddPiercingResist(int incrementValue, int cost = 0)
-    {
-        PiercingResist += incrementValue;
-        availableStatPoints -= cost;
-    }
 
     #endregion
 
@@ -871,6 +640,15 @@ public class StatsHandler : MonoBehaviour
                 break;
         }
     }
+    public void RegenActionPoints()
+    {
+        currentActionPoints += ActionPointRegen;
+        if (currentActionPoints > ActionPoints) currentActionPoints = ActionPoints;
+    }
+    public void SpendActionPoints()
+    {
+        currentActionPoints -= 1;
+    }
     private void GiveOverHealth(int overHealthAmount)
     {
         MaxHealth += overHealthAmount;
@@ -994,138 +772,13 @@ public class StatsHandler : MonoBehaviour
         string creatureName = $"{elementAdjective} {elementName}";
         return creatureName;
     }
-    private void SetCreatureAffinities(Elements element, Difficulty difficultyLevel)
+    private void SetCreatureAffinities(StatType stat, Difficulty difficultyLevel)
     {
-        KDebug.SeekBug($"setting creature affinities for {element}");
-        int added = 0;
-        switch (element)
-        {
-            case Elements.None:
-                while (added < (((int)difficultyLevel + 1) * 3))
-                {
-                    AddBludgeoningResist(5);
-                    AddPiercingResist(5);
-                    AddSlashingResist(5);
-                    added++;
-                }
-                KDebug.SeekBug($"setting creature affinities for {element}. BludgeoningResist = {BludgeoningResist} PiercingResist = {PiercingResist} SlashingResist = {SlashingResist}");
-                break;
-            case Elements.Cold:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddColdAffinity(5);
-                    added++;
-                }
-                KDebug.SeekBug($"setting creature affinities for {element}. ColdResist = {ColdAffinity}");
-
-                break;
-            case Elements.Water:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddWaterAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Earth:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddEarthAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Heat:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddHeatAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Fire:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddFireAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Air:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddAirAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Electricity:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddElectricityAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Light:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddLightAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Psychic:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddPsychicAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Fungi:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddFungiAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Plant:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddPlantAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Poison:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddPoisonAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Acid:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddAcidAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Radiation:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddRadiationAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Bacteria:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddBacteriaAffinity(5);
-                    added++;
-                }
-                break;
-            case Elements.Virus:
-                while (added < (((int)difficultyLevel + 1) * 6))
-                {
-                    AddVirusAffinity(5);
-                    added++;
-                }
-                break;
-        }
+        KDebug.SeekBug($"setting creature affinities for {stat}");
+        int difficultyNum = Array.IndexOf(Enum.GetValues(typeof(Difficulty)), difficultyLevel) + 1;
+        IncrementAttribute(stat, 6 * difficultyNum, 0, true);
     }
+
 
 
     public GameObject MakeCreature(Difficulty difficultyLevel, Combatants combatantType)
@@ -1139,7 +792,7 @@ public class StatsHandler : MonoBehaviour
                 charType = Combatants.Enemy;
                 element = GetRandomCreatureElement();
                 characterName = GetElementRelatedName(element, difficultyLevel);
-                SetCreatureAffinities(element, difficultyLevel);
+                SetCreatureAffinities(ElementStatDict[element], difficultyLevel);
                 break;
             case Combatants.Companion:
                 charType = Combatants.Companion;
@@ -1314,4 +967,391 @@ public class StatsHandler : MonoBehaviour
 //    BludgeoningResist = CharVarsDict[StatType.BludgeoningResistance];
 //    SlashingResist = CharVarsDict[StatType.SlashingResistance];
 //    PiercingResist = CharVarsDict[StatType.PiercingResistance];
+//}
+
+
+//int added = 0;
+//switch (element)
+//{
+//case Elements.None:
+//    while (added < (((int)difficultyLevel + 1) * 3))
+//    {
+//        AddBludgeoningResist(5);
+//        AddPiercingResist(5);
+//        AddSlashingResist(5);
+//        added++;
+//    }
+//    KDebug.SeekBug($"setting creature affinities for {element}. BludgeoningResist = {BludgeoningResist} PiercingResist = {PiercingResist} SlashingResist = {SlashingResist}");
+//    break;
+//case Elements.Cold:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddColdAffinity(5);
+//        added++;
+//    }
+//    KDebug.SeekBug($"setting creature affinities for {element}. ColdResist = {ColdAffinity}");
+//
+//    break;
+//case Elements.Water:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddWaterAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Earth:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddEarthAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Heat:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddHeatAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Fire:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddFireAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Air:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddAirAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Electricity:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddElectricityAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Light:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddLightAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Psychic:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddPsychicAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Fungi:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddFungiAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Plant:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddPlantAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Poison:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddPoisonAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Acid:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddAcidAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Radiation:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddRadiationAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Bacteria:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddBacteriaAffinity(5);
+//        added++;
+//    }
+//    break;
+//case Elements.Virus:
+//    while (added < (((int)difficultyLevel + 1) * 6))
+//    {
+//        AddVirusAffinity(5);
+//        added++;
+//    }
+//    break;
+//public void AddMaxHealth(int incrementValue, int cost = 0)
+//{
+//    MaxHealth += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public void AddMaxMana(int incrementValue, int cost = 0)
+//{
+//    MaxMana += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public void AddMaxStamina(int incrementValue, int cost = 0)
+//{
+//    MaxStamina += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//
+//public void AddActionPoint(int incrementValue, int cost = 0)
+//{
+//    ActionPoints += incrementValue;
+//    availableStatPoints -= cost;
+//}
+
+//
+//public void AddActionPointRegen(int incrementValue, int cost = 0)
+//{
+//    ActionPointRegen += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public void AddHealthRegen(int incrementValue, int cost = 0)
+//{
+//    HealthRegen += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public void AddManaRegen(int incrementValue, int cost = 0)
+//{
+//    ManaRegen += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public void AddStaminaRegen(int incrementValue, int cost = 0)
+//{
+//    StaminaRegen += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//
+//public void AddColdAffinity(int incrementValue, int cost = 0)
+//{
+//    ColdAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    availableStatPoints -= cost;
+//}
+//
+//public void AddWaterAffinity(int incrementValue, int cost = 0)
+//{
+//    WaterAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//    ColdAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddEarthAffinity(int incrementValue, int cost = 0)
+//{
+//    EarthAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//    PlantAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddHeatAffinity(int incrementValue, int cost = 0)
+//{
+//    HeatAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//    FireAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//
+//
+//    availableStatPoints -= cost;
+//}
+//
+//public void AddFireAffinity(int incrementValue, int cost = 0)
+//{
+//    FireAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//    HeatAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddAirAffinity(int incrementValue, int cost = 0)
+//{
+//    AirAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//    ElectricityAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddElectricityAffinity(int incrementValue, int cost = 0)
+//{
+//    ElectricityAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//    AirAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddLightAffinity(int incrementValue, int cost = 0)
+//{
+//    LightAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    HeatAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//
+//    availableStatPoints -= cost;
+//}
+//
+//public void AddRadiationAffinity(int incrementValue, int cost = 0)
+//{
+//    RadiationAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    AirAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//
+//public void AddPsychicAffinity(int incrementValue, int cost = 0)
+//{
+//    PsychicAffinity += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public void AddFungiAffinity(int incrementValue, int cost = 0)
+//{
+//    FungiAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    PlantAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddPlantAffinity(int incrementValue, int cost = 0)
+//{
+//    PlantAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    FungiAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    WaterAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddPoisonAffinity(int incrementValue, int cost = 0)
+//{
+//    PoisonAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddAcidAffinity(int incrementValue, int cost = 0)
+//{
+//    AcidAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    HeatAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    RadiationAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//
+//public void AddBacteriaAffinity(int incrementValue, int cost = 0)
+//{
+//    BacteriaAffinity += incrementValue;
+//
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    VirusAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    PoisonAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddVirusAffinity(int incrementValue, int cost = 0)
+//{
+//    VirusAffinity += incrementValue;
+//    decimal splashIncrement = incrementValue / 2;
+//
+//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    PoisonAffinity += (int)Math.Round(splashIncrement, 2);
+//
+//    availableStatPoints -= cost;
+//}
+//public void AddBludgeoningResist(int incrementValue, int cost = 0)
+//{
+//    BludgeoningResist += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public void AddSlashingResist(int incrementValue, int cost = 0)
+//{
+//    SlashingResist += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public void AddPiercingResist(int incrementValue, int cost = 0)
+//{
+//    PiercingResist += incrementValue;
+//    availableStatPoints -= cost;
+//}
+//public Dictionary<string, int> GetAffinityDict()
+//{
+//    // Create a new dictionary with string keys and int values
+//    AffinityDict = new Dictionary<string, int>
+//    {
+//        { "Cold Affinity", ColdAffinity },
+//        { "Water Affinity", WaterAffinity },
+//        { "Earth Affinity", EarthAffinity },
+//        { "Heat Affinity", HeatAffinity },
+//        { "Fire Affinity", FireAffinity },
+//        { "Air Affinity", AirAffinity },
+//        { "Electricity Affinity", ElectricityAffinity },
+//        { "Light Affinity", LightAffinity },
+//        { "Psychic Affinity", PsychicAffinity },
+//        { "Fungi Affinity", FungiAffinity },
+//        { "Plant Affinity", PlantAffinity },
+//        { "Poison Affinity", PoisonAffinity },
+//        { "Acid Affinity", AcidAffinity },
+//        { "Radiation Affinity", RadiationAffinity },
+//        { "Bacteria Affinity", BacteriaAffinity },
+//        { "Virus Affinity", VirusAffinity }
+//    };
+//    return AffinityDict;
+//
 //}

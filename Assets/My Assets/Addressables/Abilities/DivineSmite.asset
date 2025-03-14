@@ -21,7 +21,7 @@ MonoBehaviour:
   physicalType: 0
   abilityCost: 5
   healValue: 0
-  damageValue: 10
+  damageValue: 100
   turnDuration: 0
   targets: 1
   summons: 0

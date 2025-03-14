@@ -132,7 +132,7 @@ public class CombatFlow : MonoBehaviour
         }
         else if (!debuffs.Contains(Debuffs.Stun) && !debuffs.Contains(Debuffs.Stun) && !debuffs.Contains(Debuffs.Stun))
         {
-            string playerTurnIntro = $"{stats.characterName} Has big plans!... What are they?...";
+            string playerTurnIntro = $"{stats.characterName} has big plans!... What are they?...";
             RequestNarration(playerTurnIntro);
             RequestOptionButtons(stats.knownAbilities);
         }
@@ -254,14 +254,14 @@ public class CombatFlow : MonoBehaviour
         if (stats.currentActionPoints > 0)
         {
             selectedTargets = new List<GameObject>();
-            Invoke("CombatCycle", 1f);
+            Invoke("CombatCycle", .1f);
         }
         else // if the caster has no action points left, the next combatant takes their turn
         {
             stats.RegenActionPoints();
             selectedTargets = new List<GameObject>();
             currentTurnIndex++;
-            Invoke("CombatCycle", 1f);
+            Invoke("CombatCycle", .1f);
         }
     }
 

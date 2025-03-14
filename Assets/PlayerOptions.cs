@@ -7,6 +7,7 @@ using KragostiosAllEnums;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine.Rendering;
 using NUnit.Framework.Constraints;
+using NUnit.Framework;
 
 public class PlayerOptions : MonoBehaviour
 {
@@ -371,14 +372,10 @@ public class PlayerOptions : MonoBehaviour
 
     public void DisplayCharacterCreationScreen(StatsHandler stats)
     {
-        charCreationText.text = stats.getAvailableStatPoints() + "/n" + stats.GetStatCosts();
+        charCreationText.text = stats.getAvailableStatPoints();
         ChangeScreen(new List<VisualElement> { LeftCreationPanel, RightCreationPanel });
 
-        //buttonContainer_AO.style.display = DisplayStyle.None; //Change
-        //narratorWindow.style.display = DisplayStyle.None;
-        //LeftCreationPanel.style.display = DisplayStyle.Flex;
 
-        //Dictionary<StatType, string> configDict = new Dictionary<StatType, string>();
         foreach (StatType stat in GeneralFunctions.GetAllEnums<StatType>())
         {
 
@@ -389,10 +386,16 @@ public class PlayerOptions : MonoBehaviour
             LeftCreationPanel.Add(button);
             button.MarkDirtyRepaint();
         }
+        Button statCostButton = new Button { text = "Show Stat Upgrade Costs" };
+        statCostButton.style.position = Position.Relative;
+        RightCreationPanel.Add(statCostButton);
+        statCostButton.RegisterCallback<PointerLeaveEvent>(e => ToggleStringDisplay(RightCreationPanel, stats.GetStatCosts()));
+        statCostButton.RegisterCallback<PointerEnterEvent>(e => ToggleStringDisplay(RightCreationPanel, stats.GetStatCosts()));
+        ;
+
         TemplateContainer newButtonContainer = templateButton.Instantiate();
-        Button confirmButton = newButtonContainer.Q<Button>();
-        LeftCreationPanel.Add(confirmButton);
-        confirmButton.text = "Confirm Character";
+        Button confirmButton = new Button { text = "Confirm Character" };
+        RightCreationPanel.Add(confirmButton);
         confirmButton.RegisterCallback<ClickEvent>(e => CharStatsConfirmed());
 
         TextField charNameField = LeftCreationPanel.Q<TextField>("CharName");
@@ -440,8 +443,24 @@ public class PlayerOptions : MonoBehaviour
         charCreationText.style.whiteSpace = WhiteSpace.Normal;
         charCreationText.style.color = Color.white;
         string playerAffinity = playerStats.GetAffinityString();
-        string playerResist = playerStats.GetResistString();
-        charCreationText.text = $"{playerStats.GetStatCosts()} \n {playerStats.getAvailableStatPoints()} \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity} \n {playerResist}";
+        //string playerResist = playerStats.GetResistString();
+        charCreationText.text = $"{playerStats.getAvailableStatPoints()} \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity}";
+    }
+    //{playerStats.GetStatCosts()} \n 
+    public void ToggleStringDisplay(VisualElement panel, string message)
+    {
+        Label panelLabel = panel.Q<Label>();
+        if (!panelLabel.text.Contains(message))
+        {
+            Debug.Log("panel did not have the toggle message and will therefore add it");
+            panelLabel.text += $"\n \n {message}";
+        }
+        else if (panelLabel.text.Contains(message)) //panelLabel != null && 
+        {
+            panelLabel.text = panelLabel.text.Replace($"\n \n {message}", "");
+            Debug.Log("panel was null or panel had the message");
+        }
+
     }
 
 

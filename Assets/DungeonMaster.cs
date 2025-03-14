@@ -313,6 +313,7 @@ public class DungeonMaster : MonoBehaviour
         {
             enemiesToExam.Add($"Examine {tripleTuple.Item3}");
         }
+        enemiesToExam.Add("Continue Journeying");
         playerOptions.SpawnOptionButtons(enemiesToExam);
     }
 
@@ -442,6 +443,7 @@ public class DungeonMaster : MonoBehaviour
         root = UIDocument.rootVisualElement;
         VisualElement buttonContainer_AO = root.Q<VisualElement>("PlayerOptions");
         playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
+        buttonContainer_AO.Clear();
         inventory.SpawnInventoryButton(buttonContainer_AO);
         List<Directions> directions = map.directions;
         playerOptions.SpawnDirectionOptions(directions);
@@ -454,34 +456,51 @@ public class DungeonMaster : MonoBehaviour
     #region // player narrator/npc dialogue
     private void NarratorResponseToPlayer(string playerChoice)
     {
-        if (presentingQuests)
+        if (playerChoice == "Continue Journeying")
         {
-            foreach (Elements element in GeneralFunctions.GetAllEnums<Elements>())
+            ShowMainMenu();
+        }
+        else
+        {
+            if (presentingQuests)
             {
-                if (element.ToString() == playerChoice)
+                foreach (Elements element in GeneralFunctions.GetAllEnums<Elements>())
                 {
-                    Debug.Log($"players affinity to {element} will be increased");
-                    playerStats.SetElement(element);
-                    PresentPrologue();
+                    if (element.ToString() == playerChoice)
+                    {
+                        Debug.Log($"players affinity to {element} will be increased");
+                        playerStats.SetElement(element);
+                        PresentPrologue();
+                    }
                 }
             }
-        }
-        if (presentingAlchemy)
-        {
-            foreach (Tuple<Difficulty, Elements, string> combatantTuple in enemyCombatantTuple)
+            if (presentingAlchemy)
             {
-                //string parsedString = playerChoice.Replace("Examine ", "");
-                //Debug.Log($"{parsedString}");
-                if (playerChoice.EndsWith(combatantTuple.Item3))
+                foreach (Tuple<Difficulty, Elements, string> combatantTuple in enemyCombatantTuple)
                 {
-                    DisplayNarration(AlchemyHandler.HandleExtraction(combatantTuple));
+                    if (playerChoice.Contains(combatantTuple.Item3))
+                    {
+                        if (playerChoice.StartsWith("Examine"))
+                        {
+                            Quests.IncrementIntQuests(Quests.QuestName.ExamineBodies, 1);
+                            DisplayNarration(AlchemyHandler.HandleExamination(combatantTuple));
+                            if (AlchemyHandler.CanExtractCores == true)
+                            {
+                                playerOptions.SpawnOptionButtons(new List<string> { $"Extract Core from {combatantTuple.Item3}" });
+                            }
+                        }
+                        if (playerChoice.StartsWith("Extract"))
+                        {
+                            DisplayNarration(AlchemyHandler.HandleExtraction(combatantTuple));
+                        }
+                    }
                 }
             }
-        }
-        else if (!presentingQuests && !presentingAlchemy)
-        {
-            string narratorResponse = playerToNarratorDict[playerChoice];
-            narrator.DisplayNarrationText(narratorResponse);
+            else if (!presentingQuests && !presentingAlchemy)
+            {
+                string narratorResponse = playerToNarratorDict[playerChoice];
+                narrator.DisplayNarrationText(narratorResponse);
+            }
         }
 
     }
@@ -546,6 +565,7 @@ public class DungeonMaster : MonoBehaviour
         playerStats.LearnAbility(AbilityEnums.Abilities.Fireball);
         playerStats.LearnAbility(AbilityEnums.Abilities.HealingTouch);
         playerStats.LearnAbility(AbilityEnums.Abilities.Melee);
+        playerStats.LearnAbility(AbilityEnums.Abilities.DivineStrike);
         ShowMainMenu();
 
     }

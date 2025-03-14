@@ -145,7 +145,7 @@ public static class Quests
     {
         if (IntAccomplishments.TryGetValue(QuestName.ExamineBodies, out int value))
         {
-            if (AlchemyHandler.CanExtractCores != true && value > 3)
+            if (AlchemyHandler.CanExtractCores != true && value > 2)
             {
                 AlchemyHandler.EnableExtraction();
             }
