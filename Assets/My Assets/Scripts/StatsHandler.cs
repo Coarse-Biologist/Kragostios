@@ -422,6 +422,7 @@ public class StatsHandler : MonoBehaviour
         //{
         //    if (stat.ToString().Contains(element.ToString()))
         //    {
+        Debug.Log($"Seeking {element}")
         StatType stat = ElementStatDict[element];
         CharVarsDict[stat].Set(25);
         Debug.Log($"creatures element {element} has been raised to {CharVarsDict[stat].Get()}");

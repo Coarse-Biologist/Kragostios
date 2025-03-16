@@ -8,6 +8,9 @@ using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine.Rendering;
 using NUnit.Framework.Constraints;
 using NUnit.Framework;
+using Unity.VisualScripting;
+using System.Linq;
+
 
 public class PlayerOptions : MonoBehaviour
 {
@@ -459,13 +462,39 @@ public class PlayerOptions : MonoBehaviour
         {
             panelLabel.text = panelLabel.text.Replace($"\n \n {message}", "");
             Debug.Log("panel was null or panel had the message");
+
+            //message.Split()
         }
 
     }
-
-
-
 }
+
+//   using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//
+//static int[] SortDescending(int[] numbers) => numbers.OrderByDescending(n => n).ToArray();
+//    static string HighAndLow(string numbers)
+//    {
+//        string[] stringNums = numbers.Split(new char[] { ' ' }, StringSplitOptions.None);
+//        Console.WriteLine("got 1");
+//        int[] nums = new int[0];
+//        Console.WriteLine("got 2");
+//
+//        foreach (string stringer in stringNums)
+//        {
+//            Console.WriteLine("got 3");
+//
+//            int convertedNumber = Convert.ToInt32(stringNums);
+//            nums.Append(convertedNumber);
+//        }
+//        int[] sortedNums = SortDescending(nums);
+//        return Convert.ToString(sortedNums[0] + " " + (sortedNums.Length - 1));
+//    }
+//    Console.WriteLine(HighAndLow("6 4 5 90"));				
+
+
+
 
 
 

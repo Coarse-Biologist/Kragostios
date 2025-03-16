@@ -533,9 +533,9 @@ public class DungeonMaster : MonoBehaviour
     }
     private void HandleStatIncremented(StatType stat)
     {
-        if (playerStats.availableStatPoints > playerStats.StatCostandIncDict[stat].Item1)
+        if (playerStats.availableStatPoints >= playerStats.StatCostandIncDict[stat].Item1)
         {
-            playerStats.IncrementAttribute(stat, playerStats.StatCostandIncDict[stat].Item2, playerStats.StatCostandIncDict[stat].Item2);
+            playerStats.IncrementAttribute(stat, playerStats.StatCostandIncDict[stat].Item2, playerStats.StatCostandIncDict[stat].Item1);
 
             playerOptions.DisplayeIncrementEffect(stat.ToString(), playerStats);
             Debug.Log($"HandleStatIncremented is happening");
@@ -548,6 +548,7 @@ public class DungeonMaster : MonoBehaviour
         if (input.EndsWith("charDescription")) playerStats.SetDescription(input.Replace("charDescription", ""));
     }
     #endregion
+
 
     #region // Character Creation Complete
     private void CharacterCreationComplete()
