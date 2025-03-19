@@ -356,13 +356,6 @@ public class Map : MonoBehaviour
 
         biomesMapDict = new Dictionary<Vector2Int, Biomes>(); // makes new dict to store locations and biomes at those locations
         List<Vector2Int> mapDictList = mapDict.Keys.ToList();
-        //string desc = "";
-        //foreach (Vector2Int vector in mapDictList)
-        //{
-        //    desc += vector.ToString();
-        //}
-        //Debug.Log($"{desc}");
-        //Debug.Log($"map size: {mapDictList.Count} vector points");
 
 
         foreach (Biomes biome in domainType)
@@ -376,13 +369,11 @@ public class Map : MonoBehaviour
                 Vector2Int startPoint = mapDictList[randomIndex];
                 if (!biomesMapDict.TryGetValue(startPoint, out Biomes biomes))
                 {
-                    UnityEngine.Debug.Log($"{biome} start point found at {startPoint}");
+                    //UnityEngine.Debug.Log($"{biome} start point found at {startPoint}");
                     biomesMapDict.Add(startPoint, biome);
                     found = true; // leave the while loop
                 }
-
                 //Debug.Log($"found: {found}");
-
             }
         }
         return biomesMapDict;

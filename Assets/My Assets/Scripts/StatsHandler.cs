@@ -12,9 +12,7 @@ using System.ComponentModel;
 
 public class StatsHandler : MonoBehaviour
 {
-    #region // class references
-    //private Ability_SO ability;
-    #endregion
+    #region All class variables
 
     #region // char description
     public string characterName { private set; get; } = "Sqreegler";
@@ -24,7 +22,6 @@ public class StatsHandler : MonoBehaviour
     #endregion
 
     #region //  resources
-
     [SerializeField] public int MaxHealth { private set; get; } = 100;
     [SerializeField] public int MaxMana { private set; get; } = 100;
     [SerializeField] public int MaxStamina { private set; get; } = 100;
@@ -40,13 +37,11 @@ public class StatsHandler : MonoBehaviour
     [SerializeField] public int currentOverHealth { private set; get; } = 0;
     #endregion
 
-    #region // Elemental Affinityences
+    #region // Elemental Affinities
     public int ColdAffinity { private set; get; } = 0;
-    //public int IceAffinity {private set; get;} = 0;
     public int WaterAffinity { private set; get; } = 0;
     public int EarthAffinity { private set; get; } = 0;
     public int HeatAffinity { private set; get; } = 0;
-    //public int LavaAffinity {private set; get;} = 0;
     public int FireAffinity { private set; get; } = 0;
     public int AirAffinity { private set; get; } = 0;
     public int ElectricityAffinity { private set; get; } = 0;
@@ -59,26 +54,13 @@ public class StatsHandler : MonoBehaviour
     public int RadiationAffinity { private set; get; } = 0;
     public int BacteriaAffinity { private set; get; } = 0;
     public int VirusAffinity { private set; get; } = 0;
-
+    #endregion
+    #region dataStorageDicts
     public List<int> affinityList;
     public Dictionary<string, int> AffinityDict;
     public Dictionary<Elements, int> ElementAffinityDict;
     public Dictionary<Elements, StatType> ElementStatDict = new Dictionary<Elements, StatType>();
     public Dictionary<StatType, (Func<int> Get, Action<int> Set)> CharVarsDict = new Dictionary<StatType, (Func<int> Get, Action<int> Set)>();
-    //spublic Dictionary<StatType, int> StatCostDict = new Dictionary<StatType, int>();
-    //spublic Dictionary<StatType, int> StatIncrementDict = new Dictionary<StatType, int>();
-    public Dictionary<StatType, Tuple<int, int>> StatCostandIncDict = new Dictionary<StatType, Tuple<int, int>>();
-
-    public void Awake()
-    {
-        //AffinityDict = GetAffinityDict();
-        CharVarsDict = GetCharVarDict();
-        StatCostandIncDict = SetCostAndIncrementDict();
-        ElementAffinityDict = GetElementAffinityDict();
-        ElementStatDict = GetElementToStatDict();
-    }
-
-
     #endregion
 
     #region // Physical Affinityences 
@@ -115,6 +97,14 @@ public class StatsHandler : MonoBehaviour
     [SerializeField] public List<Abilities> knownAbilities_save { private set; get; } = new List<Abilities>();
 
     #endregion
+    #endregion
+    public void Awake()
+    {
+        //AffinityDict = GetAffinityDict();
+        CharVarsDict = GetCharVarDict();
+        ElementAffinityDict = GetElementAffinityDict();
+        ElementStatDict = GetElementToStatDict();
+    }
 
     #region // getters
     private bool IsAlive()
@@ -127,12 +117,7 @@ public class StatsHandler : MonoBehaviour
     #region //Get Strings
     public string GetKnownAbilitiesString()
     {
-        string knownAbilitiesString = "";
-        foreach (Ability_SO ability in knownAbilities)
-        {
-            knownAbilitiesString += ability.AbilityName + ", ";
-        }
-        return knownAbilitiesString;
+        return string.Join(", ", knownAbilities.Select(a => a.AbilityName));
     }
     public List<Abilities> SetKnownAbilities_Save()
     {
@@ -157,9 +142,7 @@ public class StatsHandler : MonoBehaviour
 
             }
         }
-        else knownAbilities = new List<Ability_SO> { AbilityLibrary.FireBall, AbilityLibrary.Melee };
-
-
+        else knownAbilities = new List<Ability_SO> { AbilityLibrary.allAbilities[0], AbilityLibrary.allAbilities[1] };
         return knownAbilities_save;
     }
 
@@ -201,7 +184,7 @@ public class StatsHandler : MonoBehaviour
         return statCosts;
     }
 
-    public string getAvailableStatPoints()
+    public string GetAvailableStatPoints()
     {
         string availableStatPointsString = $"Available Stat Points: {availableStatPoints}";
         return availableStatPointsString;
@@ -217,7 +200,7 @@ public class StatsHandler : MonoBehaviour
         {
             if (!overrideCost)
             {
-                availableStatPoints -= StatCostandIncDict[stat].Item1;
+                availableStatPoints -= cost;
             }
             int currentStatValue = CharVarsDict[stat].Get();
             int newValue = currentStatValue + increment;
@@ -274,46 +257,6 @@ public class StatsHandler : MonoBehaviour
 
         };
         return ElementStatDict;
-    }
-
-    private Dictionary<StatType, Tuple<int, int>> SetCostAndIncrementDict()
-    {
-        StatCostandIncDict = new Dictionary<StatType, Tuple<int, int>>
-{
-    { StatType.Health, new Tuple<int, int>(1, 5) },
-    { StatType.Mana, new Tuple<int, int>(1, 5) },
-    { StatType.Stamina, new Tuple<int, int>(1, 5) },
-
-    { StatType.HealthRegen, new Tuple<int, int>(3, 1) },
-    { StatType.ManaRegen, new Tuple<int, int>(3, 1)},
-    { StatType.StaminaRegen, new Tuple<int, int>(3, 1) },
-
-    { StatType.ActionPoints, new Tuple<int, int>(20, 1) },
-    { StatType.ActionRegen, new Tuple<int, int>(20, 1) },
-
-    { StatType.ColdAffinity, new Tuple<int, int>(1, 5) },
-    { StatType.WaterAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.EarthAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.HeatAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.FireAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.AirAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.ElectricityAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.LightAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.PlantAffinity,new Tuple<int, int>(1, 5)},
-    { StatType.BacteriaAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.RadiationAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.FungiAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.VirusAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.AcidAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.PoisonAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.PsychicAffinity, new Tuple<int, int>(1, 5)},
-    { StatType.PiercingResistance, new Tuple<int, int>(1, 5)},
-    { StatType.SlashingResistance, new Tuple<int, int>(1, 5)},
-    { StatType.BludgeoningResistance, new Tuple<int, int>(1, 5)},
-
-};
-        return StatCostandIncDict;
-
     }
 
     private Dictionary<StatType, (Func<int> Get, Action<int> Set)> GetCharVarDict()
@@ -384,32 +327,30 @@ public class StatsHandler : MonoBehaviour
     }
     private int AdjustValue(int value, Elements element = Elements.None, PhysicalDamage physicalType = PhysicalDamage.None)
     {
+        KDebug.SeekBug($"{value} = value. element type =  {element}");
         //this method adjusts the value of an attack based on the affinity of the target
         int relevantAffinity = 0;
         if (element != Elements.None)
         {
-            KDebug.SeekBug($"{value} = value. element type =  {element}");
             Dictionary<Elements, int> ElementAffinityDict = GetElementAffinityDict();
             relevantAffinity = ElementAffinityDict[element];
         }
 
         if (physicalType != PhysicalDamage.None)
         {
-            KDebug.SeekBug($"{value} = value. element type =  {physicalType}");
             Dictionary<PhysicalDamage, int> physicalResistDict = GetPhysicalResistDict();
             relevantAffinity = physicalResistDict[physicalType];
         }
 
-        if (relevantAffinity > 100) //if one should heal from an attack due to extreme resistence
+        if (relevantAffinity > 100)
         {
-            value = (int)Math.Abs(Math.Round((value * ((relevantAffinity - 100) / 100.0)))); //calculate how much resistance above 100% they have and multiply the percentage by the value of the attack
+            value = (int)Math.Abs(Math.Round((value * ((relevantAffinity - 100) / 100.0))));
         }
 
         if (relevantAffinity == 0) return value;
 
         if (relevantAffinity <= 100 && relevantAffinity > 0)
         {
-            KDebug.SeekBug($"value prior to adjustment = {value}");
             value = (int)Math.Round(value * 1.0 - (value * (relevantAffinity / 100)));
             KDebug.SeekBug($"value after adjustment = {value}");
         }
@@ -418,29 +359,28 @@ public class StatsHandler : MonoBehaviour
     }
     public void SetElement(Elements element)
     {
-        //foreach (StatType stat in GeneralFunctions.GetAllEnums<StatType>())
-        //{
-        //    if (stat.ToString().Contains(element.ToString()))
-        //    {
-        Debug.Log($"Seeking {element}")
-        StatType stat = ElementStatDict[element];
-        CharVarsDict[stat].Set(25);
-        Debug.Log($"creatures element {element} has been raised to {CharVarsDict[stat].Get()}");
+        if (ElementStatDict.TryGetValue(element, out StatType stat))
+        {
+            CharVarsDict[stat].Set(25);
+            Debug.Log($"creatures element {element} has been raised to {CharVarsDict[stat].Get()}");
 
-        Element = element;
+            Element = element;
+        }
+        else
+        {
+            Debug.Log($"{element} not found in elements Dict");
+            Element = Elements.Bacteria;
+            CharVarsDict[StatType.BacteriaAffinity].Set(25);
+
+        }
     }
-
-
 
     public string GetAffinityString()
     {
-
         string affinityString = "";
-        //AffinityDict = GetAffinityDict();
-
         foreach (KeyValuePair<StatType, (Func<int> Get, Action<int> Set)> kvp in CharVarsDict)
         {
-            if (kvp.Key.ToString().Contains("Affinity") || kvp.Key.ToString().Contains("Resistance"))// || kvp.Key.ToString().Contains("Resistence"))
+            if (kvp.Key.ToString().Contains("Affinity") || kvp.Key.ToString().Contains("Resistance"))
             {
                 if (kvp.Value.Get() > 0)
                 {
@@ -450,28 +390,12 @@ public class StatsHandler : MonoBehaviour
         }
         return affinityString;
     }
-    //public string GetResistString()
-    //{
-    //    string returnString = "";
-    //    List<string> resistStrings = new List<string>{$"Bludgeoning resistance: {BludgeoningResist}",
-    //    $"Slashing resistance: {SlashingResist}",
-    //    $"Piercing resistance: {PiercingResist}"};
-    //    if (SlashingResist > 0)
-    //    {
-    //        returnString += resistStrings
-    //    }
-    //}
+
 
 
     #endregion
 
-    #region //Scaling factors
-    private int easyScaleFactor = 2;
-    private int mediumScaleFactor = 3;
-    private int hardScaleFactor = 4;
-    private int brutalScaleFactor = 5;
-    private int nightmareScaleFactor = 6;
-    #endregion
+
 
     #region // Setters
     #region // stat point usage
@@ -526,28 +450,21 @@ public class StatsHandler : MonoBehaviour
         KDebug.SeekBug($"{characterName} cahnge amount of gold by: {GoldAmount}");
         characterGold += GoldAmount;
     }
-    public Dictionary<Item_SO, int> GetInventory()
-    {
-        return Inventory;
-    }
+
     public void AddToInventory(Item_SO item, int amount = 1)
     {
-        List<Item_SO> invItems = Inventory.Keys.ToList();
-        if (invItems.Contains(item))
+        if (Inventory.TryGetValue(item, out int num))
         {
             Inventory[item] += amount;
         }
         else
         {
             Inventory.Add(item, amount);
-
         }
-        Debug.Log($"amount: {amount}. item: {item.ItemName}");
     }
     public void RemoveFromInventory(Item_SO item, int amount = 1)
     {
-        List<Item_SO> invItems = Inventory.Keys.ToList();
-        if (invItems.Contains(item))
+        if (Inventory.TryGetValue(item, out int num))
         {
             Inventory[item] -= amount;
             if (Inventory[item] == 0)
@@ -596,20 +513,14 @@ public class StatsHandler : MonoBehaviour
 
     public Dictionary<Item_SO, int> ConvertLoadedInventory(Dictionary<string, int> loadedInv) // searches World Chest's items for an item with the specified name
     {
-        Debug.Log($"Converting loaded inventory with item Count: {loadedInv.Count}.");
-        //this is currently being passed an empty list
+        //Debug.Log($"Converting loaded inventory with item Count: {loadedInv.Count}.");
         Inventory = new Dictionary<Item_SO, int>();
         foreach (KeyValuePair<string, int> kvp in loadedInv)
         {
-
-            //Item_SO newItem = GeneralFunctions.GetItemFromItemName(kvp.Key);
             Item_SO newItem = WorldChest.GetItemFromName(kvp.Key);
-
             Inventory.Add(newItem, kvp.Value);
-            Debug.Log($"ConvertLoadedInventory method: Adding {kvp.Value} of item {newItem} to players Inv. Items in inv = {Inventory.Count}/ Num of this  item: {kvp.Value}");
-
+            //Debug.Log($"ConvertLoadedInventory method: Adding {kvp.Value} of item {newItem} to players Inv. Items in inv = {Inventory.Count}/ Num of this  item: {kvp.Value}");
         }
-
         return Inventory;
     }
     #endregion
@@ -618,7 +529,6 @@ public class StatsHandler : MonoBehaviour
         characterLevel++;
         MaxXp = MaxXp * 2;
     }
-
 
     public void ChangeResource(ResourceTypes resource, int value, Elements element = Elements.None, PhysicalDamage physicalType = PhysicalDamage.None)
 
@@ -675,11 +585,9 @@ public class StatsHandler : MonoBehaviour
         currentMana = 10;
         currentStamina = 10;
         ColdAffinity = 0;
-        //IceAffinity = 0;
         WaterAffinity = 0;
         EarthAffinity = 0;
         HeatAffinity = 0;
-        //LavaAffinity = 0;
         FireAffinity = 0;
         AirAffinity = 0;
         ElectricityAffinity = 0;
@@ -704,23 +612,21 @@ public class StatsHandler : MonoBehaviour
         MaxXp = 30;
         rewards = new List<Rewards>();
         characterGold = 100;
-
-
-
         return gameObject;
 
     }
-    private void AlterStats(int scaleFactor, Combatants combatantType, Difficulty difficultyLevel, Elements element)
+    private void AlterStats(Combatants combatantType, Difficulty difficultyLevel, Elements element)
     {
-        MaxHealth = UnityEngine.Random.Range(1, 10) * scaleFactor;
-        MaxMana = UnityEngine.Random.Range(1, 10) * scaleFactor;
-        MaxStamina = UnityEngine.Random.Range(1, 10) * scaleFactor;
-        initiative = scaleFactor;
-        HealthRegen = scaleFactor;
-        ManaRegen = scaleFactor;
-        StaminaRegen = scaleFactor;
-        characterLevel = scaleFactor;
-        foreach (Abilities ability in AbilityLibrary.GetAbilities(scaleFactor, element))
+        int scaler = (int)difficultyLevel * 2;
+        MaxHealth = UnityEngine.Random.Range(1, 10) * scaler;
+        MaxMana = UnityEngine.Random.Range(1, 10) * scaler;
+        MaxStamina = UnityEngine.Random.Range(1, 10) * scaler;
+        initiative = scaler;
+        HealthRegen = scaler;
+        ManaRegen = scaler;
+        StaminaRegen = scaler;
+        characterLevel = scaler;
+        foreach (Abilities ability in AbilityLibrary.GetAbilities(scaler, element))
         {
             Debug.Log($"abilities to add: {ability}");
 
@@ -738,7 +644,11 @@ public class StatsHandler : MonoBehaviour
     {
         Array elements = Enum.GetValues(typeof(Elements));
         System.Random random = new System.Random();
-        Elements randomElement = (Elements)elements.GetValue(random.Next(elements.Length));
+        Elements randomElement = Elements.None;
+        while (randomElement == Elements.None)
+        {
+            randomElement = (Elements)elements.GetValue(random.Next(elements.Length));
+        }
         SetElement(randomElement);
         return randomElement;
     }
@@ -747,89 +657,25 @@ public class StatsHandler : MonoBehaviour
         //returns a random adjective concatenated to a random name
         Dictionary<Elements, string[]> elementDict = Vocabulary.MakeElementAdjectiveDict();
         string elementAdjective = elementDict[element][UnityEngine.Random.Range(0, elementDict[element].Length)];
-        string elementName = "";
-        switch (difficultyLevel)
-        {
-            case Difficulty.Easy:
-                elementName = Vocabulary.GetRandomlowLevelVillainousCreatures();
-                break;
-            case Difficulty.Medium:
-                elementName = Vocabulary.GetRandomlowLevelVillainousCreatures();
-                break;
-            case Difficulty.Hard:
-                elementName = Vocabulary.GetRandomMidLevelVillainousCreatures();
-                break;
-            case Difficulty.Brutal:
-                elementName = Vocabulary.GetRandomHighLevelVillainousCreatures();
-                break;
-            case Difficulty.Nightmare:
-                elementName = Vocabulary.GetRandomHighLevelVillainousCreatures();
-                break;
-            default:
-                elementName = Vocabulary.GetRandomlowLevelVillainousCreatures();
-                break;
-        }
+        string baseName = Vocabulary.GetRandomVillainousCreatures((int)difficultyLevel);
 
-        string creatureName = $"{elementAdjective} {elementName}";
+        string creatureName = $"{elementAdjective} {baseName}";
         return creatureName;
     }
-    private void SetCreatureAffinities(StatType stat, Difficulty difficultyLevel)
-    {
-        KDebug.SeekBug($"setting creature affinities for {stat}");
-        int difficultyNum = Array.IndexOf(Enum.GetValues(typeof(Difficulty)), difficultyLevel) + 1;
-        IncrementAttribute(stat, 6 * difficultyNum, 0, true);
-    }
-
-
-
     public GameObject MakeCreature(Difficulty difficultyLevel, Combatants combatantType)
     {
         Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel}");
         difficulty = difficultyLevel;
         Elements element = Elements.None;
-        switch (combatantType)
+        charType = combatantType;
+        if (charType != Combatants.Enemy) characterName = combatantType.ToString();
+        else
         {
-            case Combatants.Enemy:
-                charType = Combatants.Enemy;
-                element = GetRandomCreatureElement();
-                characterName = GetElementRelatedName(element, difficultyLevel);
-                SetCreatureAffinities(ElementStatDict[element], difficultyLevel);
-                break;
-            case Combatants.Companion:
-                charType = Combatants.Companion;
-                characterName = "Companion";
-                break;
-            case Combatants.Summon:
-                charType = Combatants.Summon;
-                characterName = "Summon";
-                break;
+            element = GetRandomCreatureElement();
+            characterName = GetElementRelatedName(element, difficultyLevel);
+            IncrementAttribute(ElementStatDict[element], 6 * ((int)difficultyLevel + 1), 0, true);
         }
-
-        switch (difficultyLevel)
-        {
-            case Difficulty.Easy:
-
-                AlterStats(easyScaleFactor, combatantType, difficultyLevel, element);
-                break;
-
-            case Difficulty.Medium:
-                AlterStats(mediumScaleFactor, combatantType, difficultyLevel, element);
-
-
-                break;
-            case Difficulty.Hard:
-                AlterStats(hardScaleFactor, combatantType, difficultyLevel, element);
-                break;
-
-            case Difficulty.Brutal:
-                AlterStats(brutalScaleFactor, combatantType, difficultyLevel, element);
-                break;
-
-            case Difficulty.Nightmare:
-                AlterStats(nightmareScaleFactor, combatantType, difficultyLevel, element);
-                break;
-
-        }
+        AlterStats(combatantType, difficultyLevel, element);
         RestoreResources();
         return gameObject;
     }
@@ -900,459 +746,3 @@ public class StatsHandler : MonoBehaviour
 
 }
 
-//replace known abilities and inventory with correct data types
-
-
-//MaxHealth
-//MaxMana
-//MaxStamina
-//initiative
-//ActionPoints
-//ActionPointRegen
-//currentHealth
-//
-//ColdAffinity
-//WaterAffinity
-//EarthAffinity
-//HeatAffinity
-//FireAffinity
-//AirAffinity
-//ElectricityAffinity
-//LightAffinity
-//PsychicAffinity
-//FungiAffinity
-//PlantAffinity
-//PoisonAffinity
-//AcidAffinity
-//RadiationAffinity
-//BacteriaAffinity
-//VirusAffinity
-//  BludgeoningResist
-//SlashingResist
-//PiercingResist
-//
-//
-//
-
-
-
-//public void ApplyDictionaryToVariables()
-//{
-//    MaxHealth = CharVarsDict[StatType.Health];
-//    MaxMana = CharVarsDict[StatType.Mana];
-//    MaxStamina = CharVarsDict[StatType.Stamina];
-//
-//    HealthRegen = CharVarsDict[StatType.HealthRegen];
-//    ManaRegen = CharVarsDict[StatType.ManaRegen];
-//    StaminaRegen = CharVarsDict[StatType.StaminaRegen];
-//
-//    ActionPoints = CharVarsDict[StatType.ActionPoints];
-//    ActionPointRegen = CharVarsDict[StatType.ActionRegen];
-//
-//    ColdAffinity = CharVarsDict[StatType.ColdAffinity];
-//    WaterAffinity = CharVarsDict[StatType.WaterAffinity];
-//    EarthAffinity = CharVarsDict[StatType.EarthAffinity];
-//    HeatAffinity = CharVarsDict[StatType.HeatAffinity];
-//    FireAffinity = CharVarsDict[StatType.FireAffinity];
-//    AirAffinity = CharVarsDict[StatType.AirAffinity];
-//    ElectricityAffinity = CharVarsDict[StatType.ElectricityAffinity];
-//    LightAffinity = CharVarsDict[StatType.LightAffinity];
-//    FungiAffinity = CharVarsDict[StatType.FungiAffinity];
-//    PlantAffinity = CharVarsDict[StatType.PlantAffinity];
-//    PoisonAffinity = CharVarsDict[StatType.PoisonAffinity];
-//    AcidAffinity = CharVarsDict[StatType.AcidAffinity];
-//    RadiationAffinity = CharVarsDict[StatType.RadiationAffinity];
-//    BacteriaAffinity = CharVarsDict[StatType.BacteriaAffinity];
-//    VirusAffinity = CharVarsDict[StatType.VirusAffinity];
-//
-//    BludgeoningResist = CharVarsDict[StatType.BludgeoningResistance];
-//    SlashingResist = CharVarsDict[StatType.SlashingResistance];
-//    PiercingResist = CharVarsDict[StatType.PiercingResistance];
-//}
-
-
-//int added = 0;
-//switch (element)
-//{
-//case Elements.None:
-//    while (added < (((int)difficultyLevel + 1) * 3))
-//    {
-//        AddBludgeoningResist(5);
-//        AddPiercingResist(5);
-//        AddSlashingResist(5);
-//        added++;
-//    }
-//    KDebug.SeekBug($"setting creature affinities for {element}. BludgeoningResist = {BludgeoningResist} PiercingResist = {PiercingResist} SlashingResist = {SlashingResist}");
-//    break;
-//case Elements.Cold:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddColdAffinity(5);
-//        added++;
-//    }
-//    KDebug.SeekBug($"setting creature affinities for {element}. ColdResist = {ColdAffinity}");
-//
-//    break;
-//case Elements.Water:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddWaterAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Earth:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddEarthAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Heat:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddHeatAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Fire:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddFireAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Air:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddAirAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Electricity:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddElectricityAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Light:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddLightAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Psychic:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddPsychicAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Fungi:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddFungiAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Plant:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddPlantAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Poison:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddPoisonAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Acid:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddAcidAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Radiation:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddRadiationAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Bacteria:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddBacteriaAffinity(5);
-//        added++;
-//    }
-//    break;
-//case Elements.Virus:
-//    while (added < (((int)difficultyLevel + 1) * 6))
-//    {
-//        AddVirusAffinity(5);
-//        added++;
-//    }
-//    break;
-//public void AddMaxHealth(int incrementValue, int cost = 0)
-//{
-//    MaxHealth += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public void AddMaxMana(int incrementValue, int cost = 0)
-//{
-//    MaxMana += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public void AddMaxStamina(int incrementValue, int cost = 0)
-//{
-//    MaxStamina += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//
-//public void AddActionPoint(int incrementValue, int cost = 0)
-//{
-//    ActionPoints += incrementValue;
-//    availableStatPoints -= cost;
-//}
-
-//
-//public void AddActionPointRegen(int incrementValue, int cost = 0)
-//{
-//    ActionPointRegen += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public void AddHealthRegen(int incrementValue, int cost = 0)
-//{
-//    HealthRegen += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public void AddManaRegen(int incrementValue, int cost = 0)
-//{
-//    ManaRegen += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public void AddStaminaRegen(int incrementValue, int cost = 0)
-//{
-//    StaminaRegen += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//
-//public void AddColdAffinity(int incrementValue, int cost = 0)
-//{
-//    ColdAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    availableStatPoints -= cost;
-//}
-//
-//public void AddWaterAffinity(int incrementValue, int cost = 0)
-//{
-//    WaterAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//    ColdAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddEarthAffinity(int incrementValue, int cost = 0)
-//{
-//    EarthAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//    PlantAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddHeatAffinity(int incrementValue, int cost = 0)
-//{
-//    HeatAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//    FireAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    RadiationAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//
-//
-//    availableStatPoints -= cost;
-//}
-//
-//public void AddFireAffinity(int incrementValue, int cost = 0)
-//{
-//    FireAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//    HeatAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddAirAffinity(int incrementValue, int cost = 0)
-//{
-//    AirAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//    ElectricityAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddElectricityAffinity(int incrementValue, int cost = 0)
-//{
-//    ElectricityAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//    AirAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddLightAffinity(int incrementValue, int cost = 0)
-//{
-//    LightAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    RadiationAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    HeatAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//
-//    availableStatPoints -= cost;
-//}
-//
-//public void AddRadiationAffinity(int incrementValue, int cost = 0)
-//{
-//    RadiationAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    AirAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//
-//public void AddPsychicAffinity(int incrementValue, int cost = 0)
-//{
-//    PsychicAffinity += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public void AddFungiAffinity(int incrementValue, int cost = 0)
-//{
-//    FungiAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    PlantAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddPlantAffinity(int incrementValue, int cost = 0)
-//{
-//    PlantAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    FungiAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    WaterAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddPoisonAffinity(int incrementValue, int cost = 0)
-//{
-//    PoisonAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddAcidAffinity(int incrementValue, int cost = 0)
-//{
-//    AcidAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    HeatAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    RadiationAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//
-//public void AddBacteriaAffinity(int incrementValue, int cost = 0)
-//{
-//    BacteriaAffinity += incrementValue;
-//
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    VirusAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    PoisonAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddVirusAffinity(int incrementValue, int cost = 0)
-//{
-//    VirusAffinity += incrementValue;
-//    decimal splashIncrement = incrementValue / 2;
-//
-//    BacteriaAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    PoisonAffinity += (int)Math.Round(splashIncrement, 2);
-//
-//    availableStatPoints -= cost;
-//}
-//public void AddBludgeoningResist(int incrementValue, int cost = 0)
-//{
-//    BludgeoningResist += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public void AddSlashingResist(int incrementValue, int cost = 0)
-//{
-//    SlashingResist += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public void AddPiercingResist(int incrementValue, int cost = 0)
-//{
-//    PiercingResist += incrementValue;
-//    availableStatPoints -= cost;
-//}
-//public Dictionary<string, int> GetAffinityDict()
-//{
-//    // Create a new dictionary with string keys and int values
-//    AffinityDict = new Dictionary<string, int>
-//    {
-//        { "Cold Affinity", ColdAffinity },
-//        { "Water Affinity", WaterAffinity },
-//        { "Earth Affinity", EarthAffinity },
-//        { "Heat Affinity", HeatAffinity },
-//        { "Fire Affinity", FireAffinity },
-//        { "Air Affinity", AirAffinity },
-//        { "Electricity Affinity", ElectricityAffinity },
-//        { "Light Affinity", LightAffinity },
-//        { "Psychic Affinity", PsychicAffinity },
-//        { "Fungi Affinity", FungiAffinity },
-//        { "Plant Affinity", PlantAffinity },
-//        { "Poison Affinity", PoisonAffinity },
-//        { "Acid Affinity", AcidAffinity },
-//        { "Radiation Affinity", RadiationAffinity },
-//        { "Bacteria Affinity", BacteriaAffinity },
-//        { "Virus Affinity", VirusAffinity }
-//    };
-//    return AffinityDict;
-//
-//}

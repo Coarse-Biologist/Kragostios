@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using KragostiosAllEnums;
-using UnityEditor.Build.Pipeline;
 
 public static class Vocabulary
 {
@@ -19,8 +18,12 @@ public static class Vocabulary
     };
         return villainousAdjectives[Random.Range(0, villainousAdjectives.Length)];
     }
-    public static string GetRandomHighLevelVillainousCreatures()
+    public static string GetRandomVillainousCreatures(int level)
     {
+        if (level > 3) level = 2;
+        if (level > 2) level = 1;
+        else level = 0;
+        List<string[]> creatureNameArrays = new List<string[]>();
         string[] villainousCreatures = {
     "Shadowfiend", "Dreadspawn", "Ghoulmonger", "Abysslurker", "Cursed Revenant", "Pale Wraith",
     "Hollow Stalker", "Infernal Behemoth", "Phantom Leech", "Maliceborn", "Specter Maw", "Chittering Horror",
@@ -32,10 +35,7 @@ public static class Vocabulary
     "Havoc Strider", "Forsaken Drudge", "Fleshrend Gargoyle", "Dreadhusk", "Malformed Titan", "Warpstalker",
     "Lichbound Horror", "Whispering Shade", "Riftborn Banshee", "Skulltide Leviathan", "Void Revenant"
 };
-        return villainousCreatures[Random.Range(0, villainousCreatures.Length)];
-    }
-    public static string GetRandomMidLevelVillainousCreatures()
-    {
+
         string[] pitifulCreatures =
         {
     "Blighted Homunculus", "Wilted Gremlin", "Tattered Wretch", "Gasping Sludge", "Withering Husk",
@@ -49,11 +49,7 @@ public static class Vocabulary
     "Tatterwing Harpy", "Hunched Carrionette", "Drooling Nightlurker", "Spasmclaw", "Brittlebone Creep",
     "Peeling Skinsludge", "Gurgling Murkspawn", "Twitching Hollow", "Gloombound Whelp", "Warped Beggarwraith"
     };
-        return pitifulCreatures[Random.Range(0, pitifulCreatures.Length)];
-    }
 
-    public static string GetRandomlowLevelVillainousCreatures()
-    {
         string[] strangeCreatures = {
     "Homunculus", "Gremlin", "Wretch", "Sludge", "Husk", "Mongrel", "Thrall", "Imp", "Lurker", "Abomination",
     "Golem", "Wight", "Horror", "Shade", "Ghoul", "Revenant", "Creep", "Bogling", "Boneheap", "Scarefiend",
@@ -61,8 +57,12 @@ public static class Vocabulary
     "Dreg", "Toadling", "Bogbeast", "Leperkin", "Wailer", "Fumblefiend", "Specter", "Grubkin", "Harpy",
     "Carrionette", "Nightlurker", "Spasmclaw", "Creep", "Skinsludge", "Murkspawn", "Hollow", "Whelp", "Beggarwraith"
 };
-        return strangeCreatures[Random.Range(0, strangeCreatures.Length)];
+        Debug.Log($"vocab dict has length = {creatureNameArrays.Count}");
+        creatureNameArrays.Add(strangeCreatures);
+        creatureNameArrays.Add(pitifulCreatures);
+        creatureNameArrays.Add(villainousCreatures);
 
+        return creatureNameArrays[level][Random.Range(0, creatureNameArrays[level].Length)];
     }
 
     public static Dictionary<Elements, string[]> MakeElementAdjectiveDict()

@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor.Build.Pipeline;
+using KragostiosAllEnums;
 using AbilityEnums;
 using System;
 using System.Linq;
@@ -65,6 +65,15 @@ public static class GeneralFunctions
             }
         }
         return spacedEnum;
+    }
+
+    public static Tuple<int, int> GetStatIncrementValues(StatType stat)
+    {
+        string statString = stat.ToString();
+        if (statString.Contains("Affinity") || statString.Contains("Resistance")) return new Tuple<int, int>(1, 5);
+        if (statString.Contains("Action")) return new Tuple<int, int>(20, 1);
+        else return new Tuple<int, int>(3, 1);
+
     }
 
 

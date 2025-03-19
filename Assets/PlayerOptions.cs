@@ -375,7 +375,7 @@ public class PlayerOptions : MonoBehaviour
 
     public void DisplayCharacterCreationScreen(StatsHandler stats)
     {
-        charCreationText.text = stats.getAvailableStatPoints();
+        charCreationText.text = stats.GetAvailableStatPoints();
         ChangeScreen(new List<VisualElement> { LeftCreationPanel, RightCreationPanel });
 
 
@@ -408,7 +408,7 @@ public class PlayerOptions : MonoBehaviour
         RightCreationPanel.style.display = DisplayStyle.Flex;
         charCreationText.style.whiteSpace = WhiteSpace.Normal;
         charCreationText.style.color = Color.white;
-        charCreationText.text = stats.getAvailableStatPoints() + "\n" + stats.GetCharCreationStats();
+        charCreationText.text = stats.GetAvailableStatPoints() + "\n" + stats.GetCharCreationStats();
 
         LeftCreationPanel.MarkDirtyRepaint();
 
@@ -439,6 +439,13 @@ public class PlayerOptions : MonoBehaviour
         container.Add(scrollView);
         scrollView.Add(label);
     }
+    public void ClearPanels(List<VisualElement> panels)
+    {
+        foreach (VisualElement panel in panels)
+        {
+            panel.Clear();
+        }
+    }
 
     public void DisplayeIncrementEffect(string statIncremented, StatsHandler playerStats)
     {
@@ -447,7 +454,7 @@ public class PlayerOptions : MonoBehaviour
         charCreationText.style.color = Color.white;
         string playerAffinity = playerStats.GetAffinityString();
         //string playerResist = playerStats.GetResistString();
-        charCreationText.text = $"{playerStats.getAvailableStatPoints()} \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity}";
+        charCreationText.text = $"{playerStats.GetAvailableStatPoints()} \n {playerStats.GetCharCreationStats()} \n \n {playerAffinity}";
     }
     //{playerStats.GetStatCosts()} \n 
     public void ToggleStringDisplay(VisualElement panel, string message)

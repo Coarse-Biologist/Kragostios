@@ -170,11 +170,9 @@ public static class Quests
             Debug.Log($"Quest: {quest} has been completed!");
         }
         else BoolAccomplishments.Add(quest, true);
-
         EnableEarnedAlchemy();
     }
     #endregion
-
 
     public static void LoadAllQuest_Sos(List<Quest_SO> destination)
     {

@@ -10,15 +10,7 @@ using KragostiosAllEnums;
 
 public static class AbilityLibrary
 {
-    public static Ability_SO FireBall;
-    public static Ability_SO HealingTouch;
-    public static Ability_SO DivineStrike;
-    public static Ability_SO Melee;
-    public static Ability_SO Push;
-    public static Ability_SO ColdLight;
-    public static Ability_SO BrainDamage;
-    public static Ability_SO LavaPortal;
-    public static Ability_SO GlobalCooling;
+
     public static Dictionary<Abilities, Ability_SO> abilityDict { private set; get; } = new Dictionary<Abilities, Ability_SO>();
     public static Dictionary<Ability_SO, Abilities> reverseAbilityDict { private set; get; } = new Dictionary<Ability_SO, Abilities>();
 
@@ -28,7 +20,7 @@ public static class AbilityLibrary
 
 
     // List of addresses to load (manually assigned or from an external source)
-    public static List<string> allAddresses = new List<string> { "Melee", "FireBall", "BrainDamage", "DivineSmite", "HealingTouch", "LavaPortal", "Push", "GlobalCooling" };
+    public static List<string> allAddresses = new List<string> { "Melee", "FireBall", "BrainDamage", "DivineSmite", "HealingTouch", "PoisonBlast", "LavaPortal", "Push", "GlobalCooling" };
 
 
     // returns a list of abilities based on the creature difficulty. # todo
@@ -101,7 +93,6 @@ public static class AbilityLibrary
     {
         foreach (string address in addressType)
         {
-
             Addressables.LoadAssetAsync<Ability_SO>("Assets/My Assets/Addressables/Abilities/" + address + ".asset").Completed += handle =>
             {
                 if (handle.Status == AsyncOperationStatus.Succeeded)

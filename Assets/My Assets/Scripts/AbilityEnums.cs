@@ -15,6 +15,8 @@ namespace AbilityEnums
         ColdLight,
         BrainDamage,
         LavaPortal,
-        GlobalCooling
+        GlobalCooling,
+        PoisonBlast,
+        ViralExpulsion
     }
 }

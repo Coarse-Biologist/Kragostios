@@ -77,7 +77,7 @@ public static class WorldChest
         List<Item_SO> items = new List<Item_SO>();
         foreach (Item_SO item in allItems.Values)
         {
-            if (item.ItemRarity == desiredRarity)
+            if (item.ItemRarity == desiredRarity && item.ItemName != "PlaceHolder")
             {
                 items.Add(item);
             }

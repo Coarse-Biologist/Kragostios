@@ -151,6 +151,7 @@ public class DungeonMaster : MonoBehaviour
     }
     private void ShowInventoryScreen()
     {
+        playerOptions.ClearPanels(new List<VisualElement> { playerOptions.RightCreationPanel, playerOptions.LeftCreationPanel });
         playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.LeftCreationPanel, playerOptions.RightCreationPanel });
         Item_SO questItem = Quests.QuestItemAtTrader();
         List<Item_SO> traderItems = WorldChest.GetTraderItems(playerStats);
@@ -158,7 +159,7 @@ public class DungeonMaster : MonoBehaviour
         {
             traderItems.Add(questItem);
         }
-        inventory.DisplayTraderScreen(playerStats, traderItems);
+        inventory.DisplayInventoryItems(playerStats, playerOptions.LeftCreationPanel);
     }
 
     private void ExitInventoryScreen()
@@ -227,6 +228,7 @@ public class DungeonMaster : MonoBehaviour
         }
         else if (!enemiesRemaining && alliesRemaining)
         {
+            DeleteDeadCombatants();
             narrator.DisplayNarrationText("YOU WON!");
             HandleCombatEnd();
         }
@@ -273,12 +275,31 @@ public class DungeonMaster : MonoBehaviour
         HandleLoot();
         Quests.IncrementIntQuests(Quests.QuestName.DefeatEnemies, enemyCombatantTuple.Count);
         inCombat = false;
+        DeleteDeadCombatants();
         HandlePostCombatAlchemy();
         //Invoke("ShowMainMenu", 5); // Extract 
     }
+    private void DeleteDeadCombatants()
+    {
+        GameObject[] combatantsList = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        Debug.Log($"num of combatants {combat.combatants.Count}");
+        foreach (GameObject combatant in combatantsList)
+        {
+            StatsHandler stats = combatant.GetComponent<StatsHandler>();
+
+            if (stats != null)
+            {
+                if (stats.charType == Combatants.Enemy)
+                {
+                    Debug.Log($"{stats.characterName} is being destroyed");
+                    Destroy(combatant);
+                }
+                else Debug.Log($"{stats.characterName} was deeemed not an enemy");
+            }
+        }
+    }
     private void InitiateCombat()
     {
-
         playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_CO, playerOptions.buttonContainer_AO });
 
         inCombat = true;
@@ -319,39 +340,18 @@ public class DungeonMaster : MonoBehaviour
 
     private void HandleLoot()
     {
-        KDebug.SeekBug($"HandleLoot function: {enemyCombatantTuple.Count}");
+        //KDebug.SeekBug($"HandleLoot function: {enemyCombatantTuple.Count}");
         foreach (Tuple<Difficulty, Elements, string> tuple in enemyCombatantTuple)
         {
             Difficulty difficulty = tuple.Item1;
             Elements element = tuple.Item2;
             List<Item_SO> items = new List<Item_SO>();
 
-            switch (difficulty)
-            {
-                case Difficulty.Easy:
-                    items = WorldChest.GetAllItemsofRarity(Rarity.Common);
-                    playerStats.AddToInventory(items[0]);
-                    break;
-                case Difficulty.Medium:
-                    items = WorldChest.GetAllItemsofRarity(Rarity.Rare);
-                    playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
-                    break;
-                case Difficulty.Hard:
-                    items = WorldChest.GetAllItemsofRarity(Rarity.Epic);
-                    playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
-                    break;
-                case Difficulty.Brutal:
-                    items = WorldChest.GetAllItemsofRarity(Rarity.Grand);
-                    playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
-                    break;
-                case Difficulty.Nightmare:
-                    items = WorldChest.GetAllItemsofRarity(Rarity.Legndary);
-                    playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
-                    break;
-                default:
-                    break;
-            }
-            KDebug.SeekBug($"HandleLoot function: {items.Count}");
+            Rarity rarity = GeneralFunctions.GetAllEnums<Rarity>()[(int)difficulty];
+            items = WorldChest.GetAllItemsofRarity(rarity);
+            Item_SO itemToLoot = items[UnityEngine.Random.Range(0, items.Count)];
+            playerStats.AddToInventory(itemToLoot);
+
             foreach (Item_SO item in items)
             {
                 narrator.DisplayNarrationText($"{playerStats.characterName} looted {item.ItemName}!");
@@ -533,9 +533,10 @@ public class DungeonMaster : MonoBehaviour
     }
     private void HandleStatIncremented(StatType stat)
     {
-        if (playerStats.availableStatPoints >= playerStats.StatCostandIncDict[stat].Item1)
+        Tuple<int, int> costIncrement = GeneralFunctions.GetStatIncrementValues(stat);
+        if (playerStats.availableStatPoints >= costIncrement.Item1)
         {
-            playerStats.IncrementAttribute(stat, playerStats.StatCostandIncDict[stat].Item2, playerStats.StatCostandIncDict[stat].Item1);
+            playerStats.IncrementAttribute(stat, costIncrement.Item2, costIncrement.Item1);
 
             playerOptions.DisplayeIncrementEffect(stat.ToString(), playerStats);
             Debug.Log($"HandleStatIncremented is happening");
@@ -557,7 +558,6 @@ public class DungeonMaster : MonoBehaviour
         playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
 
         //playerOptions.HideCreationScreen(); // change
-
         //narrator.DisplayNarrationText("The Story begins.");
         //List<Directions> directions = map.directions;
         //playerOptions.ClearCharCreation();
@@ -565,6 +565,7 @@ public class DungeonMaster : MonoBehaviour
 
         playerStats.LearnAbility(AbilityEnums.Abilities.Fireball);
         playerStats.LearnAbility(AbilityEnums.Abilities.HealingTouch);
+        playerStats.LearnAbility(AbilityEnums.Abilities.PoisonBlast);
         playerStats.LearnAbility(AbilityEnums.Abilities.Melee);
         playerStats.LearnAbility(AbilityEnums.Abilities.DivineStrike);
         ShowMainMenu();
@@ -616,3 +617,30 @@ public class DungeonMaster : MonoBehaviour
     }
 }
 
+
+
+//   switch (difficulty)
+//  {
+//      case Difficulty.Easy:
+//          items = WorldChest.GetAllItemsofRarity(Rarity.Common);
+//          playerStats.AddToInventory(items[0]);
+//          break;
+//      case Difficulty.Medium:
+//          items = WorldChest.GetAllItemsofRarity(Rarity.Rare);
+//          playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
+//          break;
+//      case Difficulty.Hard:
+//          items = WorldChest.GetAllItemsofRarity(Rarity.Epic);
+//          playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
+//          break;
+//      case Difficulty.Brutal:
+//          items = WorldChest.GetAllItemsofRarity(Rarity.Grand);
+//          playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
+//          break;
+//      case Difficulty.Nightmare:
+//          items = WorldChest.GetAllItemsofRarity(Rarity.Legndary);
+//          playerStats.AddToInventory(items[UnityEngine.Random.Range(0, items.Count)]);
+//          break;
+//      default:
+//          break;
+//  }

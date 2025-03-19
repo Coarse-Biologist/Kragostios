@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 087279bfa0e9ebb418b37167e09104e4
+    m_Address: Assets/My Assets/Addressables/Abilities/PoisonBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1301dc9788c291a4f91a285a2ba9a928
     m_Address: Assets/My Assets/Addressables/Quests/Prologue.asset
     m_ReadOnly: 0
