@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: WeaponAttack 5
   m_EditorClassIdentifier: 
   abilityName: Attack With Melle Weapon
+  abilityEnum: 0
   description: Creature swipes with their claw
   resource: 0
-  type: 1
+  type: 2
   elementType: 1
   physicalType: 2
   abilityCost: 0

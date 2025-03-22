@@ -16,7 +16,7 @@ MonoBehaviour:
   abilityEnum: 7
   description: Focus extreme violence on the head of a target
   resource: 2
-  type: 8
+  type: 9
   elementType: 0
   physicalType: 1
   abilityCost: 20

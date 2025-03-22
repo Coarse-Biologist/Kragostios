@@ -22,18 +22,18 @@ public class StatsHandler : MonoBehaviour
     #endregion
 
     #region //  resources
-    [SerializeField] public int MaxHealth { private set; get; } = 100;
-    [SerializeField] public int MaxMana { private set; get; } = 100;
-    [SerializeField] public int MaxStamina { private set; get; } = 100;
-    [SerializeField] public int initiative { private set; get; } = 100;
+    [SerializeField] public int MaxHealth { private set; get; } = 5;
+    [SerializeField] public int MaxPower { private set; get; } = 5;
+    [SerializeField] public int MaxStamina { private set; get; } = 5;
+    [SerializeField] public int initiative { private set; get; } = 1;
 
     public int ActionPoints { private set; get; } = 1;
     public int currentActionPoints { private set; get; } = 1;
     public int ActionPointRegen { private set; get; } = 1;
 
-    [SerializeField] public int currentHealth { private set; get; } = 100;
-    [SerializeField] public int currentMana { private set; get; } = 100;
-    [SerializeField] public int currentStamina { private set; get; } = 100;
+    [SerializeField] public int currentHealth { private set; get; } = 5;
+    [SerializeField] public int currentPower { private set; get; } = 5;
+    [SerializeField] public int currentStamina { private set; get; } = 5;
     [SerializeField] public int currentOverHealth { private set; get; } = 0;
     #endregion
 
@@ -72,7 +72,7 @@ public class StatsHandler : MonoBehaviour
 
     #region // resource regen
     [SerializeField] public int HealthRegen { private set; get; } = 1;
-    [SerializeField] public int ManaRegen { private set; get; } = 1;
+    [SerializeField] public int PowerRegen { private set; get; } = 1;
     [SerializeField] public int StaminaRegen { private set; get; } = 1;
 
     #endregion
@@ -162,25 +162,25 @@ public class StatsHandler : MonoBehaviour
         string charInfo = "";
         if (charType == Combatants.Player)
         {
-            charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+            charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Power: {MaxPower} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Power: {currentPower} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Power Regen: {PowerRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
             return charInfo;
         }
         else
         {
-            charInfo = $"Character Name: {characterName} || Description: {description} || Char Type: {charType} || Difficulty: {difficulty} Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Mana: {currentMana} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
+            charInfo = $"Character Name: {characterName} || Description: {description} || Char Type: {charType} || Difficulty: {difficulty} Max Health: {MaxHealth} || Max Power: {MaxPower} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Current Health: {currentHealth} ||  Current Power: {currentPower} || Current Stamina: {currentStamina} || Health Regen: {HealthRegen} || Power Regen: {PowerRegen} || Stamina Regen: {StaminaRegen} || Character Level: {characterLevel} || Available Stat Points: {availableStatPoints} || Current XP: {currentXp} Max XP: {MaxXp} || Known Abilities: {string.Join(", ", knownAbilitiesString)}";
         }
 
         return charInfo;
     }
     public string GetCharCreationStats()
     {
-        string charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Mana: {MaxMana} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Health Regen: {HealthRegen} || Mana Regen: {ManaRegen} || Stamina Regen: {StaminaRegen} || Action Points: {ActionPoints} || Action Point Regen Rate: {ActionPointRegen}";
+        string charInfo = $"Character Name: {characterName} || Description: {description} || Max Health: {MaxHealth} || Max Power: {MaxPower} || Max Stamina: {MaxStamina} || Initiative: {initiative} || Health Regen: {HealthRegen} || Power Regen: {PowerRegen} || Stamina Regen: {StaminaRegen} || Action Points: {ActionPoints} || Action Point Regen Rate: {ActionPointRegen}";
 
         return charInfo;
     }
     public string GetStatCosts()
     {
-        string statCosts = $"Stat Point cost per stat increase: 5 Max Health Mana or Stamina: 1  || 1 Health, Mana or Stamina Regen: 3 || 1 Max Action Point or Action Point per turn regeneration: 20 || 5% Elemental Affinity: 1 || 5% Physical Resistance: 1 ||";
+        string statCosts = $"Stat Point cost per stat increase: 5 Max Health Power or Stamina: 1  || 1 Health, Power or Stamina Regen: 3 || 1 Max Action Point or Action Point per turn regeneration: 20 || 5% Elemental Affinity: 1 || 5% Physical Resistance: 1 ||";
         return statCosts;
     }
 
@@ -193,7 +193,6 @@ public class StatsHandler : MonoBehaviour
 
     #region // GetDictionaries
 
-    //
     public void IncrementAttribute(StatType stat, int increment, int cost, bool overrideCost = false)
     {
         if (availableStatPoints > cost || overrideCost)
@@ -264,11 +263,11 @@ public class StatsHandler : MonoBehaviour
         Dictionary<StatType, (Func<int> Get, Action<int> Set)> CharVarsDict = new Dictionary<StatType, (Func<int> Get, Action<int> Set)>
         {
             { StatType.Health, (() => MaxHealth, v => MaxHealth = v)},
-            { StatType.Mana, (() => MaxMana, v => MaxMana = v) },
+            { StatType.Power, (() => MaxPower, v => MaxPower = v) },
             { StatType.Stamina, (() => MaxStamina, v => MaxStamina = v) },
 
             { StatType.HealthRegen, (() => HealthRegen, v => HealthRegen = v) }, // Initiative might not fit here; check if it should be HealthRegen
-            { StatType.ManaRegen, (() => ManaRegen, v => ManaRegen = v) }, // Same concern, should it be something else?
+            { StatType.PowerRegen, (() => PowerRegen, v => PowerRegen = v) }, // Same concern, should it be something else?
             { StatType.StaminaRegen, (() => StaminaRegen, v => StaminaRegen = v) },
 
             { StatType.ActionPoints, (() => ActionPoints, v => ActionPoints = v) },
@@ -315,9 +314,9 @@ public class StatsHandler : MonoBehaviour
         {
             return currentHealth;
         }
-        if (resourceType == ResourceTypes.Mana)
+        if (resourceType == ResourceTypes.Power)
         {
-            return currentMana;
+            return currentPower;
         }
         if (resourceType == ResourceTypes.Stamina)
         {
@@ -371,7 +370,6 @@ public class StatsHandler : MonoBehaviour
             Debug.Log($"{element} not found in elements Dict");
             Element = Elements.Bacteria;
             CharVarsDict[StatType.BacteriaAffinity].Set(25);
-
         }
     }
 
@@ -402,7 +400,7 @@ public class StatsHandler : MonoBehaviour
     public void RestoreResources()
     {
         currentHealth = MaxHealth;
-        currentMana = MaxMana;
+        currentPower = MaxPower;
         currentStamina = MaxStamina;
         currentActionPoints = ActionPoints;
     }
@@ -541,9 +539,9 @@ public class StatsHandler : MonoBehaviour
                 currentHealth += value;
                 if (currentHealth > MaxHealth + currentOverHealth) currentHealth = MaxHealth;
                 break;
-            case ResourceTypes.Mana:
-                currentMana += value;
-                if (currentMana > MaxMana) currentMana = MaxMana;
+            case ResourceTypes.Power:
+                currentPower += value;
+                if (currentPower > MaxPower) currentPower = MaxPower;
                 break;
             case ResourceTypes.Stamina:
                 currentStamina += value;
@@ -576,13 +574,13 @@ public class StatsHandler : MonoBehaviour
         charType = Combatants.Player;
         difficulty = Difficulty.Easy;
         MaxHealth = 10;
-        MaxMana = 10;
+        MaxPower = 10;
         MaxStamina = 10;
         initiative = 100;
         ActionPoints = 1;
         ActionPointRegen = 1;
         currentHealth = 10;
-        currentMana = 10;
+        currentPower = 10;
         currentStamina = 10;
         ColdAffinity = 0;
         WaterAffinity = 0;
@@ -604,7 +602,7 @@ public class StatsHandler : MonoBehaviour
         SlashingResist = 0;
         PiercingResist = 0;
         HealthRegen = 0;
-        ManaRegen = 0;
+        PowerRegen = 0;
         StaminaRegen = 0;
         characterLevel = 0;
         availableStatPoints = 40;
@@ -612,31 +610,34 @@ public class StatsHandler : MonoBehaviour
         MaxXp = 30;
         rewards = new List<Rewards>();
         characterGold = 100;
+        LearnAbility(Abilities.None);
         return gameObject;
 
     }
-    private void AlterStats(Combatants combatantType, Difficulty difficultyLevel, Elements element)
+    private void AlterStats(Combatants combatantType, int scaler, Elements element)
     {
-        int scaler = (int)difficultyLevel * 2;
-        MaxHealth = UnityEngine.Random.Range(1, 10) * scaler;
-        MaxMana = UnityEngine.Random.Range(1, 10) * scaler;
-        MaxStamina = UnityEngine.Random.Range(1, 10) * scaler;
-        initiative = scaler;
-        HealthRegen = scaler;
-        ManaRegen = scaler;
-        StaminaRegen = scaler;
-        characterLevel = scaler;
+        if (combatantType != Combatants.Summon)
+        {
+            MaxHealth = UnityEngine.Random.Range(1, 10) * scaler;
+            MaxPower = UnityEngine.Random.Range(1, 10) * scaler;
+            MaxStamina = UnityEngine.Random.Range(1, 10) * scaler;
+            initiative = scaler;
+            HealthRegen = scaler;
+            PowerRegen = scaler;
+            StaminaRegen = scaler;
+            characterLevel = scaler;
+        }
+
+    }
+    public void LearnApplicableAbilities(Elements element, int scaler)
+    {
         foreach (Abilities ability in AbilityLibrary.GetAbilities(scaler, element))
         {
-            Debug.Log($"abilities to add: {ability}");
-
-            LearnAbility(Abilities.Melee);
             if (AbilityLibrary.reverseAbilityDict != null && AbilityLibrary.allAbilities.Contains(AbilityLibrary.abilityDict[ability]))
             {
                 LearnAbility(ability);
             }
-            else Debug.Log("either the reverse dict doesnt exist or it doesnt contain the ability given");
-            Debug.Log($"known abilities ; {knownAbilities.Count}");
+            else Debug.Log("the reverse dict struggled");
         }
     }
 
@@ -666,6 +667,7 @@ public class StatsHandler : MonoBehaviour
     {
         Debug.Log($"making combatant type {combatantType} of difficulty {difficultyLevel}");
         difficulty = difficultyLevel;
+        int scaler = (int)difficultyLevel + 1;
         Elements element = Elements.None;
         charType = combatantType;
         if (charType != Combatants.Enemy) characterName = combatantType.ToString();
@@ -673,17 +675,14 @@ public class StatsHandler : MonoBehaviour
         {
             element = GetRandomCreatureElement();
             characterName = GetElementRelatedName(element, difficultyLevel);
-            IncrementAttribute(ElementStatDict[element], 6 * ((int)difficultyLevel + 1), 0, true);
+            IncrementAttribute(ElementStatDict[element], 6 * scaler, 0, true);
         }
-        AlterStats(combatantType, difficultyLevel, element);
+        AlterStats(combatantType, scaler, element);
+        LearnApplicableAbilities(element, scaler);
         RestoreResources();
         return gameObject;
     }
     #endregion
-    private void Summon(GameObject summon)
-    {
-
-    }
 
     public void LoadStats()
     {
@@ -693,16 +692,16 @@ public class StatsHandler : MonoBehaviour
         description = saveData.description_SD;
 
         MaxHealth = saveData.MaxHealth_SD;
-        MaxMana = saveData.MaxMana_SD;
+        MaxPower = saveData.MaxPower_SD;
         MaxStamina = saveData.MaxStamina_SD;
 
         currentHealth = saveData.currentHealth_SD;
         currentOverHealth = saveData.currentOverHealth_SD;
-        currentMana = saveData.currentMana_SD;
+        currentPower = saveData.currentPower_SD;
         currentStamina = saveData.currentStamina_SD;
 
         HealthRegen = saveData.HealthRegen_SD;
-        ManaRegen = saveData.ManaRegen_SD;
+        PowerRegen = saveData.PowerRegen_SD;
         StaminaRegen = saveData.StaminaRegen_SD;
 
         ActionPoints = saveData.ActionPoints_SD;

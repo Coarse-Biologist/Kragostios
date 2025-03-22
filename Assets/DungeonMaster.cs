@@ -178,12 +178,12 @@ public class DungeonMaster : MonoBehaviour
     public void HandleAbilitySelected(Ability_SO ability) // needs a lot of work
     {
         StatsHandler casterStats = combat.caster.GetComponent<StatsHandler>();
-
-        if (casterStats.GetResourceAmount(ability.Resource) >= ability.AbilityCost)
+        if (ability.abilityEnum == AbilityEnums.Abilities.None) combat.NextTurn(true);
+        else if (casterStats.GetResourceAmount(ability.Resource) >= ability.AbilityCost)
         {
             string resourceCostNarration = $"{casterStats.characterName} used {ability.AbilityCost} {ability.Resource} to cast {ability.AbilityName}";
             narrator.DisplayNarrationText(resourceCostNarration);
-            casterStats.ChangeResource(ResourceTypes.Mana, -ability.AbilityCost);
+            casterStats.ChangeResource(ResourceTypes.Power, -ability.AbilityCost);
             combat.SetSelectedAbility(ability);
             int targetNum = ability.Targets;
             combat.SetExpectedTargets(targetNum);
@@ -197,7 +197,6 @@ public class DungeonMaster : MonoBehaviour
             narrator.DisplayNarrationText(insufficientResource);
             playerOptions.SetAwaitingAbilitySelection(true);
         }
-
     }
 
     private void HandleContinuePressed()
@@ -219,7 +218,7 @@ public class DungeonMaster : MonoBehaviour
         if (enemiesRemaining && alliesRemaining)
         {
             combat.NextTurn();
-            playerOptions.SpawnPlayerInfoButton(Player);
+            //playerOptions.SpawnPlayerInfoButton(Player);
         }
         else if (enemiesRemaining && !alliesRemaining)
         {
@@ -228,7 +227,7 @@ public class DungeonMaster : MonoBehaviour
         }
         else if (!enemiesRemaining && alliesRemaining)
         {
-            DeleteDeadCombatants();
+            //DeleteDeadCombatants();
             narrator.DisplayNarrationText("YOU WON!");
             HandleCombatEnd();
         }
@@ -242,34 +241,18 @@ public class DungeonMaster : MonoBehaviour
     {
         GameObject creature = Instantiate(creaturePrefab);
         playerStats = creature.GetComponent<StatsHandler>();
-        //Debug.Log($"{playerStats} = player stats");
         Player = playerStats.MakePlayer();
         return Player;
     }
 
-    private GameObject MakeEnemy(Difficulty difficulty)
+    private GameObject MakeCreature(Difficulty difficulty, Combatants type)
     {
         GameObject creature = Instantiate(creaturePrefab);
         StatsHandler stats = creature.GetComponent<StatsHandler>();
-        GameObject enemy = stats.MakeCreature(difficulty, Combatants.Enemy);
+        GameObject enemy = stats.MakeCreature(difficulty, type);
         return enemy;
     }
 
-    private GameObject MakeSummon(Difficulty difficulty)
-    {
-        GameObject creature = Instantiate(creaturePrefab);
-        StatsHandler stats = creature.GetComponent<StatsHandler>();
-        GameObject summon = stats.MakeCreature(difficulty, Combatants.Summon);
-        return summon;
-    }
-
-    private GameObject MakeCompanion(Difficulty difficulty)
-    {
-        GameObject creature = Instantiate(creaturePrefab);
-        StatsHandler stats = creature.GetComponent<StatsHandler>();
-        GameObject companion = stats.MakeCreature(difficulty, Combatants.Companion);
-        return companion;
-    }
     private void HandleCombatEnd()
     {
         HandleLoot();
@@ -277,7 +260,6 @@ public class DungeonMaster : MonoBehaviour
         inCombat = false;
         DeleteDeadCombatants();
         HandlePostCombatAlchemy();
-        //Invoke("ShowMainMenu", 5); // Extract 
     }
     private void DeleteDeadCombatants()
     {
@@ -294,29 +276,28 @@ public class DungeonMaster : MonoBehaviour
                     Debug.Log($"{stats.characterName} is being destroyed");
                     Destroy(combatant);
                 }
-                else Debug.Log($"{stats.characterName} was deeemed not an enemy");
+                else Debug.Log($"{stats.characterName} was deemed not an enemy");
             }
         }
     }
     private void InitiateCombat()
     {
+        Debug.Log(AlchemyHandler.GetElementalKnowledgeString());
+
         playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_CO, playerOptions.buttonContainer_AO });
 
         inCombat = true;
         List<GameObject> combatants = new List<GameObject>();
         enemyCombatantTuple = new List<Tuple<Difficulty, Elements, string>>();
-        int numberofEnemies = UnityEngine.Random.Range(1, 3);
+        int numberofEnemies = 2;//UnityEngine.Random.Range(1, 3);
         while (numberofEnemies > 0)
         {
-            GameObject enemy = MakeEnemy(Difficulty.Easy);
+            GameObject enemy = MakeCreature(Difficulty.Brutal, Combatants.Enemy);
             StatsHandler stats = enemy.GetComponent<StatsHandler>();
             numberofEnemies--;
             combatants.Add(enemy);
             enemyCombatantTuple.Add(new Tuple<Difficulty, Elements, string>(stats.difficulty, stats.Element, stats.characterName));
         }
-        //Debug.Log($"{playerStats.GetKnownAbilitiesString()} = player known abilities");
-        //playerOptions.HideCreationScreen(); // change
-        //playerOptions.ShowCombatScreen();
         combatants.Add(Player);
         combat.SetCombatants(combatants);
         combat.DecideTurnOrder();
@@ -340,6 +321,7 @@ public class DungeonMaster : MonoBehaviour
 
     private void HandleLoot()
     {
+        Debug.Log(AlchemyHandler.GetElementalKnowledgeString());
         //KDebug.SeekBug($"HandleLoot function: {enemyCombatantTuple.Count}");
         foreach (Tuple<Difficulty, Elements, string> tuple in enemyCombatantTuple)
         {
@@ -556,18 +538,9 @@ public class DungeonMaster : MonoBehaviour
     {
         playerStats.RestoreResources();
         playerOptions.ChangeScreen(new List<VisualElement> { playerOptions.narratorWindow, playerOptions.buttonContainer_AO });
+        playerStats.LearnApplicableAbilities(playerStats.Element, 1);
+        playerStats.LearnAbility(AbilityEnums.Abilities.None);
 
-        //playerOptions.HideCreationScreen(); // change
-        //narrator.DisplayNarrationText("The Story begins.");
-        //List<Directions> directions = map.directions;
-        //playerOptions.ClearCharCreation();
-        //playerOptions.ShowCombatScreen();
-
-        playerStats.LearnAbility(AbilityEnums.Abilities.Fireball);
-        playerStats.LearnAbility(AbilityEnums.Abilities.HealingTouch);
-        playerStats.LearnAbility(AbilityEnums.Abilities.PoisonBlast);
-        playerStats.LearnAbility(AbilityEnums.Abilities.Melee);
-        playerStats.LearnAbility(AbilityEnums.Abilities.DivineStrike);
         ShowMainMenu();
 
     }

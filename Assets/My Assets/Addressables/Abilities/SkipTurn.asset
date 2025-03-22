@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
-  m_Name: FireBall
+  m_Name: SkipTurn
   m_EditorClassIdentifier: 
-  abilityName: Fireball
-  abilityEnum: 1
-  description: Throws a ball of intense fire
-  resource: 2
-  type: 2
-  elementType: 4
+  abilityName: SkipTurn
+  abilityEnum: 0
+  description: Combatant decides to utilize  neutral jinn.
+  resource: 0
+  type: 0
+  elementType: 0
   physicalType: 0
-  abilityCost: 5
+  abilityCost: 0
   healValue: 0
-  damageValue: 10
+  damageValue: 0
   turnDuration: 0
-  targets: 1
+  targets: 0
   summons: 0
   damageOverTime: 0
   syphonPercentage: 0

@@ -69,8 +69,9 @@ public static class GeneralFunctions
 
     public static Tuple<int, int> GetStatIncrementValues(StatType stat)
     {
+        var resourceList = new List<string>() { "Health", "Power", "Stamina" };
         string statString = stat.ToString();
-        if (statString.Contains("Affinity") || statString.Contains("Resistance")) return new Tuple<int, int>(1, 5);
+        if (statString.Contains("Affinity") || statString.Contains("Resistance") || resourceList.Contains(statString)) return new Tuple<int, int>(1, 5);
         if (statString.Contains("Action")) return new Tuple<int, int>(20, 1);
         else return new Tuple<int, int>(3, 1);
 

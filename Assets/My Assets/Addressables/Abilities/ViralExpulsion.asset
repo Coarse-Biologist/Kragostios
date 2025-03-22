@@ -16,7 +16,7 @@ MonoBehaviour:
   abilityEnum: 11
   description: Cover target with poison
   resource: 2
-  type: 1
+  type: 2
   elementType: 13
   physicalType: 0
   abilityCost: 1

@@ -16,7 +16,7 @@ MonoBehaviour:
   abilityEnum: 9
   description: Chills and attempts to freeze  the battlefield
   resource: 1
-  type: 8
+  type: 9
   elementType: 1
   physicalType: 0
   abilityCost: 20

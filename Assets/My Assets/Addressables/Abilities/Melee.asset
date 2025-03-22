@@ -16,9 +16,9 @@ MonoBehaviour:
   abilityEnum: 2
   description: Creature swipes with their claw
   resource: 2
-  type: 1
+  type: 2
   elementType: 0
-  physicalType: 1
+  physicalType: 2
   abilityCost: 0
   healValue: 0
   damageValue: 1

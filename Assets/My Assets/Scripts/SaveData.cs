@@ -19,7 +19,7 @@ public class PlayerSaveData
     public Difficulty difficulty_SD;
 
     public int MaxHealth_SD = 100;
-    public int MaxMana_SD = 100;
+    public int MaxPower_SD = 100;
     public int MaxStamina_SD = 100;
     public int initiative_SD = 100;
 
@@ -28,7 +28,7 @@ public class PlayerSaveData
     public int ActionPointRegen_SD = 1;
 
     public int currentHealth_SD = 100;
-    public int currentMana_SD = 100;
+    public int currentPower_SD = 100;
     public int currentStamina_SD = 100;
     public int currentOverHealth_SD = 0;
 
@@ -55,7 +55,7 @@ public class PlayerSaveData
     public int PiercingResist_SD = 0;
     public Elements Element_SD = Elements.None;
     public int HealthRegen_SD = 1;
-    public int ManaRegen_SD = 1;
+    public int PowerRegen_SD = 1;
     public int StaminaRegen_SD = 1;
 
     public int characterLevel_SD = 1;
@@ -75,16 +75,16 @@ public class PlayerSaveData
         description_SD = stats.description;
 
         MaxHealth_SD = stats.MaxHealth;
-        MaxMana_SD = stats.MaxMana;
+        MaxPower_SD = stats.MaxPower;
         MaxStamina_SD = stats.MaxStamina;
 
         currentHealth_SD = stats.currentHealth;
         currentOverHealth_SD = stats.currentOverHealth;
-        currentMana_SD = stats.currentMana;
+        currentPower_SD = stats.currentPower;
         currentStamina_SD = stats.currentStamina;
 
         HealthRegen_SD = stats.HealthRegen;
-        ManaRegen_SD = stats.ManaRegen;
+        PowerRegen_SD = stats.PowerRegen;
         StaminaRegen_SD = stats.StaminaRegen;
 
         ActionPoints_SD = stats.ActionPoints;

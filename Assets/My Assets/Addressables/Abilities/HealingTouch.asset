@@ -16,7 +16,7 @@ MonoBehaviour:
   abilityEnum: 3
   description: Heals target
   resource: 1
-  type: 0
+  type: 1
   elementType: 0
   physicalType: 0
   abilityCost: 10

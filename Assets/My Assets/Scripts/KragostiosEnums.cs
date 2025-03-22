@@ -5,6 +5,7 @@ namespace KragostiosAllEnums
 
     public enum AbilityCategories
     {
+        None,
         Heal,
         Attack,
         Summon,
@@ -21,7 +22,7 @@ namespace KragostiosAllEnums
     {
         None,
         Health,
-        Mana,
+        Power,
         Stamina
     }
 
@@ -64,10 +65,10 @@ namespace KragostiosAllEnums
     public enum StatType
     {
         Health,
-        Mana,
+        Power,
         Stamina,
         HealthRegen,
-        ManaRegen,
+        PowerRegen,
         StaminaRegen,
 
         ActionPoints,
@@ -232,7 +233,7 @@ namespace KragostiosAllEnums
         Shock,
         HealthDrain,
         StaminaDrain,
-        ManaDrain,
+        PowerDrain,
         Chill,
         Hot,
         Melting,

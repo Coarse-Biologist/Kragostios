@@ -153,7 +153,6 @@ public class PlayerOptions : MonoBehaviour
             newButton.RegisterCallback<PointerEnterEvent>(evt => ShowAbilityInfo(ability));
             newButton.RegisterCallback<PointerEnterEvent>(evt => HideCharInfo());
             newButton.RegisterCallback<PointerLeaveEvent>(evt => HideAbilityInfo());
-
         }
         buttonContainer_AO.MarkDirtyRepaint();
         //root.MarkDirtyRepaint();  
@@ -177,7 +176,7 @@ public class PlayerOptions : MonoBehaviour
     public void SpawnContinueButton()
     {
         ClearAbilityContainer();
-        ClearTargetContainer();
+        //ClearTargetContainer();
         awaitingAbilitySelection = true;
         TemplateContainer newButtonContainer = templateButton.Instantiate();
         Button newButton = newButtonContainer.Q<Button>();
@@ -297,7 +296,7 @@ public class PlayerOptions : MonoBehaviour
     //}
     private void OnContinueSelected()
     {
-        ClearTargetContainer();
+        //ClearTargetContainer();
         ClearAbilityContainer();
         ContinueSelected?.Invoke();
     }

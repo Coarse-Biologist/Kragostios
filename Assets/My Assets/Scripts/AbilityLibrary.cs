@@ -20,7 +20,7 @@ public static class AbilityLibrary
 
 
     // List of addresses to load (manually assigned or from an external source)
-    public static List<string> allAddresses = new List<string> { "Melee", "FireBall", "BrainDamage", "DivineSmite", "HealingTouch", "PoisonBlast", "LavaPortal", "Push", "GlobalCooling" };
+    public static List<string> allAddresses = new List<string> { "SkipTurn", "Melee", "FireBall", "BrainDamage", "DivineSmite", "HealingTouch", "PoisonBlast", "LavaPortal", "Push", "GlobalCooling" };
 
 
     // returns a list of abilities based on the creature difficulty. # todo
@@ -38,6 +38,7 @@ public static class AbilityLibrary
         }
 
         abilities.Add(Abilities.Melee);
+        //abilities.Add(Abilities.None);
         return abilities;
     }
 
@@ -78,15 +79,15 @@ public static class AbilityLibrary
     }
     private static void AddToAbilityDicts(Abilities abilityEnum, Ability_SO loadedSO)
     {
-        //reverseAbilityDict = abilityDict.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
-        if (abilityEnum != Abilities.None)
-        {
-            allAbilities.Add(loadedSO);
-            abilityDict.Add(abilityEnum, loadedSO);
-            Debug.Log($"enum {abilityEnum} added with the value {loadedSO.AbilityName}");
-            reverseAbilityDict.Add(loadedSO, abilityEnum);
-        }
-        else Debug.Log("oops those had no Ability Enum and couldnt be added to the dicts");
+        reverseAbilityDict = abilityDict.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+        //if (abilityEnum != Abilities.None)
+        //{
+        allAbilities.Add(loadedSO);
+        abilityDict.TryAdd(abilityEnum, loadedSO);
+        Debug.Log($"enum {abilityEnum} added with the value {loadedSO.AbilityName}");
+        reverseAbilityDict.Add(loadedSO, abilityEnum);
+        //}
+        //else Debug.Log("oops those had no Ability Enum and couldnt be added to the dicts");
     }
 
     public static void LoadAbilities(List<string> addressType, List<Ability_SO> destination)

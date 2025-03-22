@@ -16,7 +16,7 @@ MonoBehaviour:
   abilityEnum: 8
   description: Opens a portal to a the Lava Plane
   resource: 1
-  type: 8
+  type: 9
   elementType: 4
   physicalType: 0
   abilityCost: 100

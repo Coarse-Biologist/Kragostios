@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using System.Runtime.CompilerServices;
 using System.Globalization;
+using UnityEngine.Rendering;
 
 [CreateAssetMenu(fileName = "Item", menuName = "CrewObject/ Item")]
 public class Ether_SO : ScriptableObject
@@ -170,6 +171,15 @@ public static class AlchemyHandler
         stringResult = $"Having {numToolsKnown} examination tools at your disposal, you examined the {enemyCombatantTuple.Item3}. {knowledgeGained}";
 
         return stringResult;
+    }
+
+    public static string GetCoresOwnedString()
+    {
+        return string.Join(", ", ElementalCoresDict.Select(a => a.Key.ToString() + ":" + a.Value.ToString()));
+    }
+    public static string GetElementalKnowledgeString()
+    {
+        return string.Join(", ", KnowledgeDict.Select(a => a.Key.ToString() + ":" + a.Value.ToString()));
     }
 
 
