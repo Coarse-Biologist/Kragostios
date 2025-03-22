@@ -527,7 +527,13 @@ public class StatsHandler : MonoBehaviour
         characterLevel++;
         MaxXp = MaxXp * 2;
     }
-
+    public bool CheckSuffientResource(ResourceTypes resource, int value)
+    {
+        if (resource == ResourceTypes.Health) return value <= currentHealth;
+        if (resource == ResourceTypes.Power) return value <= currentPower;
+        if (resource == ResourceTypes.Stamina) return value <= currentStamina;
+        else return false;
+    }
     public void ChangeResource(ResourceTypes resource, int value, Elements element = Elements.None, PhysicalDamage physicalType = PhysicalDamage.None)
 
     {
@@ -610,7 +616,6 @@ public class StatsHandler : MonoBehaviour
         MaxXp = 30;
         rewards = new List<Rewards>();
         characterGold = 100;
-        LearnAbility(Abilities.None);
         return gameObject;
 
     }

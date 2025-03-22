@@ -179,7 +179,7 @@ public class DungeonMaster : MonoBehaviour
     {
         StatsHandler casterStats = combat.caster.GetComponent<StatsHandler>();
         if (ability.abilityEnum == AbilityEnums.Abilities.None) combat.NextTurn(true);
-        else if (casterStats.GetResourceAmount(ability.Resource) >= ability.AbilityCost)
+        else if (casterStats.CheckSuffientResource(ability.Resource, ability.AbilityCost))
         {
             string resourceCostNarration = $"{casterStats.characterName} used {ability.AbilityCost} {ability.Resource} to cast {ability.AbilityName}";
             narrator.DisplayNarrationText(resourceCostNarration);

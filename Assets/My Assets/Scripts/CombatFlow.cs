@@ -653,7 +653,7 @@ public class CombatFlow : MonoBehaviour
             {
                 if (defensiveAbilities.Contains(ability.Type) || ability.Type == AbilityCategories.Heal)
                 {
-                    usableAbilities.Add(ability);
+                    if (stats.CheckSuffientResource(ability.Resource, ability.AbilityCost)) usableAbilities.Add(ability);
                 }
                 else Debug.Log($"not adding {ability.AbilityName} because its type {ability.Type} is not in the defensive ability type dict");
 
@@ -662,7 +662,7 @@ public class CombatFlow : MonoBehaviour
             {
                 if (offensiveAbilities.Contains(ability.Type) || ability.Type == AbilityCategories.Attack)
                 {
-                    usableAbilities.Add(ability);
+                    if (stats.CheckSuffientResource(ability.Resource, ability.AbilityCost)) usableAbilities.Add(ability);
                 }
                 else Debug.Log($"not adding {ability.AbilityName} because its type {ability.Type} is not in the offensive ability type dict");
             }
