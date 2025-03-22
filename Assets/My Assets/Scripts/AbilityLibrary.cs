@@ -20,7 +20,7 @@ public static class AbilityLibrary
 
 
     // List of addresses to load (manually assigned or from an external source)
-    public static List<string> allAddresses = new List<string> { "SkipTurn", "Melee", "FireBall", "BrainDamage", "DivineSmite", "HealingTouch", "PoisonBlast", "LavaPortal", "Push", "GlobalCooling" };
+    public static List<string> allAddresses = new List<string> { "SkipTurn", "Melee", "FireBall", "BrainDamage", "DivineSmite", "HealingTouch", "PoisonBlast", "BacterialBlast", "RockBlast", "WaterBlast", "FireBlast", "ViralBlast", "BacterialBlast", "ColdBlast", "HeatBlast", "AirBlast", "ElectricityBlast", "RadiationBlast", "PsychicBlast", "LightBlast", "LavaPortal", "Push", "GlobalCooling" };
 
 
     // returns a list of abilities based on the creature difficulty. # todo
@@ -35,6 +35,7 @@ public static class AbilityLibrary
                 Debug.Log($"Creature was of type {element} and abiloty level {creatureDifficulty} and therefore has {ability.AbilityName}");
                 abilities.Add(ability.AbilityEnum);
             }
+            else Debug.Log($"{ability.AbilityName} was not GOT because it was too high leve or was not of type {element}");
         }
 
         abilities.Add(Abilities.Melee);

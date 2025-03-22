@@ -638,6 +638,7 @@ public class StatsHandler : MonoBehaviour
     {
         foreach (Abilities ability in AbilityLibrary.GetAbilities(scaler, element))
         {
+            Debug.Log($"Checking whether {ability} can be learned");
             if (AbilityLibrary.reverseAbilityDict != null && AbilityLibrary.allAbilities.Contains(AbilityLibrary.abilityDict[ability]))
             {
                 LearnAbility(ability);

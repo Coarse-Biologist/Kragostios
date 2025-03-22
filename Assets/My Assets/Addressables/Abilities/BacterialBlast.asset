@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba1f8e733c7085e45b736a198ffc7754, type: 3}
-  m_Name: Melee
+  m_Name: BacterialBlast
   m_EditorClassIdentifier: 
-  abilityName: Melee
-  abilityEnum: 2
-  description: Creature swipes with their claw
-  resource: 3
+  abilityName: Bacterial Blast
+  abilityEnum: 15
+  description: Cover the target with bacterial slime
+  resource: 2
   type: 2
-  elementType: 0
-  physicalType: 2
-  abilityCost: 0
+  elementType: 10
+  physicalType: 0
+  abilityCost: 1
   healValue: 0
-  damageValue: 1
+  damageValue: 5
   turnDuration: 0
   targets: 1
   summons: 0

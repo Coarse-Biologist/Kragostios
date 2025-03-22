@@ -17,6 +17,17 @@ namespace AbilityEnums
         LavaPortal,
         GlobalCooling,
         PoisonBlast,
-        ViralExpulsion
+        FireBlast,
+        WaterBlast,
+        RockBlast,
+        ViralBlast,
+        BacterialBlast,
+        ColdBlast,
+        HeatBlast,
+        AirBlast,
+        ElectricityBlast,
+        RadiationBlast,
+        PsychicBlast,
+        LightBlast,
     }
 }

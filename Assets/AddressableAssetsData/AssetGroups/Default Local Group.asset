@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 9f3c07b48ce465247994188a6deabb96
   m_SerializeEntries:
+  - m_GUID: 0351319573f9828478af3151fc8442ac
+    m_Address: Assets/My Assets/Addressables/Abilities/RadiationBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0581262297c694f49b73ef4342873f72
     m_Address: Assets/My Assets/Addressables/Items/Sword 6.asset
     m_ReadOnly: 0
@@ -50,6 +55,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3627409947c01d7499598968f862ff1c
+    m_Address: Assets/My Assets/Addressables/Abilities/BacterialBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ce4254f8939b6f4f97aaf7ee04f2d46
+    m_Address: Assets/My Assets/Addressables/Abilities/RockBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 401144d518fcab94eb081758d73150e2
     m_Address: Assets/My Assets/Addressables/Items/Sword 8.asset
     m_ReadOnly: 0
@@ -70,8 +85,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d45078f3de76554b92a130de3d68817
+    m_Address: Assets/My Assets/Addressables/Abilities/ColdBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56d1b22e67f7f0040887ef997c5ec5cf
     m_Address: Assets/My Assets/Addressables/Items/Sword 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62ee80406de7cc946aef096789afaccf
+    m_Address: Assets/My Assets/Addressables/Abilities/FireBlast.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -105,8 +130,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74b7727a799828a4195089e6b702cf2b
+    m_Address: Assets/My Assets/Addressables/Abilities/ElectricityBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bfb0ff4bd041164789e37097ebb8614
     m_Address: Assets/My Assets/Addressables/Abilities/WeaponAttack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80272c42f5b0fdd40ababdc27234fef4
+    m_Address: Assets/My Assets/Addressables/Abilities/ViralBlast.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -117,6 +152,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9218559d6049c9542a2b75e209b5ddde
     m_Address: Assets/My Assets/Addressables/Abilities/FireBall.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b4ac7fef62bbd04f94c3be8a82b30a9
+    m_Address: Assets/My Assets/Addressables/Abilities/WaterBlast.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -145,6 +185,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b33b4c3be33b4e649b58ef61ea518fc5
+    m_Address: Assets/My Assets/Addressables/Abilities/LightBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b4c2c611ada925c44bf09bde9a246c74
     m_Address: Assets/My Assets/Addressables/Items/Sword 4.asset
     m_ReadOnly: 0
@@ -160,6 +205,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb569bd33e54501449d44b9b0ba04dd2
+    m_Address: Assets/My Assets/Addressables/Abilities/PsychicBlast.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ce04edea0488e7c4bbc191eded33daa8
     m_Address: Assets/My Assets/Addressables/Abilities/GlobalCooling.asset
     m_ReadOnly: 0
@@ -172,6 +222,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e8986061ed58af6489fcef2d6f9091c6
     m_Address: Assets/My Assets/Addressables/Quests/LearnGlassMaking.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8d59c8469cc74c429efa9705037f10a
+    m_Address: Assets/My Assets/Addressables/Abilities/AirBlast.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
